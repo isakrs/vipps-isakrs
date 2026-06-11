@@ -1,0 +1,69 @@
+name: Create event page
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Describe the event — what happened, photos, vibe, any data you want visualised"
+        required: true
+        type: string
+      slug:
+        description: "URL slug for the page (e.g. summer-party-2025)"
+        required: true
+        type: string
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate page with GitHub Models
+        env:
+          MODELS_TOKEN: ${{ secrets.MODELS_TOKEN }}
+          SLUG: ${{ github.event.inputs.slug }}
+          PROMPT: ${{ github.event.inputs.prompt }}
+        run: |
+          mkdir -p "$SLUG"
+
+          SYSTEM_PROMPT=$(cat AGENTS.md)
+
+          USER_PROMPT="Create a new event page for the slug: $SLUG
+
+          $PROMPT
+
+          Return ONLY a JSON object with this exact shape (no markdown, no explanation):
+          {
+            \"index_html\": \"<full HTML content as a single string>\",
+            \"homepage_card\": \"<the <li> HTML snippet to add to the homepage events list>\"
+          }
+
+          The index_html must be a complete, self-contained HTML file following the design guidelines in AGENTS.md."
+
+          RESPONSE=$(curl -s https://models.inference.ai.azure.com/chat/completions \
+            -H "Authorization: Bearer $MODELS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"model\": \"gpt-4o\",
+              \"max_tokens\": 8192,
+              \"response_format\": {\"type\": \"json_object\"},
+              \"messages\": [
+                {\"role\": \"system\", \"content\": $(echo "$SYSTEM_PROMPT" | jq -Rs .)},
+                {\"role\": \"user\", \"content\": $(echo "$USER_PROMPT" | jq -Rs .)}
+              ]
+            }")
+
+          # Save response to file and parse with Python script (also updates homepage)
+          echo "$RESPONSE" > /tmp/response.json
+          python3 .github/scripts/parse_response.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "isakparty-bot"
+          git config user.email "bot@isakparty.com"
+          git add "${{ github.event.inputs.slug }}/" index.html
+          git commit -m "Add ${{ github.event.inputs.slug }} event page"
+          git push
