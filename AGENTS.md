@@ -45,6 +45,7 @@ Reference page: https://vipps.janschill.de/ (source: https://github.com/janschil
 - If photos are provided: responsive grid or masonry layout
 - If data is provided (times, scores, results): visualise it — table or animated chart
 - **Favicon required** — every page's `<head>` must include `<link rel="icon" href="/favicon.svg" type="image/svg+xml" />` (the orange Vipps V SVG lives at the repo root)
+- Verify that important external links resolve before shipping the page
 - Vanilla JavaScript only — no frameworks, no bundlers
 - No external dependencies beyond Google Fonts
 - All CSS and JS inline or in files in the same folder
@@ -83,7 +84,8 @@ GitHub Pages deploys automatically within about 30 seconds.
 - Hosted on GitHub Pages, branch `main`, root `/`
 - Custom domain set via `CNAME` file in the repo root
 - No build step — files are served as-is
-- HTTPS is enforced
+- HTTPS is enforced. After changing a custom domain, verify the public HTTPS URL
+  after GitHub Pages and Cloudflare have settled.
 
 ---
 
@@ -110,6 +112,7 @@ Claude will generate the files, commit, and push. GitHub Pages deploys automatic
 ### From any AI via the GitHub API (for AIs with HTTP tool use — Claude, Codex, Gemini)
 
 The GitHub personal access token for this repo is stored in your password manager under `isakparty GitHub token`. Retrieve it from there — do not ask the user to type it in the chat.
+Do not repeat tokens back if they appear in chat or command output.
 
 To trigger the workflow:
 
@@ -157,8 +160,9 @@ Claude will read the existing file, make the changes, commit, and push.
 3. Edit `CNAME` in the new repo to contain the subdomain (e.g. `vipps.isakparty.com`)
 4. In one.com DNS: add a CNAME record `vipps` → `isakrs.github.io`
 5. In the new repo Settings → Pages: set custom domain to `vipps.isakparty.com`
-6. Add `ANTHROPIC_API_KEY` to the repo's Actions secrets
-7. Done — create pages exactly as above
+6. Add `MODELS_TOKEN` to the repo's Actions secrets for the GitHub Models workflow
+7. Verify the Actions workflow, custom domain, favicon, links, and HTTPS URL
+8. Done — create pages exactly as above
 
 ---
 
@@ -167,4 +171,5 @@ Claude will read the existing file, make the changes, commit, and push.
 - Use relative paths for links (`href="/slug/"` not absolute URLs)
 - Ensure pages work without a local server — no ES module imports from node_modules
 - When revising, read the existing file first before editing
-- After pushing, confirm deployment by checking `https://github.com/isakrs/isakparty.com/actions`
+- After pushing, confirm deployment by checking the GitHub Actions run and the
+  public page URL
