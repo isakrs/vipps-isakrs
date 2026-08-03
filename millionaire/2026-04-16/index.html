@@ -41,6 +41,15 @@
       font: inherit;
     }
 
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
     .shell {
       width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
@@ -218,19 +227,16 @@
     }
 
     .seat-slide .drink-option {
-      min-height: 60px;
+      min-height: 84px;
       display: grid;
       place-items: center;
       background: rgba(5, 5, 5, 0.7);
       text-align: center;
     }
 
-    .seat-slide .drink-option strong {
-      font-size: clamp(1.12rem, 2.1vw, 1.7rem);
-    }
-
-    .seat-slide .drink-option span {
-      display: none;
+    .seat-slide .drink-option .drink-icon {
+      width: clamp(52px, 6vw, 84px);
+      height: clamp(52px, 6vw, 84px);
     }
 
     .slide-media {
@@ -390,19 +396,65 @@
       background: rgba(255, 91, 36, 0.15);
     }
 
-    .drink-option strong {
-      display: block;
+    .drink-icon {
+      width: 54px;
+      height: 54px;
+      display: inline-grid;
+      place-items: center;
       color: var(--gold);
-      font-size: 1.2rem;
-      font-weight: 920;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.32));
     }
 
-    .drink-option span {
+    .drink-icon svg {
+      width: 100%;
+      height: 100%;
       display: block;
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 780;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 4;
+    }
+
+    .drink-icon .drink-fill {
+      fill: currentColor;
+      stroke: none;
+      opacity: 0.18;
+    }
+
+    .drink-icon.water {
+      color: #8dd7ff;
+    }
+
+    .drink-icon.beer {
+      color: #f1c85b;
+    }
+
+    .drink-icon.wine {
+      color: #ff7a8a;
+    }
+
+    .drink-icon.liquor {
+      color: #d99a4a;
+    }
+
+    .drink-icon.status {
+      width: 32px;
+      height: 32px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    .drink-message {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .drink-message .drink-icon {
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
     }
 
     .slide-actions {
@@ -1376,6 +1428,42 @@
     const maxSeatQuestions = 4;
     const drinkOptions = ["Water", "Beer", "Wine", "Liquor"];
     const shotIconSource = "assets/images/shot-icon.png";
+    const drinkIcons = {
+      Water: `
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path class="drink-fill" d="M32 7C22 21 16 31 16 40a16 16 0 0 0 32 0C48 31 42 21 32 7Z"></path>
+          <path d="M32 7C22 21 16 31 16 40a16 16 0 0 0 32 0C48 31 42 21 32 7Z"></path>
+          <path d="M24 40a8 8 0 0 0 8 8"></path>
+        </svg>
+      `,
+      Beer: `
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path class="drink-fill" d="M18 21h28v26a8 8 0 0 1-8 8H26a8 8 0 0 1-8-8Z"></path>
+          <path d="M18 21h28v26a8 8 0 0 1-8 8H26a8 8 0 0 1-8-8Z"></path>
+          <path d="M46 27h6a7 7 0 0 1 0 14h-6"></path>
+          <path d="M22 21c0-5 4-8 9-6 2-4 9-4 11 0 5-1 9 2 9 7"></path>
+          <path d="M27 30v14M36 30v14"></path>
+        </svg>
+      `,
+      Wine: `
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path class="drink-fill" d="M22 9h20v14a10 10 0 0 1-20 0Z"></path>
+          <path d="M22 9h20v14a10 10 0 0 1-20 0Z"></path>
+          <path d="M24 19h16"></path>
+          <path d="M32 33v17"></path>
+          <path d="M23 54h18"></path>
+        </svg>
+      `,
+      Liquor: `
+        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <path class="drink-fill" d="M18 25h28l-4 28H22Z"></path>
+          <path d="M18 25h28l-4 28H22Z"></path>
+          <path d="M23 36c5 3 10 3 15 0 3-2 5-2 8-1"></path>
+          <path d="M23 15h18l4 10H19Z"></path>
+          <path d="M28 15V8h8v7"></path>
+        </svg>
+      `
+    };
     const hotSeatRules = [
       {
         title: "Q1",
@@ -1581,6 +1669,7 @@
       removedAnswers: new Set(),
       usedLifelines: new Set(),
       message: "",
+      messageDrink: "",
       soundEnabled: false
     };
 
@@ -1679,6 +1768,41 @@
       return state.currentDrink || "chosen drink";
     }
 
+    function drinkKey(drink) {
+      return String(drink || "").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+    }
+
+    function drinkIconMarkup(drink, className = "") {
+      const label = drinkIcons[drink] ? drink : currentDrinkName();
+      const icon = drinkIcons[drink] || drinkIcons.Water;
+      return `<span class="drink-icon ${drinkKey(label)} ${className}" role="img" aria-label="${label}">${icon}</span>`;
+    }
+
+    function hotSeatDrinkMarkup() {
+      if (!state.currentDrink) return `Player ${state.playerNumber} · drink`;
+      return `Player ${state.playerNumber} · ${drinkIconMarkup(state.currentDrink, "status")}`;
+    }
+
+    function setStatusMessage(message, drink = "") {
+      state.message = message;
+      state.messageDrink = drink;
+    }
+
+    function renderStatusText(element, message, drink = "") {
+      element.textContent = "";
+
+      if (!drink) {
+        element.textContent = message;
+        return;
+      }
+
+      const wrapper = document.createElement("span");
+      wrapper.className = "drink-message";
+      wrapper.innerHTML = drinkIconMarkup(drink);
+      wrapper.appendChild(document.createTextNode(message));
+      element.appendChild(wrapper);
+    }
+
     function handoutShotCount() {
       return state.seatQuestionNumber * 2;
     }
@@ -1733,7 +1857,7 @@
 
     function renderStatusMessage() {
       if (state.message) {
-        elements.message.textContent = state.message;
+        renderStatusText(elements.message, state.message, state.messageDrink);
         return;
       }
 
@@ -1776,7 +1900,7 @@
       elements.currentPrizeLabel.textContent = "Current Rule";
       elements.currentPrize.innerHTML = ruleVisualMarkup(state.seatQuestionNumber);
       elements.correctLabel.textContent = "Hot Seat";
-      elements.correctCount.textContent = `Player ${state.playerNumber} · ${currentDrinkName()}`;
+      elements.correctCount.innerHTML = hotSeatDrinkMarkup();
 
       renderMedia(question);
       elements.answers.innerHTML = "";
@@ -1851,7 +1975,8 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "drink-option";
-        button.innerHTML = `<strong>${drink}</strong><span></span>`;
+        button.setAttribute("aria-label", drink);
+        button.innerHTML = `${drinkIconMarkup(drink)}<span class="visually-hidden">${drink}</span>`;
         button.addEventListener("click", () => selectDrink(drink));
         elements.drinkChoices.appendChild(button);
       });
@@ -2118,14 +2243,14 @@
       if (state.mode !== "question" || state.removedAnswers.has(index) || state.answerShown || index >= state.revealedAnswers) return;
       state.selectedAnswer = index;
       state.lockedAnswer = null;
-      state.message = `${letters[index]} selected`;
+      setStatusMessage(`${letters[index]} selected`);
       render();
     }
 
     function revealOption() {
       if (state.mode !== "question" || state.revealedAnswers >= 4 || state.answerShown) return;
       state.revealedAnswers += 1;
-      state.message = state.revealedAnswers === 4 ? "All options are on the board." : `${letters[state.revealedAnswers - 1]} revealed.`;
+      setStatusMessage(state.revealedAnswers === 4 ? "All options are on the board." : `${letters[state.revealedAnswers - 1]} revealed.`);
       if (state.revealedAnswers === 1) playSound("question");
       if (state.revealedAnswers === 4) playSound("thinking");
       render();
@@ -2134,14 +2259,14 @@
     function lockAnswer() {
       if (state.mode !== "question" || state.selectedAnswer === null || state.answerShown) return;
       state.lockedAnswer = state.selectedAnswer;
-      state.message = `${letters[state.lockedAnswer]} locked.`;
+      setStatusMessage(`${letters[state.lockedAnswer]} locked.`);
       render();
     }
 
     function selectDrink(drink) {
       state.currentDrink = drink;
       state.mode = "question";
-      state.message = `${drink} selected for this hot seat.`;
+      setStatusMessage("selected for this hot seat.", drink);
       state.usedLifelines.clear();
       resetQuestionState();
       playSound("question");
@@ -2163,12 +2288,12 @@
       }
 
       if (state.lockedAnswer === null) {
-        state.message = `Answer: ${letters[question.correct]}`;
+        setStatusMessage(`Answer: ${letters[question.correct]}`);
       } else if (state.answerCorrect) {
-        state.message = "Correct";
+        setStatusMessage("Correct");
         window.setTimeout(() => playSound("celebration"), 320);
       } else {
-        state.message = "Wrong";
+        setStatusMessage("Wrong");
       }
 
       render();
@@ -2213,11 +2338,11 @@
 
       const interludeMedia = getInterludeMedia(activeQuestions[state.questionIndex]);
       if (interludeMedia.length > 0) {
-        state.message = "Loading fun slide.";
+        setStatusMessage("Loading fun slide.");
         render();
         await waitForMedia(interludeMedia);
         state.mode = "interlude";
-        state.message = "";
+        setStatusMessage("");
         playSound("celebration");
         render();
         return;
@@ -2232,7 +2357,7 @@
 
       if (state.questionIndex >= activeQuestions.length - 1) {
         state.mode = "summary";
-        state.message = "";
+        setStatusMessage("");
         render();
         return;
       }
@@ -2246,7 +2371,7 @@
       if (transition === "playOn" && state.seatQuestionNumber < maxSeatQuestions) {
         state.seatQuestionNumber += 1;
         state.mode = "question";
-        state.message = `${currentDrinkName()} stays`;
+        setStatusMessage("stays", state.currentDrink);
         playSound("question");
       } else {
         state.playerNumber += 1;
@@ -2254,7 +2379,7 @@
         state.currentDrink = "";
         state.usedLifelines.clear();
         state.mode = "seat";
-        state.message = "";
+        setStatusMessage("");
       }
 
       render();
@@ -2272,7 +2397,7 @@
       state.correctAnswers = 0;
       state.awardedQuestions.clear();
       state.usedLifelines.clear();
-      state.message = "";
+      setStatusMessage("");
       render();
     }
 
@@ -2287,7 +2412,7 @@
         state.lockedAnswer = null;
       }
       state.usedLifelines.add("fifty");
-      state.message = "Two wrong answers removed.";
+      setStatusMessage("Two wrong answers removed.");
       playSound("lifeline");
       render();
     }
@@ -2300,7 +2425,7 @@
       const shares = [0, 1, 2, 3].map((index) => index === correct ? correctShare : Math.floor(remaining / 3));
       shares[(correct + 1) % 4] += 100 - shares.reduce((sum, value) => sum + value, 0);
       state.usedLifelines.add("audience");
-      state.message = shares.map((value, index) => `${letters[index]} ${value}%`).join(" · ");
+      setStatusMessage(shares.map((value, index) => `${letters[index]} ${value}%`).join(" · "));
       playSound("lifeline");
       render();
     }
@@ -2310,7 +2435,7 @@
       const correctLetter = letters[activeQuestions[state.questionIndex].correct];
       const moods = ["calmly says", "is leaning toward", "would lock"];
       state.usedLifelines.add("phone");
-      state.message = `Phone helper ${moods[state.questionIndex % moods.length]} ${correctLetter}.`;
+      setStatusMessage(`Phone helper ${moods[state.questionIndex % moods.length]} ${correctLetter}.`);
       playSound("lifeline");
       render();
     }
@@ -2364,7 +2489,7 @@
         window.localStorage.setItem(customStorageKey, JSON.stringify(customQuestions));
       } catch {
         elements.studioJson.value = JSON.stringify({ questions: customQuestions }, null, 2);
-        state.message = "Draft storage is full. Export data to keep these changes.";
+        setStatusMessage("Draft storage is full. Export data to keep these changes.");
       }
     }
 
@@ -2444,7 +2569,7 @@
       });
 
       if (!question) {
-        state.message = "Fill in the question, four answers, and the correct option.";
+        setStatusMessage("Fill in the question, four answers, and the correct option.");
         render();
         return;
       }
@@ -2452,7 +2577,7 @@
       customQuestions.push(question);
       saveCustomQuestions();
       clearStudioForm();
-      state.message = "Draft question added.";
+      setStatusMessage("Draft question added.");
       refreshActiveQuestions();
     }
 
@@ -2477,10 +2602,10 @@
         customQuestions = normalized;
         saveCustomQuestions();
         resetGame();
-        state.message = `${customQuestions.length} draft questions loaded.`;
+        setStatusMessage(`${customQuestions.length} draft questions loaded.`);
         refreshActiveQuestions();
       } catch {
-        state.message = "Could not import data.";
+        setStatusMessage("Could not import data.");
         render();
       }
     }
@@ -2489,7 +2614,7 @@
       customQuestions = [];
       saveCustomQuestions();
       resetGame();
-      state.message = "Local drafts cleared.";
+      setStatusMessage("Local drafts cleared.");
       refreshActiveQuestions();
     }
 
