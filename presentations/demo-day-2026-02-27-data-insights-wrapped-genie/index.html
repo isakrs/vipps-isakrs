@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+  <title>Demo Day Wrapped | Vipps Presentations</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --background: #090908;
+      --panel: #151411;
+      --ink: #fff7ec;
+      --muted: #b9afa2;
+      --line: rgba(255, 255, 255, 0.13);
+      --vipps: #ff5b24;
+      --gold: #f1c85b;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+    }
+    body {
+      min-height: 100dvh;
+      margin: 0;
+      background: linear-gradient(135deg, #090908 0%, #17120e 52%, #050505 100%);
+      color: var(--ink);
+      font-family: "Inter", sans-serif;
+    }
+    button { font: inherit; }
+    .shell { width: min(1480px, calc(100% - 28px)); margin: 0 auto; padding: 18px 0 30px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .brand { display: flex; align-items: center; gap: 10px; min-width: 0; color: inherit; text-decoration: none; }
+    .brand img { width: 38px; height: 38px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 91, 36, 0.34); }
+    .brand strong { display: block; font-size: clamp(1rem, 2vw, 1.35rem); font-weight: 900; line-height: 1.04; overflow-wrap: anywhere; }
+    .brand span { display: block; margin-top: 3px; color: var(--muted); font-size: 0.78rem; font-weight: 800; }
+    .controls { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+    .pill, .icon-button { min-height: 38px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 8px; background: rgba(255, 255, 255, 0.075); color: var(--ink); padding: 8px 11px; font-weight: 900; font-size: 0.85rem; text-decoration: none; }
+    .icon-button { cursor: pointer; }
+    .icon-button:hover { border-color: var(--vipps); }
+    .stage { position: relative; display: grid; place-items: center; min-height: calc(100dvh - 190px); border: 1px solid var(--line); border-radius: 8px; background: #050505; box-shadow: var(--shadow); overflow: hidden; }
+    .slide { display: block; width: 100%; max-height: calc(100dvh - 190px); object-fit: contain; background: #050505; }
+    .nav-button { position: absolute; top: 50%; transform: translateY(-50%); width: 48px; height: 64px; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 8px; background: rgba(0, 0, 0, 0.45); color: var(--ink); font-size: 2rem; line-height: 1; cursor: pointer; }
+    .nav-button:hover { border-color: var(--vipps); background: rgba(255, 91, 36, 0.75); color: #170802; }
+    .nav-button.prev { left: 12px; }
+    .nav-button.next { right: 12px; }
+    .thumbs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(140px, 11vw); gap: 8px; margin-top: 12px; padding-bottom: 8px; overflow-x: auto; }
+    .thumb { position: relative; min-height: 78px; border: 2px solid transparent; border-radius: 8px; background: #050505; padding: 0; overflow: hidden; cursor: pointer; opacity: 0.72; }
+    .thumb[aria-current="true"] { border-color: var(--vipps); opacity: 1; }
+    .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .thumb span { position: absolute; left: 6px; bottom: 6px; min-width: 24px; border-radius: 999px; background: rgba(0, 0, 0, 0.65); color: var(--ink); padding: 3px 6px; font-size: 0.72rem; font-weight: 900; }
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 16px, 1480px); padding-top: 10px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .controls { justify-content: flex-start; }
+      .stage { min-height: auto; }
+      .slide { max-height: 68dvh; }
+      .nav-button { width: 42px; height: 56px; }
+      .thumbs { grid-auto-columns: minmax(116px, 34vw); }
+    }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/presentations/">
+        <img src="/favicon.svg" alt="Vipps" />
+        <div>
+          <strong>Demo Day Wrapped</strong>
+          <span>Data Insights - 27 February 2026</span>
+        </div>
+      </a>
+      <div class="controls">
+        <div class="pill" id="counter">1 / 106</div>
+        <button class="icon-button" type="button" id="fullscreenButton">Full screen</button>
+      </div>
+    </header>
+    <section class="stage" aria-label="Slide viewer">
+      <button class="nav-button prev" type="button" id="prevButton" aria-label="Previous slide">&lsaquo;</button>
+      <img class="slide" id="slideImage" src="slides/slide-001.jpg" alt="Demo Day Wrapped slide 1" />
+      <button class="nav-button next" type="button" id="nextButton" aria-label="Next slide">&rsaquo;</button>
+    </section>
+    <nav class="thumbs" id="thumbs" aria-label="Slides"></nav>
+  </main>
+  <script>
+    const slides = ["slides/slide-001.jpg", "slides/slide-002.jpg", "slides/slide-003.jpg", "slides/slide-004.jpg", "slides/slide-005.jpg", "slides/slide-006.jpg", "slides/slide-007.jpg", "slides/slide-008.jpg", "slides/slide-009.jpg", "slides/slide-010.jpg", "slides/slide-011.jpg", "slides/slide-012.jpg", "slides/slide-013.jpg", "slides/slide-014.jpg", "slides/slide-015.jpg", "slides/slide-016.jpg", "slides/slide-017.jpg", "slides/slide-018.jpg", "slides/slide-019.jpg", "slides/slide-020.jpg", "slides/slide-021.jpg", "slides/slide-022.jpg", "slides/slide-023.jpg", "slides/slide-024.jpg", "slides/slide-025.jpg", "slides/slide-026.jpg", "slides/slide-027.jpg", "slides/slide-028.jpg", "slides/slide-029.jpg", "slides/slide-030.jpg", "slides/slide-031.jpg", "slides/slide-032.jpg", "slides/slide-033.jpg", "slides/slide-034.jpg", "slides/slide-035.jpg", "slides/slide-036.jpg", "slides/slide-037.jpg", "slides/slide-038.jpg", "slides/slide-039.jpg", "slides/slide-040.jpg", "slides/slide-041.jpg", "slides/slide-042.jpg", "slides/slide-043.jpg", "slides/slide-044.jpg", "slides/slide-045.jpg", "slides/slide-046.jpg", "slides/slide-047.jpg", "slides/slide-048.jpg", "slides/slide-049.jpg", "slides/slide-050.jpg", "slides/slide-051.jpg", "slides/slide-052.jpg", "slides/slide-053.jpg", "slides/slide-054.jpg", "slides/slide-055.jpg", "slides/slide-056.jpg", "slides/slide-057.jpg", "slides/slide-058.jpg", "slides/slide-059.jpg", "slides/slide-060.jpg", "slides/slide-061.jpg", "slides/slide-062.jpg", "slides/slide-063.jpg", "slides/slide-064.jpg", "slides/slide-065.jpg", "slides/slide-066.jpg", "slides/slide-067.jpg", "slides/slide-068.jpg", "slides/slide-069.jpg", "slides/slide-070.jpg", "slides/slide-071.jpg", "slides/slide-072.jpg", "slides/slide-073.jpg", "slides/slide-074.jpg", "slides/slide-075.jpg", "slides/slide-076.jpg", "slides/slide-077.jpg", "slides/slide-078.jpg", "slides/slide-079.jpg", "slides/slide-080.jpg", "slides/slide-081.jpg", "slides/slide-082.jpg", "slides/slide-083.jpg", "slides/slide-084.jpg", "slides/slide-085.jpg", "slides/slide-086.jpg", "slides/slide-087.jpg", "slides/slide-088.jpg", "slides/slide-089.jpg", "slides/slide-090.jpg", "slides/slide-091.jpg", "slides/slide-092.jpg", "slides/slide-093.jpg", "slides/slide-094.jpg", "slides/slide-095.jpg", "slides/slide-096.jpg", "slides/slide-097.jpg", "slides/slide-098.jpg", "slides/slide-099.jpg", "slides/slide-100.jpg", "slides/slide-101.jpg", "slides/slide-102.jpg", "slides/slide-103.jpg", "slides/slide-104.jpg", "slides/slide-105.jpg", "slides/slide-106.jpg"];
+    const title = "Demo Day Wrapped";
+    let current = Math.min(Math.max(Number(location.hash.slice(1)) || 1, 1), slides.length) - 1;
+    const image = document.getElementById("slideImage");
+    const counter = document.getElementById("counter");
+    const thumbs = document.getElementById("thumbs");
+    const prevButton = document.getElementById("prevButton");
+    const nextButton = document.getElementById("nextButton");
+    const fullscreenButton = document.getElementById("fullscreenButton");
+
+    function renderThumbs() {
+      thumbs.innerHTML = "";
+      slides.forEach((src, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "thumb";
+        button.setAttribute("aria-label", `Slide ${index + 1}`);
+        button.innerHTML = `<img src="${src}" alt="" loading="lazy" /><span>${index + 1}</span>`;
+        button.addEventListener("click", () => showSlide(index));
+        thumbs.appendChild(button);
+      });
+    }
+
+    function showSlide(index) {
+      current = (index + slides.length) % slides.length;
+      image.src = slides[current];
+      image.alt = `${title} slide ${current + 1}`;
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      location.replace(`#${current + 1}`);
+      [...thumbs.children].forEach((thumb, idx) => thumb.setAttribute("aria-current", idx === current ? "true" : "false"));
+      thumbs.children[current]?.scrollIntoView({ inline: "center", block: "nearest" });
+    }
+
+    prevButton.addEventListener("click", () => showSlide(current - 1));
+    nextButton.addEventListener("click", () => showSlide(current + 1));
+    fullscreenButton.addEventListener("click", () => document.documentElement.requestFullscreen?.());
+    window.addEventListener("keydown", (event) => {
+      if (["ArrowRight", " ", "PageDown"].includes(event.key)) { event.preventDefault(); showSlide(current + 1); }
+      if (["ArrowLeft", "PageUp"].includes(event.key)) { event.preventDefault(); showSlide(current - 1); }
+    });
+    renderThumbs();
+    showSlide(current);
+  </script>
+</body>
+</html>

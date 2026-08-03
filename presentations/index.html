@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+  <title>Vipps Presentations</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --background: #090908;
+      --panel: #151411;
+      --ink: #fff7ec;
+      --muted: #b9afa2;
+      --line: rgba(255, 255, 255, 0.13);
+      --vipps: #ff5b24;
+      --gold: #f1c85b;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+    }
+    body { min-height: 100dvh; margin: 0; background: linear-gradient(135deg, #090908 0%, #17120e 48%, #050505 100%); color: var(--ink); font-family: "Inter", sans-serif; }
+    .shell { width: min(1240px, calc(100% - 28px)); margin: 0 auto; padding: 26px 0 42px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; margin-bottom: clamp(22px, 5vw, 46px); }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand img { width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 91, 36, 0.36); }
+    .brand strong { display: block; font-size: 1.35rem; line-height: 1; font-weight: 900; overflow-wrap: anywhere; }
+    .brand span { display: block; margin-top: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 800; }
+    .pill { border: 1px solid rgba(241, 200, 91, 0.45); border-radius: 999px; color: var(--gold); background: rgba(241, 200, 91, 0.1); padding: 9px 13px; font-size: 0.82rem; font-weight: 900; white-space: nowrap; }
+    h1 { margin: 0 0 clamp(22px, 5vw, 44px); font-size: clamp(3rem, 9vw, 7.2rem); line-height: 0.9; font-weight: 950; letter-spacing: 0; }
+    .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .card { position: relative; min-height: clamp(260px, 31vw, 390px); display: grid; align-content: end; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: inherit; text-decoration: none; box-shadow: var(--shadow); isolation: isolate; }
+    .card::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0, 0, 0, 0.04) 20%, rgba(0, 0, 0, 0.88) 100%); }
+    .card:hover { border-color: rgba(255, 91, 36, 0.78); transform: translateY(-2px); }
+    .card img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; opacity: 0.86; }
+    .card-content { padding: clamp(16px, 3vw, 24px); }
+    .card-kicker { display: inline-flex; width: fit-content; border-radius: 999px; background: rgba(255, 91, 36, 0.92); color: #170802; padding: 7px 10px; font-size: 0.72rem; font-weight: 950; text-transform: uppercase; }
+    .card h2 { max-width: 520px; margin: 12px 0 0; font-size: clamp(1.6rem, 3vw, 2.9rem); line-height: 0.96; font-weight: 950; letter-spacing: 0; overflow-wrap: anywhere; }
+    .card-meta { margin-top: 10px; color: rgba(255, 247, 236, 0.78); font-size: 0.82rem; font-weight: 850; }
+    @media (max-width: 1040px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 700px) {
+      .shell { width: min(100% - 22px, 1240px); padding-top: 16px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      h1 { font-size: clamp(2.45rem, 12vw, 3.35rem); }
+      .cards { grid-template-columns: 1fr; }
+      .card { min-height: 255px; }
+      .card h2 { font-size: clamp(1.4rem, 6.4vw, 1.65rem); }
+    }
+</style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="/favicon.svg" alt="Vipps" />
+        <div>
+          <strong>Vipps Presentations</strong>
+          <span>Slide collection</span>
+        </div>
+      </div>
+      <div class="pill">7 decks</div>
+    </header>
+    <h1>Presentations</h1>
+    <section class="cards" aria-label="Vipps presentation decks">
+      <a class="card" href="/presentations/vippsi-databricks-home-page/">
+        <img src="vippsi-databricks-home-page/slides/slide-001.jpg" alt="" loading="lazy" />
+        <div class="card-content">
+          <span class="card-kicker">2026</span>
+          <h2>Vippsi Databricks Home Page</h2>
+          <div class="card-meta">Databricks - 1 slide</div>
+        </div>
+      </a>
+      <a class="card" href="/presentations/data-export-pointer/">
+        <img src="data-export-pointer/slides/slide-001.jpg" alt="" loading="lazy" />
+        <div class="card-content">
+          <span class="card-kicker">Tech Tuesday</span>
+          <h2>Data Export Pointer</h2>
+          <div class="card-meta">Data Platform - 32 slides</div>
+        </div>
+      </a>
+      <a class="card" href="/presentations/demo-day-2026-02-27-data-insights-wrapped-genie/">
+        <img src="demo-day-2026-02-27-data-insights-wrapped-genie/slides/slide-001.jpg" alt="" loading="lazy" />
+        <div class="card-content">
+          <span class="card-kicker">27 February 2026</span>
+          <h2>Demo Day Wrapped</h2>
+          <div class="card-meta">Data Insights - 106 slides</div>
+        </div>
+      </a>
+      <a class="card" href="/presentations/devcon-aarhus-2026-04-16-data-insights-wrapped/">
+        <img src="devcon-aarhus-2026-04-16-data-insights-wrapped/slides/slide-001.jpg" alt="" loading="lazy" />
+        <div class="card-content">
+          <span class="card-kicker">16 April 2026</span>
+          <h2>DevCon Aarhus Wrapped</h2>
+          <div class="card-meta">Data Insights - 124 slides</div>
+        </div>
+      </a>
+      <a class="card" href="/presentations/discrete-event-simulator-vipps-aarhus/">
+        <img src="discrete-event-simulator-vipps-aarhus/slides/slide-001.jpg" alt="" loading="lazy" />
+        <div class="card-content">
+          <span class="card-kicker">Aarhus</span>
+          <h2>Discrete Event Simulator</h2>
+          <div class="card-meta">Simulation - 100 slides</div>
+        </div>
+      </a>
+      <a class="card" href="/presentations/data-platform-statens-vegvesen/">
+        <img src="data-platform-statens-vegvesen/slides/slide-001.jpg" alt="" loading="lazy" />
+        <div class="card-content">
+          <span class="card-kicker">2026</span>
+          <h2>Data Platform for Statens Vegvesen</h2>
+          <div class="card-meta">External Talk - 60 slides</div>
+        </div>
+      </a>
+      <a class="card" href="/presentations/fra-data-til-verdi-2026-02-04/">
+        <img src="fra-data-til-verdi-2026-02-04/slides/slide-001.jpg" alt="" loading="lazy" />
+        <div class="card-content">
+          <span class="card-kicker">4 February 2026</span>
+          <h2>Fra Data Til Verdi</h2>
+          <div class="card-meta">Statens Vegvesen - 12 slides</div>
+        </div>
+      </a>
+    </section>
+  </main>
+</body>
+</html>

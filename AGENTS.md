@@ -173,3 +173,17 @@ Claude will read the existing file, make the changes, commit, and push.
 - When revising, read the existing file first before editing
 - After pushing, confirm deployment by checking the GitHub Actions run and the
   public page URL
+
+## Repo-specific notes for vipps.isakrs.com
+
+- Work material such as Millionaire games and presentation galleries is usually
+  unlisted. Add `noindex` metadata to those pages, add their path to
+  `robots.txt`, and do not add them to the root homepage unless Isak explicitly
+  asks for public navigation.
+- For `/presentations/`, render local PowerPoint decks to static slide images
+  under `/presentations/<slug>/slides/` and build a self-contained viewer at
+  `/presentations/<slug>/index.html`. Do not commit the source PowerPoint files
+  unless Isak explicitly asks for downloads.
+- Very large PowerPoint decks can exceed the artifact renderer memory limit.
+  Prefer a smaller final or no-video version when one exists; otherwise leave the
+  deck out and mention the render blocker rather than publishing a broken card.
