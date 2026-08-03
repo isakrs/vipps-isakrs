@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
   <title>Vipps Millionaire | 16 April 2026</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -97,6 +98,32 @@
       white-space: nowrap;
     }
 
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .sound-toggle {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .sound-toggle[aria-pressed="true"] {
+      color: #170802;
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
     .game {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 250px;
@@ -162,6 +189,7 @@
       place-items: center;
       padding: 28px 18px 20px;
       isolation: isolate;
+      min-height: 330px;
     }
 
     .stage-main::before {
@@ -226,6 +254,64 @@
       font-size: 0.75rem;
       font-weight: 800;
       text-transform: uppercase;
+    }
+
+    .media-board {
+      width: min(100%, 820px);
+      display: grid;
+      grid-template-columns: repeat(var(--media-columns, 1), minmax(0, 1fr));
+      gap: 12px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .media-board.media-count-3 {
+      --media-columns: 3;
+    }
+
+    .media-board.media-count-4 {
+      --media-columns: 4;
+    }
+
+    .media-board.media-count-2 {
+      --media-columns: 2;
+    }
+
+    .media-item {
+      width: 100%;
+      min-height: 160px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(228, 189, 90, 0.2);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255, 91, 36, 0.1), rgba(228, 189, 90, 0.06)),
+        rgba(255, 255, 255, 0.045);
+      overflow: hidden;
+    }
+
+    .media-board.media-count-1 .media-item {
+      min-height: 280px;
+    }
+
+    .media-item img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-height: 360px;
+      object-fit: contain;
+    }
+
+    .media-item.fit-cover img {
+      object-fit: cover;
+    }
+
+    .media-item.transparent img {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 300px;
+      padding: 12px;
     }
 
     .question-wrap {
@@ -468,6 +554,10 @@
       .prizes {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+
+      .media-board.media-count-4 {
+        --media-columns: 2;
+      }
     }
 
     @media (max-width: 620px) {
@@ -479,6 +569,10 @@
       .topbar {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
       }
 
       .status-pill {
@@ -504,6 +598,27 @@
 
       .emblem {
         width: min(250px, 76vw);
+      }
+
+      .stage-main {
+        min-height: 280px;
+        padding: 18px 18px 16px;
+      }
+
+      .media-board,
+      .media-board.media-count-2,
+      .media-board.media-count-3,
+      .media-board.media-count-4 {
+        --media-columns: 1;
+      }
+
+      .media-item,
+      .media-board.media-count-1 .media-item {
+        min-height: 210px;
+      }
+
+      .media-item img {
+        max-height: 280px;
       }
 
       .question {
@@ -540,7 +655,10 @@
           <span>Aarhus · 16 April 2026</span>
         </div>
       </div>
-      <div class="status-pill" id="statusPill">Question 1 of 17</div>
+      <div class="top-actions">
+        <button class="sound-toggle" type="button" id="soundButton">Enable sound</button>
+        <div class="status-pill" id="statusPill">Question 1 of 17</div>
+      </div>
     </header>
 
     <section class="game" aria-label="Vipps Millionaire game">
@@ -558,13 +676,7 @@
         </div>
 
         <div class="stage-main">
-          <div class="emblem" aria-hidden="true">
-            <div class="emblem-inner">
-              <span class="emblem-word">Vipps</span>
-              <span class="emblem-word">Millionaire</span>
-              <span class="emblem-small">Data and Insights</span>
-            </div>
-          </div>
+          <div class="media-board" id="mediaBoard" aria-live="polite"></div>
         </div>
 
         <div class="question-wrap">
@@ -606,7 +718,7 @@
 
     <footer class="footer">
       <span>Built from the Vipps Aarhus PowerPoint deck.</span>
-      <span>vipps.isakrs.com/millionaire/2026-04-16</span>
+      <span>Unlisted static page.</span>
     </footer>
   </main>
 
@@ -632,91 +744,148 @@
       "1,000,000 points"
     ];
 
+    const image = (file, alt, fit = "") => ({ src: `assets/images/${file}`, alt, fit });
+
     const questions = [
       {
         question: "What is the budget for the break-even party?",
         answers: ["600,000 Norwegian kroner", "1.5 million Norwegian kroner", "6 million Norwegian kroner", "10 million Norwegian kroner"],
-        correct: 3
+        correct: 3,
+        promptMedia: [image("q01-break-even-party.webp", "Break-even party meme")],
+        resultMedia: [
+          image("q01-reward-one.webp", "Reward photo one"),
+          image("q01-reward-two.webp", "Reward photo two"),
+          image("q01-reward-three.webp", "Reward photo three")
+        ]
       },
       {
         question: "How many developers are we?",
         answers: ["184", "312", "400", "Only Thomas Townsend"],
-        correct: 0
+        correct: 0,
+        promptMedia: [image("q02-developers.webp", "Vipps MobilePay developer group photo", "fit-cover")]
       },
       {
         question: "Who is the biggest contributor to Vipps MobilePay?",
         answers: ["Hans Petter Eide", "Kim de Vos", "Jon Kjennbakken", "Eivind Uggedal"],
-        correct: 1
+        correct: 1,
+        promptMedia: [
+          image("q03-hans-petter.webp", "Hans Petter Eide"),
+          image("q03-kim.webp", "Kim de Vos"),
+          image("q03-jon.webp", "Jon Kjennbakken"),
+          image("q03-eivind.webp", "Eivind Uggedal")
+        ],
+        resultMedia: [
+          image("q03-github-profile.webp", "GitHub contribution profile"),
+          image("q03-contributions.webp", "Contribution count")
+        ]
       },
       {
         question: "Where should you go if you have questions about data?",
         answers: ["#help-data-analytics", "Databricks - Dataverse Genie", "Jørgen the Great", "Direct message someone in the data team"],
-        correct: 0
+        correct: 0,
+        promptMedia: [image("q04-data-questions.webp", "Data question meme", "fit-cover")],
+        resultMedia: [image("q04-one-second.webp", "MobilePay one second promise", "fit-cover")]
       },
       {
         question: "Where do we control who has access to which data?",
         answers: ["vmp-data-platform-config", "Databricks - Dataverse Genie", "Jørgen the Great", "Google form or Typeform"],
-        correct: 0
+        correct: 0,
+        promptMedia: [image("q05-access-jorgen.webp", "Jørgen portrait")],
+        resultMedia: [image("q05-money.webp", "Jørgen money portrait")]
       },
       {
         question: "What is our biggest product by revenue?",
-        answers: ["Ecommerce", "Recurring", "VM Number", "Person-to-person"],
-        correct: 0
+        answers: ["Ecommerce", "Recurring", "Vipps MobilePay Number", "Person-to-person"],
+        correct: 0,
+        promptMedia: [image("q06-safe-payments.webp", "Safe payments illustration", "fit-cover")]
       },
       {
         question: "What is our second biggest product by revenue?",
-        answers: ["Ecommerce", "Recurring", "VM Number", "Person-to-person"],
-        correct: 2
+        answers: ["Ecommerce", "Recurring", "Vipps MobilePay Number", "Person-to-person"],
+        correct: 2,
+        promptMedia: [image("q07-revenue-bus.webp", "Election bus meme")]
       },
       {
         question: "How much were Vipps users scammed for during April 2024?",
         answers: ["6,400 Norwegian kroner", "64,000 Norwegian kroner", "640,000 Norwegian kroner", "6,400,000 Norwegian kroner"],
-        correct: 3
+        correct: 3,
+        promptMedia: [image("q08-police-report.webp", "Police report image", "fit-cover")],
+        resultMedia: [image("q08-buy-country.webp", "Buy a country meme", "fit-cover")]
       },
       {
         question: "The year after, during April 2025, how much were Vipps users scammed for?",
         answers: ["6,400 Norwegian kroner", "64,000 Norwegian kroner", "640,000 Norwegian kroner", "6,400,000 Norwegian kroner"],
-        correct: 1
+        correct: 1,
+        promptMedia: [image("q09-queen.webp", "Queen image")]
       },
       {
         question: "Who has uploaded the most custom Slack emojis?",
         answers: ["Morten Kjelsø", "Olja Pehilj", "Marius Aure", "Peter Gregersen"],
-        correct: 1
+        correct: 1,
+        promptMedia: [
+          image("q10-eyes.gif", "Animated eyes emoji", "transparent"),
+          image("q10-broken-emoji.webp", "Broken emoji", "transparent"),
+          image("q10-thinking.gif", "Animated thinking emoji", "transparent")
+        ],
+        resultMedia: [image("q10-custom-emojis.webp", "Custom Slack emoji administration screenshot")]
       },
       {
         question: "How long did it take Vipps to reach one million users?",
         answers: ["2 weeks", "2 months", "5 months", "11 months"],
-        correct: 2
+        correct: 2,
+        promptMedia: [image("q11-money-request.webp", "Money request meme")],
+        resultMedia: [image("q11-user-growth.webp", "Vipps user growth timeline", "fit-cover")]
       },
       {
         question: "Who ran the fastest on Holmenkollstafetten?",
         answers: ["Stian Ruud", "Sondre Hille", "Asbjørn Moe", "Andreas Saastad"],
-        correct: 1
+        correct: 1,
+        promptMedia: [
+          image("q12-runner.webp", "Running cutout", "transparent"),
+          image("q12-holmenkoll-team.webp", "Holmenkollstafetten team photo", "fit-cover"),
+          image("q12-runner.webp", "Running cutout", "transparent")
+        ],
+        resultMedia: [
+          image("q12-runner-spin.gif", "Animated running cutout", "transparent"),
+          image("q12-sondre.webp", "Sondre Stadheim Hille result")
+        ]
       },
       {
         question: "Where can you explore our data?",
         answers: ["Databricks - Dataverse Genie", "Direct message Tonje Blaauw", "Call Andreas Saastad", "Hug someone in the data team"],
-        correct: 0
+        correct: 0,
+        promptMedia: [image("q13-data-explore.webp", "Vipps team photo", "fit-cover")],
+        resultMedia: [image("q13-dataverse-genie.webp", "Dataverse Genie screenshot", "fit-cover")]
       },
       {
         question: "What is the Data and Insights top focus item?",
         answers: ["Make things very, very easy", "Make a development, test, production setup", "Speed up our scripts", "Hug someone in the data team"],
-        correct: 0
+        correct: 0,
+        promptMedia: [image("q14-focus.webp", "Focus item still")],
+        resultMedia: [image("q14-party.webp", "Party crowd photo", "fit-cover")]
       },
       {
         question: "Who has the most viewed Power BI application in May?",
         answers: ["Jørgen the Great", "Andreas Money Saastad", "Nina Salvesen the Queen", "Rune Feeling Lucky Garborg"],
-        correct: 0
+        correct: 0,
+        promptMedia: [image("q15-power-bi.webp", "Power BI usage report screenshot")],
+        resultMedia: [image("q15-party-people.webp", "Party people photo")]
       },
       {
         question: "Who is Rune Garborg's secret helper?",
         answers: ["He obviously does not have one", "Thomas Townsend", "Marius the Meme Machine", "Christina The Fixer Amble"],
-        correct: 3
+        correct: 3,
+        promptMedia: [image("q16-secret-helper.webp", "Secret helper Slack screenshot")]
       },
       {
         question: "Which Nobel Prize is awarded in Norway?",
         answers: ["Literature", "Economics", "Peace", "Medicine"],
-        correct: 2
+        correct: 2,
+        promptMedia: [
+          image("q17-nobel-stage.webp", "Nobel Prize stage still", "fit-cover"),
+          image("q17-host.webp", "Millionaire host still", "fit-cover")
+        ],
+        resultMedia: [image("q17-nobel-answer.webp", "Nobel Peace Prize answer reveal", "fit-cover")]
       }
     ];
 
@@ -730,14 +899,40 @@
       awardedQuestions: new Set(),
       removedAnswers: new Set(),
       usedLifelines: new Set(),
-      message: ""
+      message: "",
+      soundEnabled: false
     };
 
+    const soundSources = {
+      theme: "assets/audio/theme.mp3",
+      lifeline: "assets/audio/lifeline.mp3",
+      question: "assets/audio/question.mp3",
+      thinking: "assets/audio/thinking.mp3",
+      reveal: "assets/audio/reveal.mp3",
+      celebration: "assets/audio/celebration.mp3"
+    };
+
+    const sounds = Object.fromEntries(
+      Object.entries(soundSources).map(([name, source]) => {
+        const audio = new Audio(source);
+        audio.preload = "auto";
+        audio.volume = 0.72;
+        return [name, audio];
+      })
+    );
+
+    sounds.theme.volume = 0.34;
+    sounds.thinking.volume = 0.46;
+    sounds.celebration.volume = 0.52;
+    const preloadedImages = new Set();
+
     const elements = {
+      soundButton: document.getElementById("soundButton"),
       statusPill: document.getElementById("statusPill"),
       roundLabel: document.getElementById("roundLabel"),
       message: document.getElementById("message"),
       meterFill: document.getElementById("meterFill"),
+      mediaBoard: document.getElementById("mediaBoard"),
       questionText: document.getElementById("questionText"),
       answers: document.getElementById("answers"),
       currentPrize: document.getElementById("currentPrize"),
@@ -763,6 +958,7 @@
     function render() {
       const question = questions[state.questionIndex];
       const progress = ((state.questionIndex + 1) / questions.length) * 100;
+      preloadQuestionMedia(question);
 
       elements.statusPill.textContent = `Question ${state.questionIndex + 1} of ${questions.length}`;
       elements.roundLabel.textContent = formatRoundLabel();
@@ -772,6 +968,7 @@
       elements.currentPrize.textContent = prizeLadder[state.questionIndex];
       elements.correctCount.textContent = `${state.correctAnswers} of ${questions.length}`;
 
+      renderMedia(question);
       elements.answers.innerHTML = "";
       question.answers.forEach((answer, index) => {
         const button = document.createElement("button");
@@ -797,6 +994,39 @@
       renderPrizes();
       renderControls();
       renderLifelines();
+      renderSoundToggle();
+    }
+
+    function renderMedia(question) {
+      const media = state.answerShown && question.resultMedia?.length ? question.resultMedia : question.promptMedia;
+      const mediaItems = media?.length ? media : [];
+
+      elements.mediaBoard.className = `media-board media-count-${Math.min(mediaItems.length || 1, 4)}`;
+      elements.mediaBoard.innerHTML = "";
+
+      mediaItems.forEach((item) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "media-item";
+        if (item.fit) wrapper.classList.add(item.fit);
+
+        const imageElement = document.createElement("img");
+        imageElement.src = item.src;
+        imageElement.alt = item.alt;
+        imageElement.loading = "eager";
+        imageElement.decoding = "async";
+
+        wrapper.appendChild(imageElement);
+        elements.mediaBoard.appendChild(wrapper);
+      });
+    }
+
+    function preloadQuestionMedia(question) {
+      [...(question.promptMedia || []), ...(question.resultMedia || [])].forEach((item) => {
+        if (preloadedImages.has(item.src)) return;
+        const imageElement = new Image();
+        imageElement.src = item.src;
+        preloadedImages.add(item.src);
+      });
     }
 
     function renderPrizes() {
@@ -834,6 +1064,50 @@
       elements.phoneButton.classList.toggle("used", state.usedLifelines.has("phone"));
     }
 
+    function renderSoundToggle() {
+      elements.soundButton.textContent = state.soundEnabled ? "Sound on" : "Enable sound";
+      elements.soundButton.setAttribute("aria-pressed", state.soundEnabled ? "true" : "false");
+    }
+
+    function playSound(name, options = {}) {
+      if (!state.soundEnabled || !sounds[name]) return;
+
+      const sound = sounds[name];
+      sound.loop = Boolean(options.loop);
+      if (options.restart !== false) {
+        sound.pause();
+        sound.currentTime = 0;
+      }
+      sound.play().catch(() => {});
+    }
+
+    function stopSound(name) {
+      if (!sounds[name]) return;
+      sounds[name].pause();
+      sounds[name].currentTime = 0;
+    }
+
+    function stopRoundSounds() {
+      stopSound("thinking");
+      stopSound("celebration");
+      stopSound("reveal");
+      stopSound("lifeline");
+      stopSound("question");
+    }
+
+    function toggleSound() {
+      state.soundEnabled = !state.soundEnabled;
+      if (state.soundEnabled) {
+        playSound("theme");
+      } else {
+        Object.values(sounds).forEach((sound) => {
+          sound.pause();
+          sound.currentTime = 0;
+        });
+      }
+      renderSoundToggle();
+    }
+
     function selectAnswer(index) {
       if (state.removedAnswers.has(index) || state.answerShown || index >= state.revealedAnswers) return;
       state.selectedAnswer = index;
@@ -846,6 +1120,8 @@
       if (state.revealedAnswers >= 4 || state.answerShown) return;
       state.revealedAnswers += 1;
       state.message = state.revealedAnswers === 4 ? "All options are on the board." : `${letters[state.revealedAnswers - 1]} revealed.`;
+      if (state.revealedAnswers === 1) playSound("question");
+      if (state.revealedAnswers === 4) playSound("thinking");
       render();
     }
 
@@ -859,6 +1135,8 @@
     function showAnswer() {
       const question = questions[state.questionIndex];
       if (state.answerShown) return;
+      stopSound("thinking");
+      playSound("reveal");
       state.revealedAnswers = 4;
       state.answerShown = true;
 
@@ -871,6 +1149,7 @@
         state.message = `Correct answer: ${letters[question.correct]}.`;
       } else if (state.lockedAnswer === question.correct) {
         state.message = `${letters[question.correct]} is correct.`;
+        window.setTimeout(() => playSound("celebration"), 320);
       } else {
         state.message = `${letters[state.lockedAnswer]} is wrong. Correct answer: ${letters[question.correct]}.`;
       }
@@ -880,6 +1159,7 @@
 
     function nextQuestion() {
       if (!state.answerShown) return;
+      stopRoundSounds();
 
       if (state.questionIndex === questions.length - 1) {
         state.message = `Game complete. Final score: ${state.correctAnswers} of ${questions.length}.`;
@@ -894,10 +1174,12 @@
       state.answerShown = false;
       state.removedAnswers.clear();
       state.message = "";
+      playSound("question");
       render();
     }
 
     function resetGame() {
+      stopRoundSounds();
       state.questionIndex = 0;
       state.revealedAnswers = 0;
       state.selectedAnswer = null;
@@ -923,6 +1205,7 @@
       }
       state.usedLifelines.add("fifty");
       state.message = "Two wrong answers removed.";
+      playSound("lifeline");
       render();
     }
 
@@ -935,6 +1218,7 @@
       shares[(correct + 1) % 4] += 100 - shares.reduce((sum, value) => sum + value, 0);
       state.usedLifelines.add("audience");
       state.message = shares.map((value, index) => `${letters[index]} ${value}%`).join(" · ");
+      playSound("lifeline");
       render();
     }
 
@@ -944,9 +1228,11 @@
       const moods = ["calmly says", "is leaning toward", "would lock"];
       state.usedLifelines.add("phone");
       state.message = `Phone helper ${moods[state.questionIndex % moods.length]} ${correctLetter}.`;
+      playSound("lifeline");
       render();
     }
 
+    elements.soundButton.addEventListener("click", toggleSound);
     elements.revealButton.addEventListener("click", revealOption);
     elements.lockButton.addEventListener("click", lockAnswer);
     elements.answerButton.addEventListener("click", showAnswer);
