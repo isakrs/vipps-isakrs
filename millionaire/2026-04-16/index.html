@@ -356,7 +356,7 @@
       font-weight: 900;
     }
 
-    .rule-tile span {
+    .rule-tile > span {
       display: block;
       margin-top: 8px;
       color: var(--muted);
@@ -761,6 +761,104 @@
       overflow-wrap: anywhere;
     }
 
+    .rule-card,
+    .rule-visual {
+      min-width: 0;
+    }
+
+    .rule-visual {
+      display: grid;
+      gap: 7px;
+    }
+
+    .rule-visual.compact {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      align-items: center;
+    }
+
+    .rule-line {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .rule-sign {
+      width: 18px;
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .rule-line.reward .rule-sign {
+      color: var(--green);
+    }
+
+    .rule-line.penalty .rule-sign {
+      color: var(--red);
+    }
+
+    .shot-strip {
+      min-width: 0;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .shot-strip img {
+      width: 23px;
+      height: 23px;
+      object-fit: contain;
+      flex: 0 0 auto;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+    }
+
+    .rule-visual.compact .shot-strip img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .rule-visual.ladder {
+      gap: 4px;
+    }
+
+    .rule-visual.ladder .rule-line {
+      gap: 4px;
+    }
+
+    .rule-visual.ladder .rule-sign {
+      width: 14px;
+      font-size: 0.78rem;
+    }
+
+    .rule-visual.ladder .shot-strip img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .button-content {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .button-content .shot-strip {
+      max-width: 96px;
+    }
+
+    .button-content .shot-strip img {
+      width: 18px;
+      height: 18px;
+    }
+
     .ladder {
       padding: 14px;
       display: flex;
@@ -775,7 +873,7 @@
       padding: 14px;
     }
 
-    .score-card span {
+    .score-card > span {
       display: block;
       color: var(--muted);
       font-size: 0.75rem;
@@ -783,7 +881,8 @@
       text-transform: uppercase;
     }
 
-    .score-card strong {
+    .score-card strong,
+    .score-card .rule-card {
       display: block;
       margin-top: 4px;
       font-size: 1.35rem;
@@ -817,6 +916,10 @@
       color: #150901;
       background: var(--gold);
       border-color: var(--gold);
+    }
+
+    .prize.current .rule-sign {
+      color: #150901;
     }
 
     .prize.cleared {
@@ -1181,7 +1284,7 @@
       <aside class="ladder" aria-label="Hot-seat rules">
         <div class="score-card">
           <span id="currentPrizeLabel">Current Rule</span>
-          <strong id="currentPrize">Q1: +2 / -1</strong>
+          <div class="rule-card" id="currentPrize"></div>
         </div>
         <div class="score-card">
           <span id="correctLabel">Hot Seat</span>
@@ -1272,22 +1375,27 @@
     const letters = ["A", "B", "C", "D"];
     const maxSeatQuestions = 4;
     const drinkOptions = ["Water", "Beer", "Wine", "Liquor"];
+    const shotIconSource = "assets/images/shot-icon.png";
     const hotSeatRules = [
       {
         title: "Q1",
-        copy: "+2 / -1"
+        rewardShots: 2,
+        penaltyShots: 1
       },
       {
         title: "Q2",
-        copy: "+4 / -2"
+        rewardShots: 4,
+        penaltyShots: 2
       },
       {
         title: "Q3",
-        copy: "+6 / -3"
+        rewardShots: 6,
+        penaltyShots: 3
       },
       {
         title: "Q4",
-        copy: "ALL / -4"
+        rewardShots: "all",
+        penaltyShots: 4
       }
     ];
 
@@ -1575,12 +1683,61 @@
       return state.seatQuestionNumber * 2;
     }
 
-    function currentRuleText() {
-      if (state.seatQuestionNumber >= maxSeatQuestions) {
-        return `Q${state.seatQuestionNumber}: all / -${state.seatQuestionNumber}`;
+    function getRule(questionNumber = state.seatQuestionNumber) {
+      return hotSeatRules[Math.min(Math.max(questionNumber, 1), hotSeatRules.length) - 1];
+    }
+
+    function currentRuleText(questionNumber = state.seatQuestionNumber) {
+      const rule = getRule(questionNumber);
+
+      if (rule.rewardShots === "all") {
+        return `${rule.title}: everyone if correct, ${rule.penaltyShots} if wrong`;
       }
 
-      return `Q${state.seatQuestionNumber}: +${handoutShotCount()} / -${state.seatQuestionNumber}`;
+      return `${rule.title}: give ${rule.rewardShots} if correct, drink ${rule.penaltyShots} if wrong`;
+    }
+
+    function shotIconMarkup(count, className = "") {
+      const iconCount = count === "all" ? 9 : Number(count);
+      const label = count === "all" ? "shots for everyone" : `${iconCount} shot${iconCount === 1 ? "" : "s"}`;
+      const icons = Array.from({ length: iconCount }, () => `<img src="${shotIconSource}" alt="" />`).join("");
+      return `<span class="shot-strip ${className}" role="img" aria-label="${label}">${icons}</span>`;
+    }
+
+    function ruleVisualMarkup(questionNumber = state.seatQuestionNumber, variant = "") {
+      const rule = getRule(questionNumber);
+      const rewardLabel = rule.rewardShots === "all" ? "everyone drinks if correct" : `give ${rule.rewardShots} if correct`;
+      const penaltyLabel = `drink ${rule.penaltyShots} if wrong`;
+
+      return `
+        <span class="rule-visual ${variant}" aria-label="${currentRuleText(questionNumber)}">
+          <span class="rule-line reward" aria-label="${rewardLabel}">
+            <span class="rule-sign" aria-hidden="true">+</span>
+            ${shotIconMarkup(rule.rewardShots)}
+          </span>
+          <span class="rule-line penalty" aria-label="${penaltyLabel}">
+            <span class="rule-sign" aria-hidden="true">-</span>
+            ${shotIconMarkup(rule.penaltyShots)}
+          </span>
+        </span>
+      `;
+    }
+
+    function setButtonText(button, label) {
+      button.textContent = label;
+    }
+
+    function setShotButton(button, label, count) {
+      button.innerHTML = `<span class="button-content"><span>${label}</span>${shotIconMarkup(count)}</span>`;
+    }
+
+    function renderStatusMessage() {
+      if (state.message) {
+        elements.message.textContent = state.message;
+        return;
+      }
+
+      elements.message.innerHTML = ruleVisualMarkup(state.seatQuestionNumber, "compact");
     }
 
     function getPendingTransitionLabel() {
@@ -1611,13 +1768,13 @@
       const progress = ((state.questionIndex + 1) / activeQuestions.length) * 100;
       elements.statusPill.textContent = `Question ${state.questionIndex + 1} of ${activeQuestions.length}`;
       elements.roundLabel.textContent = formatRoundLabel();
-      elements.message.textContent = state.message || currentRuleText();
+      renderStatusMessage();
       elements.meterFill.style.width = `${progress}%`;
       elements.questionText.textContent = question.question;
       elements.questionText.classList.remove("interlude-title");
       elements.answers.classList.remove("interlude");
       elements.currentPrizeLabel.textContent = "Current Rule";
-      elements.currentPrize.textContent = currentRuleText();
+      elements.currentPrize.innerHTML = ruleVisualMarkup(state.seatQuestionNumber);
       elements.correctLabel.textContent = "Hot Seat";
       elements.correctCount.textContent = `Player ${state.playerNumber} · ${currentDrinkName()}`;
 
@@ -1683,10 +1840,10 @@
       elements.slideTitle.textContent = "Drink";
       elements.slideMessage.textContent = "";
 
-      hotSeatRules.forEach((rule) => {
+      hotSeatRules.forEach((rule, index) => {
         const tile = document.createElement("div");
         tile.className = "rule-tile";
-        tile.innerHTML = `<strong>${rule.title}</strong><span>${rule.copy}</span>`;
+        tile.innerHTML = `<strong>${rule.title}</strong><span>${ruleVisualMarkup(index + 1)}</span>`;
         elements.slideRules.appendChild(tile);
       });
 
@@ -1856,7 +2013,7 @@
         if (index + 1 === state.seatQuestionNumber) item.classList.add("current");
         if (index + 1 < state.seatQuestionNumber) item.classList.add("cleared");
         if (index + 1 === maxSeatQuestions) item.classList.add("safe");
-        item.innerHTML = `<span>${index + 1}</span><span>${rule.copy}</span>`;
+        item.innerHTML = `<span>${index + 1}</span><span>${ruleVisualMarkup(index + 1, "ladder")}</span>`;
         elements.prizes.appendChild(item);
       });
     }
@@ -1864,43 +2021,43 @@
     function renderControls() {
       const allAnswersRevealed = state.revealedAnswers >= 4;
       elements.revealButton.disabled = allAnswersRevealed || state.answerShown;
-      elements.revealButton.textContent = allAnswersRevealed ? "All options revealed" : `Reveal ${letters[state.revealedAnswers]}`;
+      setButtonText(elements.revealButton, allAnswersRevealed ? "All options revealed" : `Reveal ${letters[state.revealedAnswers]}`);
       elements.lockButton.disabled = state.selectedAnswer === null || state.answerShown;
 
       if (!state.answerShown) {
         elements.answerButton.disabled = !allAnswersRevealed;
-        elements.answerButton.textContent = "Show answer";
+        setButtonText(elements.answerButton, "Show answer");
         elements.nextButton.disabled = true;
-        elements.nextButton.textContent = "Next";
+        setButtonText(elements.nextButton, "Next");
         return;
       }
 
-      elements.revealButton.textContent = "Answer shown";
+      setButtonText(elements.revealButton, "Answer shown");
       elements.lockButton.disabled = true;
       elements.answerButton.disabled = false;
       elements.nextButton.disabled = false;
 
       if (state.lockedAnswer === null) {
         elements.answerButton.disabled = true;
-        elements.answerButton.textContent = "No answer locked";
-        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
+        setButtonText(elements.answerButton, "No answer locked");
+        setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next");
         return;
       }
 
       if (!state.answerCorrect) {
-        elements.answerButton.textContent = `Drink ${state.seatQuestionNumber}`;
-        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
+        setShotButton(elements.answerButton, "Drink", state.seatQuestionNumber);
+        setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next");
         return;
       }
 
       if (state.seatQuestionNumber >= maxSeatQuestions) {
-        elements.answerButton.textContent = "Everyone";
-        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
+        setShotButton(elements.answerButton, "Everyone", "all");
+        setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next");
         return;
       }
 
-      elements.answerButton.textContent = `Give ${handoutShotCount()}`;
-      elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Play on";
+      setShotButton(elements.answerButton, "Give", handoutShotCount());
+      setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Play on");
     }
 
     function renderLifelines() {
@@ -2008,12 +2165,10 @@
       if (state.lockedAnswer === null) {
         state.message = `Answer: ${letters[question.correct]}`;
       } else if (state.answerCorrect) {
-        state.message = state.seatQuestionNumber >= maxSeatQuestions
-          ? "Correct · everyone"
-          : `Correct · +${handoutShotCount()} or play on`;
+        state.message = "Correct";
         window.setTimeout(() => playSound("celebration"), 320);
       } else {
-        state.message = `Wrong · -${state.seatQuestionNumber}`;
+        state.message = "Wrong";
       }
 
       render();
