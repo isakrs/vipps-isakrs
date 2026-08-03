@@ -215,6 +215,14 @@
       background: rgba(241, 200, 91, 0.92);
     }
 
+    .card.pending {
+      opacity: 0.72;
+    }
+
+    .card.pending::after {
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.26) 15%, rgba(0, 0, 0, 0.92) 100%);
+    }
+
     .card h2 {
       max-width: 520px;
       margin: 12px 0 0;
@@ -223,6 +231,13 @@
       font-weight: 950;
       letter-spacing: 0;
       overflow-wrap: anywhere;
+    }
+
+    .card-meta {
+      margin-top: 10px;
+      color: rgba(255, 247, 236, 0.78);
+      font-size: 0.82rem;
+      font-weight: 800;
     }
 
     @media (max-width: 1040px) {
@@ -281,9 +296,9 @@
           <span>Game collection</span>
         </div>
       </div>
-      <div class="pill" aria-label="4 Vipps Millionaire games">
+      <div class="pill" aria-label="3 published Vipps Millionaire presentations">
         <img src="2026-04-16/assets/images/shot-icon.png" alt="" />
-        <span>4</span>
+        <span>3</span>
       </div>
     </header>
 
@@ -299,37 +314,41 @@
     </section>
 
     <section class="cards" aria-label="Vipps Millionaire cards">
-      <a class="card" href="/millionaire/2026-04-16/">
+      <a class="card" href="/millionaire/aarhus-2026/">
         <img src="2026-04-16/assets/images/q01-reward-one.webp" alt="" />
         <div class="card-content">
           <span class="card-kicker">16 April 2026</span>
           <h2>Aarhus</h2>
+          <div class="card-meta">165 slides</div>
         </div>
       </a>
 
-      <article class="card muted">
+      <article class="card muted pending">
         <img src="2026-04-16/assets/images/oslo-2026-card.jpg" alt="" />
         <div class="card-content">
           <span class="card-kicker">24 April 2026</span>
           <h2>Oslo</h2>
+          <div class="card-meta">Missing source deck</div>
         </div>
       </article>
 
-      <article class="card muted">
-        <img src="2026-04-16/assets/images/q14-party.webp" alt="" />
+      <a class="card" href="/millionaire/aarhus-social-2025/">
+        <img src="aarhus-social-2025/slides/slide-004.jpg" alt="" />
         <div class="card-content">
           <span class="card-kicker">4 April 2025</span>
           <h2>Aarhus social</h2>
+          <div class="card-meta">173 slides</div>
         </div>
-      </article>
+      </a>
 
-      <article class="card muted">
-        <img src="2026-04-16/assets/images/q06-interlude-party.webp" alt="" />
+      <a class="card" href="/millionaire/summer-party-2025/">
+        <img src="summer-party-2025/slides/slide-004.jpg" alt="" />
         <div class="card-content">
           <span class="card-kicker">13 June 2025</span>
           <h2>Summer party</h2>
+          <div class="card-meta">164 slides</div>
         </div>
-      </article>
+      </a>
     </section>
   </main>
 </body>

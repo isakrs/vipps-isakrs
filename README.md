@@ -5,7 +5,7 @@ Static GitHub Pages site for Vipps presentations, demos, and social pages.
 ## Main Sections
 
 - `/presentations/` collects screen-friendly presentation viewers as cards.
-- `/millionaire/` collects Vipps Millionaire games.
+- `/millionaire/` collects Vipps Millionaire games and rendered source decks.
 - `/ai-day-11-06-2026/` is the AI Day page.
 
 Most work material is intentionally unlisted. The site uses `noindex` metadata

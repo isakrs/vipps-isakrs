@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+  <meta name="theme-color" content="#050505" />
+  <title>Summer party | Vipps Millionaire</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root { --vipps: #ff5b24; --ink: #fff7ec; --muted: #b9afa2; --line: rgba(255,255,255,.16); --panel: #12110f; }
+    html { background: #050505; }
+    body { min-height: 100dvh; margin: 0; color: var(--ink); background: radial-gradient(circle at 18% 10%, rgba(255,91,36,.26), transparent 26rem), #050505; font-family: "Inter", sans-serif; overflow-x: hidden; }
+    .shell { width: min(1380px, calc(100% - 24px)); margin: 0 auto; padding: 14px 0 18px; }
+    .topbar { min-height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .brand { min-width: 0; display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+    .brand img { width: 38px; height: 38px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255,91,36,.36); flex: 0 0 auto; }
+    .brand strong { display: block; font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1; font-weight: 900; overflow-wrap: anywhere; }
+    .brand span { display: block; margin-top: 3px; color: var(--muted); font-size: .78rem; font-weight: 800; }
+    .actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+    .button { min-height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(255,91,36,.58); border-radius: 8px; background: var(--vipps); color: #170802; padding: 0 13px; font-size: .84rem; font-weight: 900; text-decoration: none; cursor: pointer; }
+    .button.ghost { border-color: var(--line); background: rgba(255,255,255,.08); color: var(--ink); }
+    .button:disabled { opacity: .42; cursor: default; }
+    .stage { display: grid; gap: 10px; }
+    .frame { display: grid; place-items: center; min-height: min(70dvh, 780px); border: 1px solid var(--line); border-radius: 8px; background: #000; overflow: hidden; box-shadow: 0 22px 90px rgba(0,0,0,.5); }
+    .slide { width: 100%; height: auto; max-height: min(70dvh, 780px); display: block; object-fit: contain; }
+    .controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
+    .control-group { display: flex; gap: 8px; }
+    .control-group:last-child { justify-content: flex-end; }
+    .counter { min-height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(241,200,91,.42); border-radius: 999px; background: rgba(241,200,91,.1); color: #f1c85b; padding: 0 13px; font-size: .86rem; font-weight: 900; white-space: nowrap; }
+    .thumbs { display: grid; grid-auto-flow: column; grid-auto-columns: clamp(82px, 10vw, 144px); gap: 8px; overflow-x: auto; padding: 4px 0 10px; scrollbar-color: var(--vipps) transparent; }
+    .thumb { aspect-ratio: 16 / 9; border: 2px solid transparent; border-radius: 6px; padding: 0; background: #111; overflow: hidden; cursor: pointer; opacity: .58; }
+    .thumb.active { border-color: var(--vipps); opacity: 1; }
+    .thumb img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    @media (max-width: 700px) {
+      .shell { width: min(100% - 18px, 1380px); padding-top: 10px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .actions { width: 100%; justify-content: flex-start; }
+      .button { flex: 1 1 auto; }
+      .frame { min-height: auto; }
+      .slide { max-height: 58dvh; }
+      .controls { grid-template-columns: 1fr; }
+      .control-group, .control-group:last-child { justify-content: stretch; }
+      .control-group .button { flex: 1; }
+      .counter { justify-self: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/millionaire/">
+        <img src="/millionaire/2026-04-16/assets/vipps-smile.gif" alt="Vipps smile" />
+        <div>
+          <strong>Summer party</strong>
+          <span>13 June 2025 · 164 slides</span>
+        </div>
+      </a>
+      <div class="actions">
+        <a class="button ghost" href="/millionaire/">All</a>
+        
+        <button class="button" type="button" id="fullscreenButton">Fullscreen</button>
+      </div>
+    </header>
+    <section class="stage" aria-label="Summer party slide viewer">
+      <div class="frame" id="frame">
+        <img class="slide" id="slideImage" src="slides/slide-001.jpg" alt="Summer party slide 1" />
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <button class="button ghost" type="button" id="prevButton">Previous</button>
+          <button class="button ghost" type="button" id="nextButton">Next</button>
+        </div>
+        <div class="counter" id="counter">1 / 164</div>
+        <div class="control-group">
+          <button class="button ghost" type="button" id="firstButton">First</button>
+          <button class="button ghost" type="button" id="lastButton">Last</button>
+        </div>
+      </div>
+      <div class="thumbs" id="thumbs" aria-label="Slide thumbnails">
+        <button class="thumb" type="button" data-index="0" aria-label="Go to slide 1"><img src="slides/slide-001.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="1" aria-label="Go to slide 2"><img src="slides/slide-002.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="2" aria-label="Go to slide 3"><img src="slides/slide-003.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="3" aria-label="Go to slide 4"><img src="slides/slide-004.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="4" aria-label="Go to slide 5"><img src="slides/slide-005.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="5" aria-label="Go to slide 6"><img src="slides/slide-006.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="6" aria-label="Go to slide 7"><img src="slides/slide-007.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="7" aria-label="Go to slide 8"><img src="slides/slide-008.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="8" aria-label="Go to slide 9"><img src="slides/slide-009.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="9" aria-label="Go to slide 10"><img src="slides/slide-010.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="10" aria-label="Go to slide 11"><img src="slides/slide-011.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="11" aria-label="Go to slide 12"><img src="slides/slide-012.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="12" aria-label="Go to slide 13"><img src="slides/slide-013.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="13" aria-label="Go to slide 14"><img src="slides/slide-014.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="14" aria-label="Go to slide 15"><img src="slides/slide-015.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="15" aria-label="Go to slide 16"><img src="slides/slide-016.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="16" aria-label="Go to slide 17"><img src="slides/slide-017.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="17" aria-label="Go to slide 18"><img src="slides/slide-018.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="18" aria-label="Go to slide 19"><img src="slides/slide-019.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="19" aria-label="Go to slide 20"><img src="slides/slide-020.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="20" aria-label="Go to slide 21"><img src="slides/slide-021.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="21" aria-label="Go to slide 22"><img src="slides/slide-022.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="22" aria-label="Go to slide 23"><img src="slides/slide-023.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="23" aria-label="Go to slide 24"><img src="slides/slide-024.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="24" aria-label="Go to slide 25"><img src="slides/slide-025.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="25" aria-label="Go to slide 26"><img src="slides/slide-026.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="26" aria-label="Go to slide 27"><img src="slides/slide-027.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="27" aria-label="Go to slide 28"><img src="slides/slide-028.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="28" aria-label="Go to slide 29"><img src="slides/slide-029.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="29" aria-label="Go to slide 30"><img src="slides/slide-030.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="30" aria-label="Go to slide 31"><img src="slides/slide-031.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="31" aria-label="Go to slide 32"><img src="slides/slide-032.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="32" aria-label="Go to slide 33"><img src="slides/slide-033.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="33" aria-label="Go to slide 34"><img src="slides/slide-034.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="34" aria-label="Go to slide 35"><img src="slides/slide-035.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="35" aria-label="Go to slide 36"><img src="slides/slide-036.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="36" aria-label="Go to slide 37"><img src="slides/slide-037.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="37" aria-label="Go to slide 38"><img src="slides/slide-038.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="38" aria-label="Go to slide 39"><img src="slides/slide-039.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="39" aria-label="Go to slide 40"><img src="slides/slide-040.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="40" aria-label="Go to slide 41"><img src="slides/slide-041.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="41" aria-label="Go to slide 42"><img src="slides/slide-042.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="42" aria-label="Go to slide 43"><img src="slides/slide-043.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="43" aria-label="Go to slide 44"><img src="slides/slide-044.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="44" aria-label="Go to slide 45"><img src="slides/slide-045.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="45" aria-label="Go to slide 46"><img src="slides/slide-046.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="46" aria-label="Go to slide 47"><img src="slides/slide-047.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="47" aria-label="Go to slide 48"><img src="slides/slide-048.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="48" aria-label="Go to slide 49"><img src="slides/slide-049.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="49" aria-label="Go to slide 50"><img src="slides/slide-050.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="50" aria-label="Go to slide 51"><img src="slides/slide-051.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="51" aria-label="Go to slide 52"><img src="slides/slide-052.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="52" aria-label="Go to slide 53"><img src="slides/slide-053.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="53" aria-label="Go to slide 54"><img src="slides/slide-054.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="54" aria-label="Go to slide 55"><img src="slides/slide-055.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="55" aria-label="Go to slide 56"><img src="slides/slide-056.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="56" aria-label="Go to slide 57"><img src="slides/slide-057.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="57" aria-label="Go to slide 58"><img src="slides/slide-058.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="58" aria-label="Go to slide 59"><img src="slides/slide-059.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="59" aria-label="Go to slide 60"><img src="slides/slide-060.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="60" aria-label="Go to slide 61"><img src="slides/slide-061.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="61" aria-label="Go to slide 62"><img src="slides/slide-062.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="62" aria-label="Go to slide 63"><img src="slides/slide-063.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="63" aria-label="Go to slide 64"><img src="slides/slide-064.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="64" aria-label="Go to slide 65"><img src="slides/slide-065.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="65" aria-label="Go to slide 66"><img src="slides/slide-066.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="66" aria-label="Go to slide 67"><img src="slides/slide-067.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="67" aria-label="Go to slide 68"><img src="slides/slide-068.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="68" aria-label="Go to slide 69"><img src="slides/slide-069.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="69" aria-label="Go to slide 70"><img src="slides/slide-070.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="70" aria-label="Go to slide 71"><img src="slides/slide-071.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="71" aria-label="Go to slide 72"><img src="slides/slide-072.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="72" aria-label="Go to slide 73"><img src="slides/slide-073.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="73" aria-label="Go to slide 74"><img src="slides/slide-074.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="74" aria-label="Go to slide 75"><img src="slides/slide-075.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="75" aria-label="Go to slide 76"><img src="slides/slide-076.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="76" aria-label="Go to slide 77"><img src="slides/slide-077.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="77" aria-label="Go to slide 78"><img src="slides/slide-078.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="78" aria-label="Go to slide 79"><img src="slides/slide-079.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="79" aria-label="Go to slide 80"><img src="slides/slide-080.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="80" aria-label="Go to slide 81"><img src="slides/slide-081.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="81" aria-label="Go to slide 82"><img src="slides/slide-082.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="82" aria-label="Go to slide 83"><img src="slides/slide-083.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="83" aria-label="Go to slide 84"><img src="slides/slide-084.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="84" aria-label="Go to slide 85"><img src="slides/slide-085.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="85" aria-label="Go to slide 86"><img src="slides/slide-086.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="86" aria-label="Go to slide 87"><img src="slides/slide-087.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="87" aria-label="Go to slide 88"><img src="slides/slide-088.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="88" aria-label="Go to slide 89"><img src="slides/slide-089.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="89" aria-label="Go to slide 90"><img src="slides/slide-090.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="90" aria-label="Go to slide 91"><img src="slides/slide-091.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="91" aria-label="Go to slide 92"><img src="slides/slide-092.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="92" aria-label="Go to slide 93"><img src="slides/slide-093.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="93" aria-label="Go to slide 94"><img src="slides/slide-094.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="94" aria-label="Go to slide 95"><img src="slides/slide-095.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="95" aria-label="Go to slide 96"><img src="slides/slide-096.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="96" aria-label="Go to slide 97"><img src="slides/slide-097.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="97" aria-label="Go to slide 98"><img src="slides/slide-098.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="98" aria-label="Go to slide 99"><img src="slides/slide-099.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="99" aria-label="Go to slide 100"><img src="slides/slide-100.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="100" aria-label="Go to slide 101"><img src="slides/slide-101.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="101" aria-label="Go to slide 102"><img src="slides/slide-102.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="102" aria-label="Go to slide 103"><img src="slides/slide-103.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="103" aria-label="Go to slide 104"><img src="slides/slide-104.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="104" aria-label="Go to slide 105"><img src="slides/slide-105.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="105" aria-label="Go to slide 106"><img src="slides/slide-106.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="106" aria-label="Go to slide 107"><img src="slides/slide-107.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="107" aria-label="Go to slide 108"><img src="slides/slide-108.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="108" aria-label="Go to slide 109"><img src="slides/slide-109.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="109" aria-label="Go to slide 110"><img src="slides/slide-110.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="110" aria-label="Go to slide 111"><img src="slides/slide-111.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="111" aria-label="Go to slide 112"><img src="slides/slide-112.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="112" aria-label="Go to slide 113"><img src="slides/slide-113.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="113" aria-label="Go to slide 114"><img src="slides/slide-114.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="114" aria-label="Go to slide 115"><img src="slides/slide-115.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="115" aria-label="Go to slide 116"><img src="slides/slide-116.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="116" aria-label="Go to slide 117"><img src="slides/slide-117.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="117" aria-label="Go to slide 118"><img src="slides/slide-118.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="118" aria-label="Go to slide 119"><img src="slides/slide-119.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="119" aria-label="Go to slide 120"><img src="slides/slide-120.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="120" aria-label="Go to slide 121"><img src="slides/slide-121.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="121" aria-label="Go to slide 122"><img src="slides/slide-122.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="122" aria-label="Go to slide 123"><img src="slides/slide-123.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="123" aria-label="Go to slide 124"><img src="slides/slide-124.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="124" aria-label="Go to slide 125"><img src="slides/slide-125.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="125" aria-label="Go to slide 126"><img src="slides/slide-126.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="126" aria-label="Go to slide 127"><img src="slides/slide-127.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="127" aria-label="Go to slide 128"><img src="slides/slide-128.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="128" aria-label="Go to slide 129"><img src="slides/slide-129.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="129" aria-label="Go to slide 130"><img src="slides/slide-130.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="130" aria-label="Go to slide 131"><img src="slides/slide-131.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="131" aria-label="Go to slide 132"><img src="slides/slide-132.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="132" aria-label="Go to slide 133"><img src="slides/slide-133.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="133" aria-label="Go to slide 134"><img src="slides/slide-134.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="134" aria-label="Go to slide 135"><img src="slides/slide-135.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="135" aria-label="Go to slide 136"><img src="slides/slide-136.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="136" aria-label="Go to slide 137"><img src="slides/slide-137.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="137" aria-label="Go to slide 138"><img src="slides/slide-138.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="138" aria-label="Go to slide 139"><img src="slides/slide-139.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="139" aria-label="Go to slide 140"><img src="slides/slide-140.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="140" aria-label="Go to slide 141"><img src="slides/slide-141.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="141" aria-label="Go to slide 142"><img src="slides/slide-142.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="142" aria-label="Go to slide 143"><img src="slides/slide-143.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="143" aria-label="Go to slide 144"><img src="slides/slide-144.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="144" aria-label="Go to slide 145"><img src="slides/slide-145.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="145" aria-label="Go to slide 146"><img src="slides/slide-146.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="146" aria-label="Go to slide 147"><img src="slides/slide-147.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="147" aria-label="Go to slide 148"><img src="slides/slide-148.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="148" aria-label="Go to slide 149"><img src="slides/slide-149.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="149" aria-label="Go to slide 150"><img src="slides/slide-150.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="150" aria-label="Go to slide 151"><img src="slides/slide-151.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="151" aria-label="Go to slide 152"><img src="slides/slide-152.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="152" aria-label="Go to slide 153"><img src="slides/slide-153.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="153" aria-label="Go to slide 154"><img src="slides/slide-154.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="154" aria-label="Go to slide 155"><img src="slides/slide-155.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="155" aria-label="Go to slide 156"><img src="slides/slide-156.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="156" aria-label="Go to slide 157"><img src="slides/slide-157.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="157" aria-label="Go to slide 158"><img src="slides/slide-158.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="158" aria-label="Go to slide 159"><img src="slides/slide-159.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="159" aria-label="Go to slide 160"><img src="slides/slide-160.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="160" aria-label="Go to slide 161"><img src="slides/slide-161.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="161" aria-label="Go to slide 162"><img src="slides/slide-162.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="162" aria-label="Go to slide 163"><img src="slides/slide-163.jpg" alt="" loading="lazy" /></button>
+        <button class="thumb" type="button" data-index="163" aria-label="Go to slide 164"><img src="slides/slide-164.jpg" alt="" loading="lazy" /></button>
+      </div>
+    </section>
+  </main>
+  <script>
+    const slides = ["slides/slide-001.jpg", "slides/slide-002.jpg", "slides/slide-003.jpg", "slides/slide-004.jpg", "slides/slide-005.jpg", "slides/slide-006.jpg", "slides/slide-007.jpg", "slides/slide-008.jpg", "slides/slide-009.jpg", "slides/slide-010.jpg", "slides/slide-011.jpg", "slides/slide-012.jpg", "slides/slide-013.jpg", "slides/slide-014.jpg", "slides/slide-015.jpg", "slides/slide-016.jpg", "slides/slide-017.jpg", "slides/slide-018.jpg", "slides/slide-019.jpg", "slides/slide-020.jpg", "slides/slide-021.jpg", "slides/slide-022.jpg", "slides/slide-023.jpg", "slides/slide-024.jpg", "slides/slide-025.jpg", "slides/slide-026.jpg", "slides/slide-027.jpg", "slides/slide-028.jpg", "slides/slide-029.jpg", "slides/slide-030.jpg", "slides/slide-031.jpg", "slides/slide-032.jpg", "slides/slide-033.jpg", "slides/slide-034.jpg", "slides/slide-035.jpg", "slides/slide-036.jpg", "slides/slide-037.jpg", "slides/slide-038.jpg", "slides/slide-039.jpg", "slides/slide-040.jpg", "slides/slide-041.jpg", "slides/slide-042.jpg", "slides/slide-043.jpg", "slides/slide-044.jpg", "slides/slide-045.jpg", "slides/slide-046.jpg", "slides/slide-047.jpg", "slides/slide-048.jpg", "slides/slide-049.jpg", "slides/slide-050.jpg", "slides/slide-051.jpg", "slides/slide-052.jpg", "slides/slide-053.jpg", "slides/slide-054.jpg", "slides/slide-055.jpg", "slides/slide-056.jpg", "slides/slide-057.jpg", "slides/slide-058.jpg", "slides/slide-059.jpg", "slides/slide-060.jpg", "slides/slide-061.jpg", "slides/slide-062.jpg", "slides/slide-063.jpg", "slides/slide-064.jpg", "slides/slide-065.jpg", "slides/slide-066.jpg", "slides/slide-067.jpg", "slides/slide-068.jpg", "slides/slide-069.jpg", "slides/slide-070.jpg", "slides/slide-071.jpg", "slides/slide-072.jpg", "slides/slide-073.jpg", "slides/slide-074.jpg", "slides/slide-075.jpg", "slides/slide-076.jpg", "slides/slide-077.jpg", "slides/slide-078.jpg", "slides/slide-079.jpg", "slides/slide-080.jpg", "slides/slide-081.jpg", "slides/slide-082.jpg", "slides/slide-083.jpg", "slides/slide-084.jpg", "slides/slide-085.jpg", "slides/slide-086.jpg", "slides/slide-087.jpg", "slides/slide-088.jpg", "slides/slide-089.jpg", "slides/slide-090.jpg", "slides/slide-091.jpg", "slides/slide-092.jpg", "slides/slide-093.jpg", "slides/slide-094.jpg", "slides/slide-095.jpg", "slides/slide-096.jpg", "slides/slide-097.jpg", "slides/slide-098.jpg", "slides/slide-099.jpg", "slides/slide-100.jpg", "slides/slide-101.jpg", "slides/slide-102.jpg", "slides/slide-103.jpg", "slides/slide-104.jpg", "slides/slide-105.jpg", "slides/slide-106.jpg", "slides/slide-107.jpg", "slides/slide-108.jpg", "slides/slide-109.jpg", "slides/slide-110.jpg", "slides/slide-111.jpg", "slides/slide-112.jpg", "slides/slide-113.jpg", "slides/slide-114.jpg", "slides/slide-115.jpg", "slides/slide-116.jpg", "slides/slide-117.jpg", "slides/slide-118.jpg", "slides/slide-119.jpg", "slides/slide-120.jpg", "slides/slide-121.jpg", "slides/slide-122.jpg", "slides/slide-123.jpg", "slides/slide-124.jpg", "slides/slide-125.jpg", "slides/slide-126.jpg", "slides/slide-127.jpg", "slides/slide-128.jpg", "slides/slide-129.jpg", "slides/slide-130.jpg", "slides/slide-131.jpg", "slides/slide-132.jpg", "slides/slide-133.jpg", "slides/slide-134.jpg", "slides/slide-135.jpg", "slides/slide-136.jpg", "slides/slide-137.jpg", "slides/slide-138.jpg", "slides/slide-139.jpg", "slides/slide-140.jpg", "slides/slide-141.jpg", "slides/slide-142.jpg", "slides/slide-143.jpg", "slides/slide-144.jpg", "slides/slide-145.jpg", "slides/slide-146.jpg", "slides/slide-147.jpg", "slides/slide-148.jpg", "slides/slide-149.jpg", "slides/slide-150.jpg", "slides/slide-151.jpg", "slides/slide-152.jpg", "slides/slide-153.jpg", "slides/slide-154.jpg", "slides/slide-155.jpg", "slides/slide-156.jpg", "slides/slide-157.jpg", "slides/slide-158.jpg", "slides/slide-159.jpg", "slides/slide-160.jpg", "slides/slide-161.jpg", "slides/slide-162.jpg", "slides/slide-163.jpg", "slides/slide-164.jpg"];
+    const title = "Summer party";
+    let current = 0;
+    const slideImage = document.getElementById('slideImage');
+    const counter = document.getElementById('counter');
+    const thumbs = Array.from(document.querySelectorAll('.thumb'));
+    const prevButton = document.getElementById('prevButton');
+    const nextButton = document.getElementById('nextButton');
+    const firstButton = document.getElementById('firstButton');
+    const lastButton = document.getElementById('lastButton');
+    const fullscreenButton = document.getElementById('fullscreenButton');
+    const frame = document.getElementById('frame');
+
+    function show(index) {
+      current = Math.max(0, Math.min(slides.length - 1, index));
+      slideImage.src = slides[current];
+      slideImage.alt = `${title} slide ${current + 1}`;
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      prevButton.disabled = current === 0;
+      firstButton.disabled = current === 0;
+      nextButton.disabled = current === slides.length - 1;
+      lastButton.disabled = current === slides.length - 1;
+      thumbs.forEach((thumb, i) => thumb.classList.toggle('active', i === current));
+      thumbs[current]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    }
+
+    prevButton.addEventListener('click', () => show(current - 1));
+    nextButton.addEventListener('click', () => show(current + 1));
+    firstButton.addEventListener('click', () => show(0));
+    lastButton.addEventListener('click', () => show(slides.length - 1));
+    thumbs.forEach((thumb) => thumb.addEventListener('click', () => show(Number(thumb.dataset.index))));
+    fullscreenButton.addEventListener('click', async () => {
+      if (!document.fullscreenElement) { await frame.requestFullscreen?.(); }
+      else { await document.exitFullscreen?.(); }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') show(current - 1);
+      if (event.key === 'ArrowRight' || event.key === ' ') { event.preventDefault(); show(current + 1); }
+      if (event.key === 'Home') show(0);
+      if (event.key === 'End') show(slides.length - 1);
+    });
+    show(0);
+  </script>
+</body>
+</html>

@@ -191,6 +191,12 @@ Claude will read the existing file, make the changes, commit, and push.
   under `/presentations/<slug>/slides/` and build a self-contained viewer at
   `/presentations/<slug>/index.html`. Do not commit the source PowerPoint files
   unless Isak explicitly asks for downloads.
+- For `/millionaire/`, cards may link either to an interactive game page or to a
+  static PowerPoint-style viewer rendered from the original Millionaire deck.
+  Use `/millionaire/<event-slug>/slides/` for rendered slide images and keep the
+  viewer self-contained. Do not commit source PowerPoint files. If a card's
+  source deck cannot be found, keep the card visibly pending instead of making
+  up a presentation.
 - For a meeting-recording-to-presentation request, treat the transcript,
   recording, chat export, notes, or agenda as source material. Extract the
   actual conclusions first: decisions, rationale, open questions, action items,
