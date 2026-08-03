@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vipps Millionaire | 16 April 2026</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --background: #080807;
+      --panel: #151513;
+      --panel-strong: #211f1a;
+      --ink: #fff9ed;
+      --muted: #b9b0a1;
+      --line: #3a352e;
+      --vipps: #ff5b24;
+      --gold: #e4bd5a;
+      --green: #35d07f;
+      --red: #ff6868;
+      --blue: #182b76;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255, 91, 36, 0.24), transparent 26rem),
+        linear-gradient(135deg, #080807 0%, #18140e 45%, #050506 100%);
+      color: var(--ink);
+      font-family: "Inter", sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 22px 0 32px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 54px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(255, 91, 36, 0.32);
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      line-height: 1.05;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    .status-pill {
+      border: 1px solid rgba(228, 189, 90, 0.45);
+      color: var(--gold);
+      background: rgba(228, 189, 90, 0.1);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .game {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 250px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .stage,
+    .ladder {
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      background: linear-gradient(180deg, rgba(27, 26, 23, 0.95), rgba(10, 10, 9, 0.95));
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+    }
+
+    .stage {
+      min-height: 690px;
+      display: grid;
+      grid-template-rows: auto minmax(170px, 1fr) auto auto;
+      overflow: hidden;
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .meter {
+      width: min(360px, 44%);
+      min-width: 170px;
+      align-self: center;
+    }
+
+    .meter-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--vipps), var(--gold));
+      border-radius: inherit;
+      transition: width 0.24s ease;
+    }
+
+    .kicker {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .stage-main {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px 20px;
+      isolation: isolate;
+    }
+
+    .stage-main::before {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border: 1px solid rgba(228, 189, 90, 0.22);
+      border-radius: 50%;
+      transform: rotate(-4deg);
+      z-index: -1;
+    }
+
+    .stage-main::after {
+      content: "";
+      position: absolute;
+      width: min(44vw, 430px);
+      aspect-ratio: 1;
+      border: 2px dashed rgba(255, 91, 36, 0.2);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .emblem {
+      width: min(320px, 60vw);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background:
+        linear-gradient(135deg, rgba(255, 91, 36, 0.9), rgba(228, 189, 90, 0.92)),
+        #ff5b24;
+      box-shadow:
+        inset 0 0 0 12px rgba(8, 8, 7, 0.62),
+        inset 0 0 0 15px rgba(255, 255, 255, 0.2),
+        0 20px 70px rgba(255, 91, 36, 0.26);
+    }
+
+    .emblem-inner {
+      width: 72%;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #080807;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .emblem-word {
+      display: block;
+      font-size: 1.6rem;
+      line-height: 0.95;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .emblem-small {
+      display: block;
+      margin-top: 8px;
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .question-wrap {
+      padding: 0 18px 18px;
+    }
+
+    .question {
+      min-height: 84px;
+      display: grid;
+      align-items: center;
+      padding: 20px 24px;
+      border: 1px solid rgba(228, 189, 90, 0.36);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #172765, #07133f);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      text-align: center;
+      font-size: 1.45rem;
+      font-weight: 850;
+      line-height: 1.18;
+      overflow-wrap: anywhere;
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 18px 18px;
+    }
+
+    .answer {
+      min-height: 68px;
+      padding: 14px 18px;
+      border: 1px solid rgba(228, 189, 90, 0.4);
+      border-radius: 8px;
+      color: var(--ink);
+      background: linear-gradient(180deg, #182b76, #081748);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+      text-align: left;
+      font-weight: 800;
+      line-height: 1.16;
+      cursor: pointer;
+      overflow-wrap: anywhere;
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+
+    .answer:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: var(--gold);
+    }
+
+    .answer:disabled {
+      cursor: default;
+      opacity: 0.74;
+    }
+
+    .answer.hidden-answer {
+      color: transparent;
+      text-shadow: none;
+      border-color: rgba(255, 255, 255, 0.09);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .answer.removed {
+      color: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.08);
+      text-decoration: line-through;
+    }
+
+    .answer.selected {
+      border-color: var(--gold);
+      background: linear-gradient(180deg, #72541a, #332004);
+    }
+
+    .answer.locked {
+      border-color: var(--vipps);
+      background: linear-gradient(180deg, #8f3517, #43190b);
+    }
+
+    .answer.correct {
+      color: #06150d;
+      border-color: rgba(53, 208, 127, 0.85);
+      background: linear-gradient(180deg, #45e18d, #1eb869);
+    }
+
+    .answer.wrong {
+      border-color: rgba(255, 104, 104, 0.85);
+      background: linear-gradient(180deg, #8d2424, #430909);
+    }
+
+    .control-strip {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px 18px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .actions,
+    .lifelines {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .control-button,
+    .lifeline {
+      min-height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      color: var(--ink);
+      background: var(--panel-strong);
+      padding: 9px 12px;
+      font-size: 0.86rem;
+      font-weight: 850;
+      cursor: pointer;
+      transition: background 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+    }
+
+    .control-button:hover:not(:disabled),
+    .lifeline:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: var(--vipps);
+    }
+
+    .control-button.primary {
+      background: var(--vipps);
+      border-color: var(--vipps);
+      color: #170802;
+    }
+
+    .control-button:disabled,
+    .lifeline:disabled {
+      cursor: default;
+      opacity: 0.46;
+    }
+
+    .lifeline.used {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .message {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+      min-height: 1.4em;
+      overflow-wrap: anywhere;
+    }
+
+    .ladder {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .score-card {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+      padding: 14px;
+    }
+
+    .score-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .score-card strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.35rem;
+      line-height: 1.05;
+      color: var(--gold);
+      overflow-wrap: anywhere;
+    }
+
+    .prizes {
+      display: grid;
+      gap: 6px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .prize {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      align-items: center;
+      min-height: 30px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 5px 8px;
+    }
+
+    .prize.current {
+      color: #150901;
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .prize.cleared {
+      color: var(--green);
+    }
+
+    .prize.safe {
+      color: var(--ink);
+      border-color: rgba(255, 91, 36, 0.35);
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      color: rgba(255, 249, 237, 0.56);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .game {
+        grid-template-columns: 1fr;
+      }
+
+      .stage {
+        min-height: 660px;
+      }
+
+      .prizes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        width: min(100% - 20px, 1180px);
+        padding-top: 12px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .status-pill {
+        white-space: normal;
+      }
+
+      .stage {
+        min-height: 650px;
+      }
+
+      .stage-header,
+      .control-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .stage-header {
+        flex-direction: column;
+      }
+
+      .meter {
+        width: 100%;
+      }
+
+      .emblem {
+        width: min(250px, 76vw);
+      }
+
+      .question {
+        min-height: 106px;
+        padding: 18px 16px;
+        font-size: 1.12rem;
+      }
+
+      .answers {
+        grid-template-columns: 1fr;
+      }
+
+      .answer {
+        min-height: 62px;
+      }
+
+      .prizes {
+        grid-template-columns: 1fr;
+      }
+
+      .footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="assets/vipps-smile.gif" alt="Vipps smile" />
+        <div>
+          <h1>Vipps Millionaire</h1>
+          <span>Aarhus · 16 April 2026</span>
+        </div>
+      </div>
+      <div class="status-pill" id="statusPill">Question 1 of 17</div>
+    </header>
+
+    <section class="game" aria-label="Vipps Millionaire game">
+      <div class="stage">
+        <div class="stage-header">
+          <div>
+            <div class="kicker" id="roundLabel">Opening Round</div>
+            <div class="message" id="message" aria-live="polite"></div>
+          </div>
+          <div class="meter" aria-hidden="true">
+            <div class="meter-track">
+              <div class="meter-fill" id="meterFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stage-main">
+          <div class="emblem" aria-hidden="true">
+            <div class="emblem-inner">
+              <span class="emblem-word">Vipps</span>
+              <span class="emblem-word">Millionaire</span>
+              <span class="emblem-small">Data and Insights</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-wrap">
+          <div class="question" id="questionText"></div>
+        </div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="control-strip">
+          <div>
+            <div class="lifelines" aria-label="Lifelines">
+              <button class="lifeline" type="button" id="fiftyButton">Fifty fifty</button>
+              <button class="lifeline" type="button" id="audienceButton">Audience poll</button>
+              <button class="lifeline" type="button" id="phoneButton">Phone helper</button>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="control-button" type="button" id="resetButton">Reset</button>
+            <button class="control-button" type="button" id="revealButton">Reveal option</button>
+            <button class="control-button" type="button" id="lockButton">Lock answer</button>
+            <button class="control-button primary" type="button" id="answerButton">Show answer</button>
+            <button class="control-button" type="button" id="nextButton">Next</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="ladder" aria-label="Prize ladder">
+        <div class="score-card">
+          <span>Current Prize</span>
+          <strong id="currentPrize">100 points</strong>
+        </div>
+        <div class="score-card">
+          <span>Correct</span>
+          <strong id="correctCount">0 of 17</strong>
+        </div>
+        <ol class="prizes" id="prizes"></ol>
+      </aside>
+    </section>
+
+    <footer class="footer">
+      <span>Built from the Vipps Aarhus PowerPoint deck.</span>
+      <span>vipps.isakrs.com/millionaire/2026-04-16</span>
+    </footer>
+  </main>
+
+  <script>
+    const letters = ["A", "B", "C", "D"];
+    const prizeLadder = [
+      "100 points",
+      "200 points",
+      "300 points",
+      "500 points",
+      "1,000 points",
+      "2,000 points",
+      "4,000 points",
+      "8,000 points",
+      "16,000 points",
+      "32,000 points",
+      "64,000 points",
+      "125,000 points",
+      "250,000 points",
+      "500,000 points",
+      "750,000 points",
+      "900,000 points",
+      "1,000,000 points"
+    ];
+
+    const questions = [
+      {
+        question: "What is the budget for the break-even party?",
+        answers: ["600,000 Norwegian kroner", "1.5 million Norwegian kroner", "6 million Norwegian kroner", "10 million Norwegian kroner"],
+        correct: 3
+      },
+      {
+        question: "How many developers are we?",
+        answers: ["184", "312", "400", "Only Thomas Townsend"],
+        correct: 0
+      },
+      {
+        question: "Who is the biggest contributor to Vipps MobilePay?",
+        answers: ["Hans Petter Eide", "Kim de Vos", "Jon Kjennbakken", "Eivind Uggedal"],
+        correct: 1
+      },
+      {
+        question: "Where should you go if you have questions about data?",
+        answers: ["#help-data-analytics", "Databricks - Dataverse Genie", "Jørgen the Great", "Direct message someone in the data team"],
+        correct: 0
+      },
+      {
+        question: "Where do we control who has access to which data?",
+        answers: ["vmp-data-platform-config", "Databricks - Dataverse Genie", "Jørgen the Great", "Google form or Typeform"],
+        correct: 0
+      },
+      {
+        question: "What is our biggest product by revenue?",
+        answers: ["Ecommerce", "Recurring", "VM Number", "Person-to-person"],
+        correct: 0
+      },
+      {
+        question: "What is our second biggest product by revenue?",
+        answers: ["Ecommerce", "Recurring", "VM Number", "Person-to-person"],
+        correct: 2
+      },
+      {
+        question: "How much were Vipps users scammed for during April 2024?",
+        answers: ["6,400 Norwegian kroner", "64,000 Norwegian kroner", "640,000 Norwegian kroner", "6,400,000 Norwegian kroner"],
+        correct: 3
+      },
+      {
+        question: "The year after, during April 2025, how much were Vipps users scammed for?",
+        answers: ["6,400 Norwegian kroner", "64,000 Norwegian kroner", "640,000 Norwegian kroner", "6,400,000 Norwegian kroner"],
+        correct: 1
+      },
+      {
+        question: "Who has uploaded the most custom Slack emojis?",
+        answers: ["Morten Kjelsø", "Olja Pehilj", "Marius Aure", "Peter Gregersen"],
+        correct: 1
+      },
+      {
+        question: "How long did it take Vipps to reach one million users?",
+        answers: ["2 weeks", "2 months", "5 months", "11 months"],
+        correct: 2
+      },
+      {
+        question: "Who ran the fastest on Holmenkollstafetten?",
+        answers: ["Stian Ruud", "Sondre Hille", "Asbjørn Moe", "Andreas Saastad"],
+        correct: 1
+      },
+      {
+        question: "Where can you explore our data?",
+        answers: ["Databricks - Dataverse Genie", "Direct message Tonje Blaauw", "Call Andreas Saastad", "Hug someone in the data team"],
+        correct: 0
+      },
+      {
+        question: "What is the Data and Insights top focus item?",
+        answers: ["Make things very, very easy", "Make a development, test, production setup", "Speed up our scripts", "Hug someone in the data team"],
+        correct: 0
+      },
+      {
+        question: "Who has the most viewed Power BI application in May?",
+        answers: ["Jørgen the Great", "Andreas Money Saastad", "Nina Salvesen the Queen", "Rune Feeling Lucky Garborg"],
+        correct: 0
+      },
+      {
+        question: "Who is Rune Garborg's secret helper?",
+        answers: ["He obviously does not have one", "Thomas Townsend", "Marius the Meme Machine", "Christina The Fixer Amble"],
+        correct: 3
+      },
+      {
+        question: "Which Nobel Prize is awarded in Norway?",
+        answers: ["Literature", "Economics", "Peace", "Medicine"],
+        correct: 2
+      }
+    ];
+
+    const state = {
+      questionIndex: 0,
+      revealedAnswers: 0,
+      selectedAnswer: null,
+      lockedAnswer: null,
+      answerShown: false,
+      correctAnswers: 0,
+      awardedQuestions: new Set(),
+      removedAnswers: new Set(),
+      usedLifelines: new Set(),
+      message: ""
+    };
+
+    const elements = {
+      statusPill: document.getElementById("statusPill"),
+      roundLabel: document.getElementById("roundLabel"),
+      message: document.getElementById("message"),
+      meterFill: document.getElementById("meterFill"),
+      questionText: document.getElementById("questionText"),
+      answers: document.getElementById("answers"),
+      currentPrize: document.getElementById("currentPrize"),
+      correctCount: document.getElementById("correctCount"),
+      prizes: document.getElementById("prizes"),
+      fiftyButton: document.getElementById("fiftyButton"),
+      audienceButton: document.getElementById("audienceButton"),
+      phoneButton: document.getElementById("phoneButton"),
+      resetButton: document.getElementById("resetButton"),
+      revealButton: document.getElementById("revealButton"),
+      lockButton: document.getElementById("lockButton"),
+      answerButton: document.getElementById("answerButton"),
+      nextButton: document.getElementById("nextButton")
+    };
+
+    function formatRoundLabel() {
+      if (state.questionIndex < 5) return "Opening Round";
+      if (state.questionIndex < 11) return "Middle Round";
+      if (state.questionIndex < 15) return "Final Round";
+      return "Millionaire Round";
+    }
+
+    function render() {
+      const question = questions[state.questionIndex];
+      const progress = ((state.questionIndex + 1) / questions.length) * 100;
+
+      elements.statusPill.textContent = `Question ${state.questionIndex + 1} of ${questions.length}`;
+      elements.roundLabel.textContent = formatRoundLabel();
+      elements.message.textContent = state.message;
+      elements.meterFill.style.width = `${progress}%`;
+      elements.questionText.textContent = question.question;
+      elements.currentPrize.textContent = prizeLadder[state.questionIndex];
+      elements.correctCount.textContent = `${state.correctAnswers} of ${questions.length}`;
+
+      elements.answers.innerHTML = "";
+      question.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        const isRevealed = index < state.revealedAnswers;
+        const isRemoved = state.removedAnswers.has(index);
+        button.type = "button";
+        button.className = "answer";
+        button.textContent = isRevealed ? `${letters[index]}. ${answer}` : `${letters[index]}.`;
+        button.disabled = !isRevealed || isRemoved || state.answerShown;
+        button.setAttribute("aria-pressed", state.selectedAnswer === index ? "true" : "false");
+
+        if (!isRevealed) button.classList.add("hidden-answer");
+        if (isRemoved) button.classList.add("removed");
+        if (state.selectedAnswer === index) button.classList.add("selected");
+        if (state.lockedAnswer === index) button.classList.add("locked");
+        if (state.answerShown && index === question.correct) button.classList.add("correct");
+        if (state.answerShown && state.lockedAnswer === index && index !== question.correct) button.classList.add("wrong");
+
+        button.addEventListener("click", () => selectAnswer(index));
+        elements.answers.appendChild(button);
+      });
+
+      renderPrizes();
+      renderControls();
+      renderLifelines();
+    }
+
+    function renderPrizes() {
+      elements.prizes.innerHTML = "";
+      prizeLadder
+        .map((value, index) => ({ value, index }))
+        .reverse()
+        .forEach(({ value, index }) => {
+          const item = document.createElement("li");
+          item.className = "prize";
+          if (index === state.questionIndex) item.classList.add("current");
+          if (index < state.questionIndex) item.classList.add("cleared");
+          if ([4, 9, 14, 16].includes(index)) item.classList.add("safe");
+          item.innerHTML = `<span>${index + 1}</span><span>${value}</span>`;
+          elements.prizes.appendChild(item);
+        });
+    }
+
+    function renderControls() {
+      const allAnswersRevealed = state.revealedAnswers >= 4;
+      elements.revealButton.disabled = allAnswersRevealed || state.answerShown;
+      elements.revealButton.textContent = allAnswersRevealed ? "All options revealed" : `Reveal ${letters[state.revealedAnswers]}`;
+      elements.lockButton.disabled = state.selectedAnswer === null || state.answerShown;
+      elements.answerButton.disabled = !allAnswersRevealed || state.answerShown;
+      elements.nextButton.disabled = !state.answerShown;
+      elements.nextButton.textContent = state.questionIndex === questions.length - 1 ? "Finish" : "Next";
+    }
+
+    function renderLifelines() {
+      elements.fiftyButton.disabled = state.usedLifelines.has("fifty") || state.answerShown;
+      elements.audienceButton.disabled = state.usedLifelines.has("audience") || state.answerShown;
+      elements.phoneButton.disabled = state.usedLifelines.has("phone") || state.answerShown;
+      elements.fiftyButton.classList.toggle("used", state.usedLifelines.has("fifty"));
+      elements.audienceButton.classList.toggle("used", state.usedLifelines.has("audience"));
+      elements.phoneButton.classList.toggle("used", state.usedLifelines.has("phone"));
+    }
+
+    function selectAnswer(index) {
+      if (state.removedAnswers.has(index) || state.answerShown || index >= state.revealedAnswers) return;
+      state.selectedAnswer = index;
+      state.lockedAnswer = null;
+      state.message = `${letters[index]} selected`;
+      render();
+    }
+
+    function revealOption() {
+      if (state.revealedAnswers >= 4 || state.answerShown) return;
+      state.revealedAnswers += 1;
+      state.message = state.revealedAnswers === 4 ? "All options are on the board." : `${letters[state.revealedAnswers - 1]} revealed.`;
+      render();
+    }
+
+    function lockAnswer() {
+      if (state.selectedAnswer === null || state.answerShown) return;
+      state.lockedAnswer = state.selectedAnswer;
+      state.message = `${letters[state.lockedAnswer]} locked.`;
+      render();
+    }
+
+    function showAnswer() {
+      const question = questions[state.questionIndex];
+      if (state.answerShown) return;
+      state.revealedAnswers = 4;
+      state.answerShown = true;
+
+      if (state.lockedAnswer === question.correct && !state.awardedQuestions.has(state.questionIndex)) {
+        state.correctAnswers += 1;
+        state.awardedQuestions.add(state.questionIndex);
+      }
+
+      if (state.lockedAnswer === null) {
+        state.message = `Correct answer: ${letters[question.correct]}.`;
+      } else if (state.lockedAnswer === question.correct) {
+        state.message = `${letters[question.correct]} is correct.`;
+      } else {
+        state.message = `${letters[state.lockedAnswer]} is wrong. Correct answer: ${letters[question.correct]}.`;
+      }
+
+      render();
+    }
+
+    function nextQuestion() {
+      if (!state.answerShown) return;
+
+      if (state.questionIndex === questions.length - 1) {
+        state.message = `Game complete. Final score: ${state.correctAnswers} of ${questions.length}.`;
+        render();
+        return;
+      }
+
+      state.questionIndex += 1;
+      state.revealedAnswers = 0;
+      state.selectedAnswer = null;
+      state.lockedAnswer = null;
+      state.answerShown = false;
+      state.removedAnswers.clear();
+      state.message = "";
+      render();
+    }
+
+    function resetGame() {
+      state.questionIndex = 0;
+      state.revealedAnswers = 0;
+      state.selectedAnswer = null;
+      state.lockedAnswer = null;
+      state.answerShown = false;
+      state.correctAnswers = 0;
+      state.awardedQuestions.clear();
+      state.removedAnswers.clear();
+      state.usedLifelines.clear();
+      state.message = "";
+      render();
+    }
+
+    function useFiftyFifty() {
+      if (state.usedLifelines.has("fifty") || state.answerShown) return;
+      const correct = questions[state.questionIndex].correct;
+      const wrongAnswers = [0, 1, 2, 3].filter((index) => index !== correct);
+      state.revealedAnswers = 4;
+      state.removedAnswers = new Set(wrongAnswers.slice(0, 2));
+      if (state.removedAnswers.has(state.selectedAnswer)) {
+        state.selectedAnswer = null;
+        state.lockedAnswer = null;
+      }
+      state.usedLifelines.add("fifty");
+      state.message = "Two wrong answers removed.";
+      render();
+    }
+
+    function useAudience() {
+      if (state.usedLifelines.has("audience") || state.answerShown) return;
+      const correct = questions[state.questionIndex].correct;
+      const correctShare = 48 + ((state.questionIndex * 7) % 18);
+      const remaining = 100 - correctShare;
+      const shares = [0, 1, 2, 3].map((index) => index === correct ? correctShare : Math.floor(remaining / 3));
+      shares[(correct + 1) % 4] += 100 - shares.reduce((sum, value) => sum + value, 0);
+      state.usedLifelines.add("audience");
+      state.message = shares.map((value, index) => `${letters[index]} ${value}%`).join(" · ");
+      render();
+    }
+
+    function usePhone() {
+      if (state.usedLifelines.has("phone") || state.answerShown) return;
+      const correctLetter = letters[questions[state.questionIndex].correct];
+      const moods = ["calmly says", "is leaning toward", "would lock"];
+      state.usedLifelines.add("phone");
+      state.message = `Phone helper ${moods[state.questionIndex % moods.length]} ${correctLetter}.`;
+      render();
+    }
+
+    elements.revealButton.addEventListener("click", revealOption);
+    elements.lockButton.addEventListener("click", lockAnswer);
+    elements.answerButton.addEventListener("click", showAnswer);
+    elements.nextButton.addEventListener("click", nextQuestion);
+    elements.resetButton.addEventListener("click", resetGame);
+    elements.fiftyButton.addEventListener("click", useFiftyFifty);
+    elements.audienceButton.addEventListener("click", useAudience);
+    elements.phoneButton.addEventListener("click", usePhone);
+
+    render();
+  </script>
+</body>
+</html>
