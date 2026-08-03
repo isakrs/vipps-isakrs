@@ -157,6 +157,14 @@
       border-color: var(--gold);
     }
 
+    .sound-toggle.icon-button {
+      width: 46px;
+      min-width: 46px;
+      padding: 8px;
+      display: inline-grid;
+      place-items: center;
+    }
+
     .game {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 250px;
@@ -813,7 +821,73 @@
 
     .lifeline.used {
       color: var(--muted);
-      text-decoration: line-through;
+      position: relative;
+    }
+
+    .lifeline.used::after {
+      content: "";
+      position: absolute;
+      left: 9px;
+      right: 9px;
+      top: 50%;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transform: rotate(-24deg);
+    }
+
+    .icon-button {
+      width: 44px;
+      min-width: 44px;
+      aspect-ratio: 1;
+      display: inline-grid;
+      place-items: center;
+      padding: 9px;
+    }
+
+    .control-button.shot-action {
+      width: auto;
+      min-width: 44px;
+      padding-inline: 10px;
+    }
+
+    .ui-icon {
+      width: 22px;
+      height: 22px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.25;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    .lifeline .ui-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .button-badge {
+      position: absolute;
+      right: -5px;
+      bottom: -6px;
+      min-width: 17px;
+      height: 17px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(255, 249, 237, 0.26);
+      border-radius: 999px;
+      color: #170802;
+      background: var(--gold);
+      font-size: 0.66rem;
+      font-weight: 950;
+    }
+
+    .slide-actions .control-button.icon-button {
+      width: 52px;
+      min-width: 52px;
+      padding: 12px;
     }
 
     .message {
@@ -906,6 +980,7 @@
     }
 
     .button-content {
+      position: relative;
       min-width: 0;
       display: inline-flex;
       align-items: center;
@@ -1329,9 +1404,9 @@
         <div class="control-strip">
           <div>
             <div class="lifelines" aria-label="Lifelines">
-              <button class="lifeline" type="button" id="fiftyButton">Fifty fifty</button>
-              <button class="lifeline" type="button" id="audienceButton">Audience poll</button>
-              <button class="lifeline" type="button" id="phoneButton">Phone helper</button>
+              <button class="lifeline icon-button" type="button" id="fiftyButton" aria-label="Fifty fifty" title="Fifty fifty"></button>
+              <button class="lifeline icon-button" type="button" id="audienceButton" aria-label="Audience poll" title="Audience poll"></button>
+              <button class="lifeline icon-button" type="button" id="phoneButton" aria-label="Phone helper" title="Phone helper"></button>
             </div>
           </div>
           <div class="actions">
@@ -1466,6 +1541,114 @@
         </svg>
       `,
       Liquor: `<img src="${shotIconSource}" alt="" />`
+    };
+    const uiIcons = {
+      fifty: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="4" y="4" width="6" height="6" rx="1.5"></rect>
+          <rect x="14" y="4" width="6" height="6" rx="1.5"></rect>
+          <rect x="4" y="14" width="6" height="6" rx="1.5"></rect>
+          <rect x="14" y="14" width="6" height="6" rx="1.5"></rect>
+          <path d="M5 5l4 4M9 5L5 9M15 15l4 4M19 15l-4 4"></path>
+        </svg>
+      `,
+      audience: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 19V9"></path>
+          <path d="M12 19V5"></path>
+          <path d="M19 19v-7"></path>
+          <path d="M3 19h18"></path>
+        </svg>
+      `,
+      phone: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M22 16.92v2.1a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 3.3 2 2 0 0 1 4.11 1h2.1a2 2 0 0 1 2 1.72c.13.96.35 1.9.66 2.8a2 2 0 0 1-.45 2.11L7.5 8.55a16 16 0 0 0 7.95 7.95l.92-.92a2 2 0 0 1 2.11-.45c.9.31 1.84.53 2.8.66A2 2 0 0 1 22 16.92Z"></path>
+        </svg>
+      `,
+      reset: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+          <path d="M3 4v6h6"></path>
+        </svg>
+      `,
+      eye: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      `,
+      lock: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+        </svg>
+      `,
+      lockOff: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="5" y="10" width="14" height="10" rx="2"></rect>
+          <path d="M8 10V7a4 4 0 0 1 6.5-3.12"></path>
+          <path d="M3 3l18 18"></path>
+        </svg>
+      `,
+      check: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+      `,
+      answer: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M8 12.5 11 15l5-6"></path>
+        </svg>
+      `,
+      next: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 12h14"></path>
+          <path d="m13 6 6 6-6 6"></path>
+        </svg>
+      `,
+      play: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="m10 8 6 4-6 4Z"></path>
+        </svg>
+      `,
+      finish: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M5 21V4"></path>
+          <path d="M5 4h11l-1.5 4L16 12H5"></path>
+        </svg>
+      `,
+      volume: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 9v6h4l5 4V5L8 9H4Z"></path>
+          <path d="M16 9.5a4 4 0 0 1 0 5"></path>
+        </svg>
+      `,
+      volumeOn: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 9v6h4l5 4V5L8 9H4Z"></path>
+          <path d="M16 8a5 5 0 0 1 0 8"></path>
+          <path d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+        </svg>
+      `,
+      give: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="4" y="9" width="16" height="11" rx="2"></rect>
+          <path d="M4 13h16"></path>
+          <path d="M12 9v11"></path>
+          <path d="M12 9c-2.5 0-4-1-4-2.5A2.5 2.5 0 0 1 12 5c0 2.5 0 4 0 4Z"></path>
+          <path d="M12 9c2.5 0 4-1 4-2.5A2.5 2.5 0 0 0 12 5c0 2.5 0 4 0 4Z"></path>
+        </svg>
+      `,
+      users: `
+        <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="9" cy="8" r="3"></circle>
+          <path d="M3 20a6 6 0 0 1 12 0"></path>
+          <path d="M16 11a3 3 0 1 0 0-6"></path>
+          <path d="M18 20a5 5 0 0 0-3-4.6"></path>
+        </svg>
+      `
     };
     const hotSeatRules = [
       {
@@ -1824,9 +2007,14 @@
       return `${rule.title}: give ${rule.rewardShots} if correct, drink ${rule.penaltyShots} if wrong`;
     }
 
+    function shotLabel(count) {
+      const iconCount = count === "all" ? 9 : Number(count);
+      return count === "all" ? "shots for everyone" : `${iconCount} shot${iconCount === 1 ? "" : "s"}`;
+    }
+
     function shotIconMarkup(count, className = "") {
       const iconCount = count === "all" ? 9 : Number(count);
-      const label = count === "all" ? "shots for everyone" : `${iconCount} shot${iconCount === 1 ? "" : "s"}`;
+      const label = shotLabel(count);
       const icons = Array.from({ length: iconCount }, () => `<img src="${shotIconSource}" alt="" />`).join("");
       return `<span class="shot-strip ${className}" role="img" aria-label="${label}">${icons}</span>`;
     }
@@ -1850,13 +2038,39 @@
       `;
     }
 
-    function setButtonText(button, label) {
-      button.textContent = label;
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[character]));
+    }
+
+    function setIconButton(button, iconName, label, options = {}) {
+      const badge = options.badge ? `<span class="button-badge" aria-hidden="true">${escapeHtml(options.badge)}</span>` : "";
+      button.classList.add("icon-button");
+      button.classList.remove("shot-action");
+      button.innerHTML = `<span class="button-content">${uiIcons[iconName] || ""}${badge}</span>`;
+      button.setAttribute("aria-label", label);
+      button.title = label;
     }
 
     function setShotButton(button, label, count) {
-      const labelMarkup = label ? `<span>${label}</span>` : "";
-      button.innerHTML = `<span class="button-content">${labelMarkup}${shotIconMarkup(count)}</span>`;
+      const actionIcon = label === "Give" ? uiIcons.give : label === "Everyone" ? uiIcons.users : "";
+      const spokenLabel = label ? `${label} ${shotLabel(count)}` : shotLabel(count);
+      button.classList.remove("icon-button");
+      button.classList.add("shot-action");
+      button.innerHTML = `<span class="button-content">${actionIcon}${shotIconMarkup(count)}</span>`;
+      button.setAttribute("aria-label", spokenLabel);
+      button.title = spokenLabel;
+    }
+
+    function nextButtonIcon(label) {
+      if (label === "Finish") return "finish";
+      if (label === "Play on") return "play";
+      return "next";
     }
 
     function renderStatusMessage() {
@@ -2049,7 +2263,8 @@
       const button = document.createElement("button");
       button.type = "button";
       button.className = primary ? "control-button primary" : "control-button";
-      button.textContent = label;
+      const iconName = label === "Reset game" ? "reset" : nextButtonIcon(label);
+      setIconButton(button, iconName, label);
       return button;
     }
 
@@ -2149,47 +2364,61 @@
 
     function renderControls() {
       const allAnswersRevealed = state.revealedAnswers >= 4;
+      setIconButton(elements.resetButton, "reset", "Reset game");
       elements.revealButton.disabled = allAnswersRevealed || state.answerShown;
-      setButtonText(elements.revealButton, allAnswersRevealed ? "All options revealed" : `Reveal ${letters[state.revealedAnswers]}`);
+      setIconButton(
+        elements.revealButton,
+        allAnswersRevealed || state.answerShown ? "check" : "eye",
+        allAnswersRevealed || state.answerShown ? "All options revealed" : `Reveal ${letters[state.revealedAnswers]}`,
+        allAnswersRevealed || state.answerShown ? {} : { badge: letters[state.revealedAnswers] }
+      );
       elements.lockButton.disabled = state.selectedAnswer === null || state.answerShown;
+      setIconButton(elements.lockButton, state.lockedAnswer === null ? "lock" : "check", state.lockedAnswer === null ? "Lock answer" : "Answer locked");
 
       if (!state.answerShown) {
         elements.answerButton.disabled = !allAnswersRevealed;
-        setButtonText(elements.answerButton, "Show answer");
+        setIconButton(elements.answerButton, "answer", "Show answer");
         elements.nextButton.disabled = true;
-        setButtonText(elements.nextButton, "Next");
+        setIconButton(elements.nextButton, "next", "Next");
         return;
       }
 
-      setButtonText(elements.revealButton, "Answer shown");
+      setIconButton(elements.revealButton, "check", "Answer shown");
       elements.lockButton.disabled = true;
       elements.answerButton.disabled = false;
       elements.nextButton.disabled = false;
 
       if (state.lockedAnswer === null) {
         elements.answerButton.disabled = true;
-        setButtonText(elements.answerButton, "No answer locked");
-        setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next");
+        setIconButton(elements.answerButton, "lockOff", "No answer locked");
+        const nextLabel = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
+        setIconButton(elements.nextButton, nextButtonIcon(nextLabel), nextLabel);
         return;
       }
 
       if (!state.answerCorrect) {
         setShotButton(elements.answerButton, "", state.seatQuestionNumber);
-        setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next");
+        const nextLabel = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
+        setIconButton(elements.nextButton, nextButtonIcon(nextLabel), nextLabel);
         return;
       }
 
       if (state.seatQuestionNumber >= maxSeatQuestions) {
         setShotButton(elements.answerButton, "Everyone", "all");
-        setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next");
+        const nextLabel = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
+        setIconButton(elements.nextButton, nextButtonIcon(nextLabel), nextLabel);
         return;
       }
 
       setShotButton(elements.answerButton, "Give", handoutShotCount());
-      setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Play on");
+      const nextLabel = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Play on";
+      setIconButton(elements.nextButton, nextButtonIcon(nextLabel), nextLabel);
     }
 
     function renderLifelines() {
+      setIconButton(elements.fiftyButton, "fifty", "Fifty fifty");
+      setIconButton(elements.audienceButton, "audience", "Audience poll");
+      setIconButton(elements.phoneButton, "phone", "Phone helper");
       const lifelinesDisabled = state.mode === "interlude" || state.answerShown;
       elements.fiftyButton.disabled = state.usedLifelines.has("fifty") || lifelinesDisabled;
       elements.audienceButton.disabled = state.usedLifelines.has("audience") || lifelinesDisabled;
@@ -2200,7 +2429,7 @@
     }
 
     function renderSoundToggle() {
-      elements.soundButton.textContent = state.soundEnabled ? "Sound on" : "Enable sound";
+      setIconButton(elements.soundButton, state.soundEnabled ? "volumeOn" : "volume", state.soundEnabled ? "Sound on" : "Enable sound");
       elements.soundButton.setAttribute("aria-pressed", state.soundEnabled ? "true" : "false");
     }
 
