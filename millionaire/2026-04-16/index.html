@@ -215,6 +215,10 @@
       font-size: clamp(2.2rem, 5vw, 4.6rem);
     }
 
+    .seat-slide .slide-copy h2:empty {
+      display: none;
+    }
+
     .seat-slide .slide-copy p,
     .seat-slide .slide-rules {
       display: none;
@@ -414,6 +418,13 @@
       stroke-linecap: round;
       stroke-linejoin: round;
       stroke-width: 4;
+    }
+
+    .drink-icon img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
     }
 
     .drink-icon .drink-fill {
@@ -1340,7 +1351,7 @@
         </div>
         <div class="score-card">
           <span id="correctLabel">Hot Seat</span>
-          <strong id="correctCount">Player 1 · drink</strong>
+          <strong id="correctCount">Player 1</strong>
         </div>
         <ol class="prizes" id="prizes"></ol>
       </aside>
@@ -1454,15 +1465,7 @@
           <path d="M23 54h18"></path>
         </svg>
       `,
-      Liquor: `
-        <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-          <path class="drink-fill" d="M18 25h28l-4 28H22Z"></path>
-          <path d="M18 25h28l-4 28H22Z"></path>
-          <path d="M23 36c5 3 10 3 15 0 3-2 5-2 8-1"></path>
-          <path d="M23 15h18l4 10H19Z"></path>
-          <path d="M28 15V8h8v7"></path>
-        </svg>
-      `
+      Liquor: `<img src="${shotIconSource}" alt="" />`
     };
     const hotSeatRules = [
       {
@@ -1765,7 +1768,7 @@
     }
 
     function currentDrinkName() {
-      return state.currentDrink || "chosen drink";
+      return state.currentDrink || "chosen option";
     }
 
     function drinkKey(drink) {
@@ -1779,7 +1782,7 @@
     }
 
     function hotSeatDrinkMarkup() {
-      if (!state.currentDrink) return `Player ${state.playerNumber} · drink`;
+      if (!state.currentDrink) return `Player ${state.playerNumber}`;
       return `Player ${state.playerNumber} · ${drinkIconMarkup(state.currentDrink, "status")}`;
     }
 
@@ -1852,7 +1855,8 @@
     }
 
     function setShotButton(button, label, count) {
-      button.innerHTML = `<span class="button-content"><span>${label}</span>${shotIconMarkup(count)}</span>`;
+      const labelMarkup = label ? `<span>${label}</span>` : "";
+      button.innerHTML = `<span class="button-content">${labelMarkup}${shotIconMarkup(count)}</span>`;
     }
 
     function renderStatusMessage() {
@@ -1961,7 +1965,7 @@
       elements.drinkChoices.hidden = false;
       elements.slideActions.hidden = true;
       elements.slideKicker.textContent = `Player ${state.playerNumber}`;
-      elements.slideTitle.textContent = "Drink";
+      elements.slideTitle.textContent = "";
       elements.slideMessage.textContent = "";
 
       hotSeatRules.forEach((rule, index) => {
@@ -2170,7 +2174,7 @@
       }
 
       if (!state.answerCorrect) {
-        setShotButton(elements.answerButton, "Drink", state.seatQuestionNumber);
+        setShotButton(elements.answerButton, "", state.seatQuestionNumber);
         setButtonText(elements.nextButton, state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next");
         return;
       }
