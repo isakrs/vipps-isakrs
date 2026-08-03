@@ -3,119 +3,480 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>vipps.isakrs.com</title>
+  <meta name="theme-color" content="#ff5b24" />
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+  <meta name="description" content="Vipps presentations, demos, and game pages collected by Isak." />
+  <title>Vipps Pages by Isak</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800;900&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; }
 
     :root {
-      --bg: #0a0a0a;
-      --surface: #141414;
-      --border: #222;
-      --text: #f0f0f0;
-      --muted: #888;
-      --accent: #ff5b24;
-      --radius: 12px;
-      --gap: 16px;
+      --vipps: #ff5b24;
+      --ink: #111317;
+      --muted: #616671;
+      --paper: #f7f8f3;
+      --surface: #ffffff;
+      --green: #1e6f5c;
+      --blue: #3468d9;
+      --line: rgba(17, 19, 23, 0.12);
+      --shadow: 0 20px 60px rgba(35, 33, 27, 0.12);
+    }
+
+    html {
+      min-width: 320px;
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
       min-height: 100dvh;
-      padding: 0 var(--gap);
-      padding-bottom: 64px;
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 91, 36, 0.09), transparent 260px),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    header {
-      padding: 48px 0 40px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 40px;
+    a {
+      color: inherit;
     }
 
-    header h1 {
-      font-size: clamp(2rem, 8vw, 4rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1;
+    .shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 18px 0 40px;
     }
 
-    header h1 span {
-      color: var(--accent);
-    }
-
-    header p {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 1rem;
-    }
-
-    ul.events {
-      list-style: none;
-      display: grid;
-      gap: var(--gap);
-    }
-
-    .event-card a {
+    .topbar {
       display: flex;
       align-items: center;
-      gap: 20px;
-      padding: 20px 24px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 52px;
+      margin-bottom: clamp(22px, 5vw, 42px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
       text-decoration: none;
-      color: inherit;
-      transition: border-color 0.15s, background 0.15s;
     }
 
-    .event-card a:hover {
-      border-color: var(--accent);
-      background: #1a1a1a;
+    .brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(255, 91, 36, 0.22);
+      flex: 0 0 auto;
     }
 
-    .event-date {
-      font-size: 0.8rem;
+    .brand strong {
+      display: block;
+      font-size: 1.08rem;
+      font-weight: 900;
+      line-height: 1.05;
+      overflow-wrap: anywhere;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 3px;
       color: var(--muted);
-      white-space: nowrap;
-      min-width: 80px;
-    }
-
-    .event-name {
-      font-size: 1.1rem;
+      font-size: 0.78rem;
       font-weight: 600;
     }
 
-    .event-arrow {
-      margin-left: auto;
-      color: var(--muted);
-      font-size: 1.2rem;
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .empty {
+    .nav a {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.62);
+      padding: 0 12px;
+      color: #23262c;
+      font-size: 0.86rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      border-color: rgba(255, 91, 36, 0.72);
+      color: var(--vipps);
+    }
+
+    .hero {
+      display: grid;
+      gap: clamp(18px, 4vw, 34px);
+      margin-bottom: clamp(22px, 5vw, 44px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: fit-content;
+      border-radius: 999px;
+      background: #111317;
+      color: #ffffff;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    h1 {
+      max-width: 950px;
+      margin: 0;
+      font-size: clamp(3.05rem, 11vw, 8.4rem);
+      line-height: 0.9;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .lead {
+      max-width: 680px;
+      margin: 0;
       color: var(--muted);
-      font-size: 0.95rem;
-      padding: 40px 0;
+      font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+      line-height: 1.45;
+      font-weight: 600;
+    }
+
+    .mosaic {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr 0.85fr;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      min-height: clamp(280px, 42vw, 500px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #111317;
+      box-shadow: var(--shadow);
+    }
+
+    .mosaic img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      background: #111317;
+    }
+
+    .mosaic img:first-child {
+      grid-row: 1 / -1;
+    }
+
+    .mosaic img:nth-child(2) {
+      object-position: left center;
+    }
+
+    .mosaic img:nth-child(4) {
+      object-position: center top;
+    }
+
+    .mosaic img:nth-child(4),
+    .mosaic img:nth-child(5) {
+      object-fit: contain;
+      background: #eef1f4;
+    }
+
+    .destinations {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .card {
+      position: relative;
+      min-height: clamp(260px, 30vw, 390px);
+      display: grid;
+      align-content: end;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #111317;
+      color: #ffffff;
+      text-decoration: none;
+      isolation: isolate;
+      box-shadow: var(--shadow);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.7) 56%, rgba(0, 0, 0, 0.95) 100%);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 91, 36, 0.72);
+    }
+
+    .card img {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      opacity: 0.86;
+    }
+
+    .card-content {
+      display: grid;
+      gap: 10px;
+      padding: clamp(16px, 3vw, 24px);
+    }
+
+    .tag {
+      width: fit-content;
+      border-radius: 999px;
+      background: rgba(255, 91, 36, 0.94);
+      color: #170802;
+      padding: 7px 10px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .card:nth-child(2) .tag {
+      background: rgba(61, 202, 167, 0.94);
+    }
+
+    .card:nth-child(3) .tag {
+      background: rgba(255, 214, 95, 0.96);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: clamp(1.75rem, 3.1vw, 3rem);
+      line-height: 0.96;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .card p {
+      max-width: 24rem;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.92rem;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .meta span {
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
+      padding: 6px 9px;
+      background: rgba(0, 0, 0, 0.24);
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    footer a {
+      color: var(--vipps);
+      text-decoration: none;
+      font-weight: 900;
+    }
+
+    @media (max-width: 900px) {
+      .destinations {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: 260px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .shell {
+        width: min(100% - 22px, 1180px);
+        padding-top: 14px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 26px;
+      }
+
+      .nav {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-content: stretch;
+      }
+
+      .nav a {
+        justify-content: center;
+        min-width: 0;
+        padding: 0 9px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      h1 {
+        font-size: clamp(2.75rem, 17vw, 4.35rem);
+      }
+
+      h1 span {
+        display: block;
+      }
+
+      .lead {
+        font-size: 1.02rem;
+      }
+
+      .mosaic {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: 1.25fr 0.9fr 0.9fr;
+        min-height: 430px;
+        gap: 8px;
+      }
+
+      .mosaic img:first-child {
+        grid-column: 1 / -1;
+        grid-row: auto;
+      }
+
+      .card h2 {
+        font-size: clamp(1.55rem, 9vw, 2.1rem);
+      }
+
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .nav a {
+        font-size: 0.78rem;
+        padding: 0 9px;
+      }
+
+      .mosaic {
+        min-height: 380px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>vipps.<span>isakrs</span>.com</h1>
-    <p>Vipps presentations and project pages.</p>
-  </header>
-
-  <ul class="events">
-    <li class="event-card">
-      <a href="/ai-day-11-06-2026/">
-        <span class="event-date">June 2026</span>
-        <span class="event-name">AI Day</span>
-        <span class="event-arrow">→</span>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" alt="Vipps" />
+        <span>
+          <strong>vipps.isakrs.com</strong>
+          <span>Isak's Vipps corner</span>
+        </span>
       </a>
-    </li>
-  </ul>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="/presentations/">Presentations</a>
+        <a href="/millionaire/">Millionaire</a>
+        <a href="/ai-day-11-06-2026/">AI Day</a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-labelledby="pageTitle">
+      <span class="eyebrow">Vipps MobilePay</span>
+      <h1 id="pageTitle"><span>Vipps</span> <span>things.</span></h1>
+      <p class="lead">Presentations, demos, and social games from the Vipps universe. A little tidy, a little playful, and much easier to browse.</p>
+      <div class="mosaic" aria-hidden="true">
+        <img src="/millionaire/2026-04-16/assets/images/q14-party.webp" alt="" />
+        <img src="/millionaire/2026-04-16/assets/images/rules-shots.webp" alt="" />
+        <img src="/assets/ai-day-card.jpg" alt="" />
+        <img src="/presentations/data-export-pointer/slides/slide-001.jpg" alt="" />
+        <img src="/presentations/discrete-event-simulator-vipps-aarhus/slides/slide-001.jpg" alt="" />
+      </div>
+    </section>
+
+    <section class="destinations" aria-label="Vipps pages">
+      <a class="card" href="/presentations/">
+        <img src="/presentations/discrete-event-simulator-vipps-aarhus/slides/slide-001.jpg" alt="" />
+        <div class="card-content">
+          <span class="tag">7 decks</span>
+          <h2>Presentations</h2>
+          <p>Slide viewers for talks, demos, and data platform work.</p>
+          <div class="meta">
+            <span>Browse cards</span>
+            <span>DevCon</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="/millionaire/">
+        <img src="/millionaire/2026-04-16/assets/images/q01-reward-one.webp" alt="" />
+        <div class="card-content">
+          <span class="tag">Game nights</span>
+          <h2>Vipps Millionaire</h2>
+          <p>Hot seat questions, photos, sounds, and shot rules.</p>
+          <div class="meta">
+            <span>Aarhus</span>
+            <span>Oslo cards</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="/ai-day-11-06-2026/">
+        <img src="/assets/ai-day-card.jpg" alt="" />
+        <div class="card-content">
+          <span class="tag">11 June 2026</span>
+          <h2>AI Day</h2>
+          <p>The one-prompt webpage factory story.</p>
+          <div class="meta">
+            <span>Demo</span>
+            <span>Workflow</span>
+          </div>
+        </div>
+      </a>
+    </section>
+
+    <footer>
+      <span>Made for Vipps pages that need a nicer front door.</span>
+      <a href="https://isakrs.com/">isakrs.com</a>
+    </footer>
+  </main>
 </body>
 </html>

@@ -1,6 +1,8 @@
-# AGENTS.md — isakparty.com
+# AGENTS.md — isakparty.com and vipps.isakrs.com
 
-This file tells any AI agent (Claude, Gemini, GPT, Codex, etc.) how to create and publish event pages on the isakparty.com domain family. Read this before doing anything with the repo.
+This file tells any AI agent (Claude, Gemini, GPT, Codex, etc.) how to create
+and publish event, presentation, and project pages on the isakparty.com and
+isakrs.com domain family. Read this before doing anything with the repo.
 
 ---
 
@@ -12,6 +14,7 @@ Each subdomain or context is its own GitHub repository and its own GitHub Pages 
 |--------|------|---------|
 | `isakparty.com` | `isakrs/isakparty.com` | Personal events and parties |
 | `vipps.isakparty.com` | `isakrs/vipps-isakparty` | Work events (Vipps MobilePay) |
+| `vipps.isakrs.com` | `isakrs/vipps-isakrs` | Vipps presentations and project pages |
 
 Each event within a site lives at its own path:
 - `isakparty.com/birthday-june-2026/`
@@ -53,7 +56,8 @@ Reference page: https://vipps.janschill.de/ (source: https://github.com/janschil
 
 ### Step 4 — Update the homepage
 
-In the root `index.html`, add a new card inside `<ul class="events">`:
+In the root `index.html`, add a card or navigation entry that matches the
+existing homepage structure:
 
 ```html
 <li class="event-card">
@@ -65,7 +69,7 @@ In the root `index.html`, add a new card inside `<ul class="events">`:
 </li>
 ```
 
-Also remove the `<li class="empty">` placeholder if it is still there.
+Also remove any empty placeholder if it is still there.
 
 ### Step 5 — Commit and push
 
@@ -180,10 +184,31 @@ Claude will read the existing file, make the changes, commit, and push.
   unlisted. Add `noindex` metadata to those pages, add their path to
   `robots.txt`, and do not add them to the root homepage unless Isak explicitly
   asks for public navigation.
+- When Isak explicitly asks to update the root `vipps.isakrs.com` homepage, make
+  it a friendly visual portal with cards to the main sections. If those cards
+  link to unlisted work material, keep root `noindex` metadata in place too.
 - For `/presentations/`, render local PowerPoint decks to static slide images
   under `/presentations/<slug>/slides/` and build a self-contained viewer at
   `/presentations/<slug>/index.html`. Do not commit the source PowerPoint files
   unless Isak explicitly asks for downloads.
+- For a meeting-recording-to-presentation request, treat the transcript,
+  recording, chat export, notes, or agenda as source material. Extract the
+  actual conclusions first: decisions, rationale, open questions, action items,
+  owners, deadlines, risks, and follow-up needs. Do not invent conclusions that
+  are not supported by the source.
+- Create a concise visual presentation from those conclusions and publish it
+  under `/presentations/<date-or-topic-slug>/`. Prefer a screen-friendly deck
+  with one main idea per slide, short slide text, and visual structure such as
+  timelines, decision tables, diagrams, quote cards, and next-step boards.
+- If the source is audio or video only, use an available local or connected
+  transcription tool when possible. If no transcription path is available, ask
+  Isak for a transcript rather than guessing from the recording filename.
+- Do not commit raw recordings, transcripts, meeting chats, or private notes.
+  Commit only the final static presentation assets and viewer unless Isak
+  explicitly asks to include source files.
+- After adding a generated presentation, update `/presentations/index.html` with
+  a new visual card, keep presentation pages `noindex`, run local validation,
+  commit, push, and verify the GitHub Pages deployment and public URL.
 - Very large PowerPoint decks can exceed the artifact renderer memory limit.
   Prefer a smaller final or no-video version when one exists; otherwise leave the
   deck out and mention the render blocker rather than publishing a broken card.
