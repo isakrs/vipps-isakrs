@@ -196,6 +196,43 @@
       padding: clamp(112px, 18vh, 160px) clamp(22px, 8vw, 120px) clamp(36px, 8vh, 76px);
     }
 
+    .seat-slide .slide-copy {
+      align-self: end;
+      padding: clamp(112px, 18vh, 150px) clamp(24px, 8vw, 110px) clamp(36px, 7vh, 80px);
+      text-shadow: 0 2px 18px rgba(0, 0, 0, 0.9);
+    }
+
+    .seat-slide .slide-copy h2 {
+      font-size: clamp(2.2rem, 5vw, 4.6rem);
+    }
+
+    .seat-slide .slide-copy p,
+    .seat-slide .slide-rules {
+      display: none;
+    }
+
+    .seat-slide .drink-grid {
+      width: min(720px, 100%);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .seat-slide .drink-option {
+      min-height: 60px;
+      display: grid;
+      place-items: center;
+      background: rgba(5, 5, 5, 0.7);
+      text-align: center;
+    }
+
+    .seat-slide .drink-option strong {
+      font-size: clamp(1.12rem, 2.1vw, 1.7rem);
+    }
+
+    .seat-slide .drink-option span {
+      display: none;
+    }
+
     .slide-media {
       position: absolute;
       inset: 0;
@@ -962,6 +999,10 @@
         padding: 150px 20px 30px;
       }
 
+      body.slide-active .seat-slide .slide-copy {
+        padding: 150px 20px 30px;
+      }
+
       .slide-copy h2 {
         font-size: clamp(2rem, 14vw, 3.8rem);
       }
@@ -981,6 +1022,10 @@
 
       body.slide-active .choice-slide .rule-tile {
         min-height: 0;
+      }
+
+      body.slide-active .seat-slide .drink-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .slide-rules,
@@ -1136,11 +1181,11 @@
       <aside class="ladder" aria-label="Hot-seat rules">
         <div class="score-card">
           <span id="currentPrizeLabel">Current Rule</span>
-          <strong id="currentPrize">Make it: hand out 2 · Miss it: drink 1</strong>
+          <strong id="currentPrize">Q1: +2 / -1</strong>
         </div>
         <div class="score-card">
           <span id="correctLabel">Hot Seat</span>
-          <strong id="correctCount">Player 1 · choose drink</strong>
+          <strong id="correctCount">Player 1 · drink</strong>
         </div>
         <ol class="prizes" id="prizes"></ol>
       </aside>
@@ -1226,32 +1271,28 @@
   <script>
     const letters = ["A", "B", "C", "D"];
     const maxSeatQuestions = 4;
-    const drinkOptions = [
-      { name: "Water", note: "Kind to tomorrow" },
-      { name: "Beer", note: "Classic conference measure" },
-      { name: "Wine", note: "A tiny glass with drama" },
-      { name: "Liquor", note: "Maximum confidence required" }
-    ];
+    const drinkOptions = ["Water", "Beer", "Wine", "Liquor"];
     const hotSeatRules = [
       {
-        title: "Question 1",
-        copy: "Correct: hand out two shots or play on. Wrong: drink one shot and leave."
+        title: "Q1",
+        copy: "+2 / -1"
       },
       {
-        title: "Question 2",
-        copy: "Correct: hand out four shots or play on. Wrong: drink two shots and leave."
+        title: "Q2",
+        copy: "+4 / -2"
       },
       {
-        title: "Question 3",
-        copy: "Correct: hand out six shots or play on. Wrong: drink three shots and leave."
+        title: "Q3",
+        copy: "+6 / -3"
       },
       {
-        title: "Question 4",
-        copy: "Correct: shots for everyone. Wrong: drink four shots. Either way, new player."
+        title: "Q4",
+        copy: "ALL / -4"
       }
     ];
 
     const image = (file, alt, fit = "") => ({ src: `assets/images/${file}`, alt, fit });
+    const ruleSlideMedia = [image("rules-shots.webp", "Reward and penalty shot guide")];
 
     const questions = [
       {
@@ -1526,16 +1567,8 @@
       return `Hot seat ${state.playerNumber} · question ${state.seatQuestionNumber} of ${maxSeatQuestions}`;
     }
 
-    function pluralize(count, singular, plural = `${singular}s`) {
-      return count === 1 ? singular : plural;
-    }
-
     function currentDrinkName() {
       return state.currentDrink || "chosen drink";
-    }
-
-    function shotText(count) {
-      return `${count} ${pluralize(count, "shot")} of ${currentDrinkName().toLowerCase()}`;
     }
 
     function handoutShotCount() {
@@ -1544,16 +1577,16 @@
 
     function currentRuleText() {
       if (state.seatQuestionNumber >= maxSeatQuestions) {
-        return `Make it: everyone drinks · Miss it: drink ${state.seatQuestionNumber}`;
+        return `Q${state.seatQuestionNumber}: all / -${state.seatQuestionNumber}`;
       }
 
-      return `Make it: hand out ${handoutShotCount()} · Miss it: drink ${state.seatQuestionNumber}`;
+      return `Q${state.seatQuestionNumber}: +${handoutShotCount()} / -${state.seatQuestionNumber}`;
     }
 
     function getPendingTransitionLabel() {
-      if (state.pendingTransition === "playOn") return "Next question";
+      if (state.pendingTransition === "playOn") return "Next";
       if (state.questionIndex >= activeQuestions.length - 1) return "Finish";
-      return "Next player";
+      return "Next";
     }
 
     function render() {
@@ -1618,9 +1651,11 @@
     }
 
     function renderSlide(question) {
-      elements.slideStage.className = state.mode === "interlude"
-        ? "full-slide interlude-slide"
-        : `full-slide choice-slide ${state.mode}-slide`;
+      elements.slideStage.className = state.mode === "seat"
+        ? "full-slide seat-slide"
+        : state.mode === "interlude"
+          ? "full-slide interlude-slide"
+          : `full-slide choice-slide ${state.mode}-slide`;
       elements.slideRules.innerHTML = "";
       elements.drinkChoices.innerHTML = "";
       elements.slideActions.innerHTML = "";
@@ -1640,13 +1675,13 @@
 
     function renderSeatSlide() {
       elements.statusPill.textContent = `Hot seat ${state.playerNumber}`;
-      elements.slideMedia.hidden = true;
-      elements.slideRules.hidden = false;
+      renderSlideMedia(ruleSlideMedia);
+      elements.slideRules.hidden = true;
       elements.drinkChoices.hidden = false;
       elements.slideActions.hidden = true;
-      elements.slideKicker.textContent = "New hot seat";
-      elements.slideTitle.textContent = `Player ${state.playerNumber}, choose the drink`;
-      elements.slideMessage.textContent = "Water, beer, wine, or liquor is locked for this player until they leave the chair.";
+      elements.slideKicker.textContent = `Player ${state.playerNumber}`;
+      elements.slideTitle.textContent = "Drink";
+      elements.slideMessage.textContent = "";
 
       hotSeatRules.forEach((rule) => {
         const tile = document.createElement("div");
@@ -1659,8 +1694,8 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = "drink-option";
-        button.innerHTML = `<strong>${drink.name}</strong><span>${drink.note}</span>`;
-        button.addEventListener("click", () => selectDrink(drink.name));
+        button.innerHTML = `<strong>${drink}</strong><span></span>`;
+        button.addEventListener("click", () => selectDrink(drink));
         elements.drinkChoices.appendChild(button);
       });
     }
@@ -1690,7 +1725,7 @@
       elements.slideActions.hidden = false;
       elements.slideKicker.textContent = "Last question";
       elements.slideTitle.textContent = "Game over";
-      elements.slideMessage.textContent = `Final score: ${state.correctAnswers} of ${activeQuestions.length} questions answered correctly.`;
+      elements.slideMessage.textContent = `${state.correctAnswers} / ${activeQuestions.length}`;
 
       const resetButton = createSlideButton("Reset game", true);
       resetButton.addEventListener("click", resetGame);
@@ -1734,14 +1769,14 @@
 
     function getInterludeMessage() {
       if (state.pendingTransition === "playOn") {
-        return `${currentDrinkName()} stays with player ${state.playerNumber}.`;
+        return "";
       }
 
       if (state.questionIndex >= activeQuestions.length - 1) {
-        return "Final slide before the game ends.";
+        return "";
       }
 
-      return "Then welcome a new person to the hot seat.";
+      return "";
     }
 
     function renderMedia(question) {
@@ -1848,23 +1883,23 @@
       if (state.lockedAnswer === null) {
         elements.answerButton.disabled = true;
         elements.answerButton.textContent = "No answer locked";
-        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next player";
+        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
         return;
       }
 
       if (!state.answerCorrect) {
-        elements.answerButton.textContent = `Drink ${state.seatQuestionNumber} and leave`;
-        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next player";
+        elements.answerButton.textContent = `Drink ${state.seatQuestionNumber}`;
+        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
         return;
       }
 
       if (state.seatQuestionNumber >= maxSeatQuestions) {
-        elements.answerButton.textContent = "Shots for everyone";
-        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next player";
+        elements.answerButton.textContent = "Everyone";
+        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
         return;
       }
 
-      elements.answerButton.textContent = `Hand out ${handoutShotCount()} and leave`;
+      elements.answerButton.textContent = `Give ${handoutShotCount()}`;
       elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Play on";
     }
 
@@ -1971,14 +2006,14 @@
       }
 
       if (state.lockedAnswer === null) {
-        state.message = `Correct answer: ${letters[question.correct]}.`;
+        state.message = `Answer: ${letters[question.correct]}`;
       } else if (state.answerCorrect) {
         state.message = state.seatQuestionNumber >= maxSeatQuestions
-          ? `${letters[question.correct]} is correct. Fourth question made: shots for everyone.`
-          : `${letters[question.correct]} is correct. Hand out ${shotText(handoutShotCount())} and leave, or play on.`;
+          ? "Correct · everyone"
+          : `Correct · +${handoutShotCount()} or play on`;
         window.setTimeout(() => playSound("celebration"), 320);
       } else {
-        state.message = `${letters[state.lockedAnswer]} is wrong. Correct answer: ${letters[question.correct]}. Drink ${shotText(state.seatQuestionNumber)} and leave the chair.`;
+        state.message = `Wrong · -${state.seatQuestionNumber}`;
       }
 
       render();
@@ -2056,7 +2091,7 @@
       if (transition === "playOn" && state.seatQuestionNumber < maxSeatQuestions) {
         state.seatQuestionNumber += 1;
         state.mode = "question";
-        state.message = `${currentDrinkName()} stays with player ${state.playerNumber}.`;
+        state.message = `${currentDrinkName()} stays`;
         playSound("question");
       } else {
         state.playerNumber += 1;
