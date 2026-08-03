@@ -47,6 +47,12 @@
       padding: 22px 0 32px;
     }
 
+    body.slide-active .shell {
+      width: 100%;
+      min-height: 100dvh;
+      padding: 0;
+    }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -54,6 +60,24 @@
       gap: 16px;
       min-height: 54px;
       margin-bottom: 16px;
+    }
+
+    body.slide-active .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 5;
+      min-height: 0;
+      margin: 0;
+      padding: 24px clamp(18px, 6vw, 96px);
+      background: linear-gradient(180deg, rgba(5, 5, 5, 0.72), transparent);
+      pointer-events: none;
+    }
+
+    body.slide-active .brand,
+    body.slide-active .top-actions {
+      pointer-events: auto;
     }
 
     .brand {
@@ -129,6 +153,232 @@
       grid-template-columns: minmax(0, 1fr) 250px;
       gap: 16px;
       align-items: stretch;
+    }
+
+    .game[hidden],
+    .full-slide[hidden],
+    .slide-media[hidden],
+    .slide-rules[hidden],
+    .drink-grid[hidden],
+    .slide-actions[hidden] {
+      display: none;
+    }
+
+    .full-slide {
+      position: relative;
+      min-height: calc(100dvh - 126px);
+      display: grid;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      background: #050505;
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    body.slide-active .full-slide {
+      min-height: 100dvh;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .full-slide.choice-slide {
+      min-height: min(760px, calc(100dvh - 126px));
+      align-items: center;
+      padding: clamp(24px, 5vw, 58px);
+      background:
+        linear-gradient(145deg, rgba(255, 91, 36, 0.28), transparent 42%),
+        linear-gradient(180deg, rgba(28, 26, 21, 0.98), rgba(7, 7, 6, 0.98));
+    }
+
+    body.slide-active .full-slide.choice-slide {
+      min-height: 100dvh;
+      padding: clamp(112px, 18vh, 160px) clamp(22px, 8vw, 120px) clamp(36px, 8vh, 76px);
+    }
+
+    .slide-media {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(var(--slide-columns, 1), minmax(0, 1fr));
+      gap: clamp(8px, 1.4vw, 16px);
+      padding: clamp(10px, 2vw, 22px);
+      background: #050505;
+    }
+
+    .slide-media.media-count-1 {
+      padding: 0;
+    }
+
+    .slide-media.media-count-2 {
+      --slide-columns: 2;
+    }
+
+    .slide-media.media-count-3 {
+      --slide-columns: 3;
+    }
+
+    .slide-media.media-count-4 {
+      --slide-columns: 4;
+    }
+
+    .slide-media-item {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background: #050505;
+    }
+
+    .slide-media-item img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .slide-media-item.fit-cover img {
+      object-fit: cover;
+    }
+
+    .slide-media-item.transparent img {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 88%;
+      padding: clamp(12px, 3vw, 36px);
+    }
+
+    .slide-copy {
+      position: relative;
+      z-index: 1;
+      align-self: end;
+      width: min(960px, 100%);
+      padding: clamp(22px, 4vw, 42px);
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.82);
+    }
+
+    body.slide-active .interlude-slide .slide-copy {
+      padding: clamp(112px, 18vh, 150px) clamp(24px, 8vw, 110px) clamp(36px, 7vh, 80px);
+    }
+
+    .choice-slide .slide-copy,
+    .summary-slide .slide-copy {
+      align-self: center;
+      padding: 0;
+      text-shadow: none;
+    }
+
+    .slide-kicker {
+      color: var(--gold);
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .slide-copy h2 {
+      margin: 8px 0 0;
+      font-size: clamp(2rem, 6vw, 5.8rem);
+      line-height: 0.95;
+      font-weight: 950;
+      overflow-wrap: anywhere;
+    }
+
+    .slide-copy p {
+      max-width: 760px;
+      margin: 14px 0 0;
+      color: rgba(255, 249, 237, 0.84);
+      font-size: clamp(1rem, 2vw, 1.34rem);
+      font-weight: 760;
+      line-height: 1.28;
+      overflow-wrap: anywhere;
+    }
+
+    .slide-rules {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .rule-tile {
+      min-height: 134px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 14px;
+    }
+
+    .rule-tile strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.96rem;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .rule-tile span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 720;
+      line-height: 1.25;
+    }
+
+    .drink-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .drink-option {
+      min-height: 86px;
+      border: 1px solid rgba(228, 189, 90, 0.32);
+      border-radius: 8px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.07);
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+
+    .drink-option:hover {
+      transform: translateY(-1px);
+      border-color: var(--vipps);
+      background: rgba(255, 91, 36, 0.15);
+    }
+
+    .drink-option strong {
+      display: block;
+      color: var(--gold);
+      font-size: 1.2rem;
+      font-weight: 920;
+    }
+
+    .drink-option span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 780;
+    }
+
+    .slide-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .slide-actions .control-button {
+      min-height: 48px;
+      padding: 12px 16px;
+      font-size: 0.94rem;
     }
 
     .stage,
@@ -551,6 +801,10 @@
       font-weight: 700;
     }
 
+    body.slide-active .footer {
+      display: none;
+    }
+
     .studio {
       margin-top: 18px;
       border: 1px solid rgba(255, 255, 255, 0.11);
@@ -674,6 +928,16 @@
       .media-board.media-count-4 {
         --media-columns: 2;
       }
+
+      .slide-rules,
+      .drink-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .slide-media.media-count-3,
+      .slide-media.media-count-4 {
+        --slide-columns: 2;
+      }
     }
 
     @media (max-width: 620px) {
@@ -687,8 +951,58 @@
         flex-direction: column;
       }
 
+      body.slide-active .topbar {
+        padding: 14px 16px;
+      }
+
       .top-actions {
         justify-content: flex-start;
+      }
+
+      .full-slide,
+      .full-slide.choice-slide {
+        min-height: calc(100dvh - 142px);
+      }
+
+      .full-slide.choice-slide {
+        padding: 22px;
+      }
+
+      body.slide-active .full-slide.choice-slide {
+        padding: 150px 18px 28px;
+      }
+
+      body.slide-active .interlude-slide .slide-copy {
+        padding: 150px 20px 30px;
+      }
+
+      .slide-copy h2 {
+        font-size: clamp(2rem, 14vw, 3.8rem);
+      }
+
+      body.slide-active .choice-slide .slide-copy h2 {
+        font-size: clamp(2.15rem, 10vw, 3.05rem);
+      }
+
+      body.slide-active .choice-slide .slide-copy p {
+        font-size: 1rem;
+      }
+
+      body.slide-active .choice-slide .drink-grid,
+      body.slide-active .choice-slide .slide-rules {
+        margin-top: 16px;
+      }
+
+      body.slide-active .choice-slide .rule-tile {
+        min-height: 0;
+      }
+
+      .slide-rules,
+      .drink-grid,
+      .slide-media.media-count-2,
+      .slide-media.media-count-3,
+      .slide-media.media-count-4 {
+        grid-template-columns: 1fr;
       }
 
       .status-pill {
@@ -783,7 +1097,19 @@
       </div>
     </header>
 
-    <section class="game" aria-label="Vipps Millionaire game">
+    <section class="full-slide choice-slide" id="slideStage" hidden aria-live="polite">
+      <div class="slide-media" id="slideMedia"></div>
+      <div class="slide-copy">
+        <div class="slide-kicker" id="slideKicker"></div>
+        <h2 id="slideTitle"></h2>
+        <p id="slideMessage"></p>
+        <div class="drink-grid" id="drinkChoices"></div>
+        <div class="slide-rules" id="slideRules"></div>
+        <div class="slide-actions" id="slideActions"></div>
+      </div>
+    </section>
+
+    <section class="game" id="game" aria-label="Vipps Millionaire game">
       <div class="stage">
         <div class="stage-header">
           <div>
@@ -825,14 +1151,14 @@
         </div>
       </div>
 
-      <aside class="ladder" aria-label="Prize ladder">
+      <aside class="ladder" aria-label="Hot-seat rules">
         <div class="score-card">
-          <span>Current Prize</span>
-          <strong id="currentPrize">100 points</strong>
+          <span id="currentPrizeLabel">Current Rule</span>
+          <strong id="currentPrize">Make it: hand out 2 · Miss it: drink 1</strong>
         </div>
         <div class="score-card">
-          <span>Correct</span>
-          <strong id="correctCount">0 of 17</strong>
+          <span id="correctLabel">Hot Seat</span>
+          <strong id="correctCount">Player 1 · choose drink</strong>
         </div>
         <ol class="prizes" id="prizes"></ol>
       </aside>
@@ -921,24 +1247,30 @@
 
   <script>
     const letters = ["A", "B", "C", "D"];
-    const prizeLadder = [
-      "100 points",
-      "200 points",
-      "300 points",
-      "500 points",
-      "1,000 points",
-      "2,000 points",
-      "4,000 points",
-      "8,000 points",
-      "16,000 points",
-      "32,000 points",
-      "64,000 points",
-      "125,000 points",
-      "250,000 points",
-      "500,000 points",
-      "750,000 points",
-      "900,000 points",
-      "1,000,000 points"
+    const maxSeatQuestions = 4;
+    const drinkOptions = [
+      { name: "Water", note: "Kind to tomorrow" },
+      { name: "Beer", note: "Classic conference measure" },
+      { name: "Wine", note: "A tiny glass with drama" },
+      { name: "Liquor", note: "Maximum confidence required" }
+    ];
+    const hotSeatRules = [
+      {
+        title: "Question 1",
+        copy: "Correct: hand out two shots or play on. Wrong: drink one shot and leave."
+      },
+      {
+        title: "Question 2",
+        copy: "Correct: hand out four shots or play on. Wrong: drink two shots and leave."
+      },
+      {
+        title: "Question 3",
+        copy: "Correct: hand out six shots or play on. Wrong: drink three shots and leave."
+      },
+      {
+        title: "Question 4",
+        copy: "Correct: shots for everyone. Wrong: drink four shots. Either way, new player."
+      }
     ];
 
     const image = (file, alt, fit = "") => ({ src: `assets/images/${file}`, alt, fit });
@@ -1107,12 +1439,17 @@
 
     const state = {
       questionIndex: 0,
-      mode: "question",
+      mode: "seat",
+      playerNumber: 1,
+      seatQuestionNumber: 1,
+      currentDrink: "",
       revealedAnswers: 0,
       selectedAnswer: null,
       lockedAnswer: null,
       answerShown: false,
+      answerCorrect: null,
       correctAnswers: 0,
+      pendingTransition: null,
       awardedQuestions: new Set(),
       removedAnswers: new Set(),
       usedLifelines: new Set(),
@@ -1145,6 +1482,15 @@
     const loadedImages = new Set();
 
     const elements = {
+      game: document.getElementById("game"),
+      slideStage: document.getElementById("slideStage"),
+      slideMedia: document.getElementById("slideMedia"),
+      slideKicker: document.getElementById("slideKicker"),
+      slideTitle: document.getElementById("slideTitle"),
+      slideMessage: document.getElementById("slideMessage"),
+      slideRules: document.getElementById("slideRules"),
+      drinkChoices: document.getElementById("drinkChoices"),
+      slideActions: document.getElementById("slideActions"),
       studioButton: document.getElementById("studioButton"),
       soundButton: document.getElementById("soundButton"),
       statusPill: document.getElementById("statusPill"),
@@ -1154,7 +1500,9 @@
       mediaBoard: document.getElementById("mediaBoard"),
       questionText: document.getElementById("questionText"),
       answers: document.getElementById("answers"),
+      currentPrizeLabel: document.getElementById("currentPrizeLabel"),
       currentPrize: document.getElementById("currentPrize"),
+      correctLabel: document.getElementById("correctLabel"),
       correctCount: document.getElementById("correctCount"),
       prizes: document.getElementById("prizes"),
       fiftyButton: document.getElementById("fiftyButton"),
@@ -1183,49 +1531,87 @@
       customQuestionList: document.getElementById("customQuestionList")
     };
 
-    function formatRoundLabel() {
-      if (state.questionIndex < 5) return "Opening Round";
-      if (state.questionIndex < 11) return "Middle Round";
-      if (state.questionIndex < 15) return "Final Round";
-      return "Millionaire Round";
-    }
-
-    function getPrize(index) {
-      return prizeLadder[index] || `Bonus ${index - prizeLadder.length + 1}`;
-    }
-
     function getInterludeMedia(question) {
       return question.interludeMedia || question.resultMedia || [];
     }
 
+    function resetQuestionState() {
+      state.revealedAnswers = 0;
+      state.selectedAnswer = null;
+      state.lockedAnswer = null;
+      state.answerShown = false;
+      state.answerCorrect = null;
+      state.removedAnswers.clear();
+    }
+
+    function formatRoundLabel() {
+      return `Hot seat ${state.playerNumber} · question ${state.seatQuestionNumber} of ${maxSeatQuestions}`;
+    }
+
+    function pluralize(count, singular, plural = `${singular}s`) {
+      return count === 1 ? singular : plural;
+    }
+
+    function currentDrinkName() {
+      return state.currentDrink || "chosen drink";
+    }
+
+    function shotText(count) {
+      return `${count} ${pluralize(count, "shot")} of ${currentDrinkName().toLowerCase()}`;
+    }
+
+    function handoutShotCount() {
+      return state.seatQuestionNumber * 2;
+    }
+
+    function currentRuleText() {
+      if (state.seatQuestionNumber >= maxSeatQuestions) {
+        return `Make it: everyone drinks · Miss it: drink ${state.seatQuestionNumber}`;
+      }
+
+      return `Make it: hand out ${handoutShotCount()} · Miss it: drink ${state.seatQuestionNumber}`;
+    }
+
+    function getPendingTransitionLabel() {
+      if (state.pendingTransition === "playOn") return "Next question";
+      if (state.questionIndex >= activeQuestions.length - 1) return "Finish";
+      return "Next player";
+    }
+
     function render() {
       const question = activeQuestions[state.questionIndex];
-      const isInterlude = state.mode === "interlude";
-      const progress = ((state.questionIndex + 1) / activeQuestions.length) * 100;
-      preloadQuestionMedia(question);
-      if (activeQuestions[state.questionIndex + 1]) preloadQuestionMedia(activeQuestions[state.questionIndex + 1]);
+      const isSlide = state.mode === "seat" || state.mode === "interlude" || state.mode === "summary";
 
-      elements.statusPill.textContent = isInterlude
-        ? `Fun ${state.questionIndex + 1} of ${activeQuestions.length}`
-        : `Question ${state.questionIndex + 1} of ${activeQuestions.length}`;
-      elements.roundLabel.textContent = isInterlude ? "Between Questions" : formatRoundLabel();
-      elements.message.textContent = isInterlude ? (state.message || question.interludeCaption || "") : state.message;
+      if (question) {
+        preloadQuestionMedia(question);
+        if (activeQuestions[state.questionIndex + 1]) preloadQuestionMedia(activeQuestions[state.questionIndex + 1]);
+      }
+
+      renderSoundToggle();
+      document.body.classList.toggle("slide-active", isSlide);
+      elements.game.hidden = isSlide;
+      elements.slideStage.hidden = !isSlide;
+
+      if (isSlide) {
+        renderSlide(question);
+        return;
+      }
+
+      const progress = ((state.questionIndex + 1) / activeQuestions.length) * 100;
+      elements.statusPill.textContent = `Question ${state.questionIndex + 1} of ${activeQuestions.length}`;
+      elements.roundLabel.textContent = formatRoundLabel();
+      elements.message.textContent = state.message || currentRuleText();
       elements.meterFill.style.width = `${progress}%`;
-      elements.questionText.textContent = isInterlude ? (question.interludeTitle || "Bonus Content") : question.question;
-      elements.questionText.classList.toggle("interlude-title", isInterlude);
-      elements.answers.classList.toggle("interlude", isInterlude);
-      elements.currentPrize.textContent = getPrize(state.questionIndex);
-      elements.correctCount.textContent = `${state.correctAnswers} of ${activeQuestions.length}`;
+      elements.questionText.textContent = question.question;
+      elements.questionText.classList.remove("interlude-title");
+      elements.answers.classList.remove("interlude");
+      elements.currentPrizeLabel.textContent = "Current Rule";
+      elements.currentPrize.textContent = currentRuleText();
+      elements.correctLabel.textContent = "Hot Seat";
+      elements.correctCount.textContent = `Player ${state.playerNumber} · ${currentDrinkName()}`;
 
       renderMedia(question);
       elements.answers.innerHTML = "";
-      if (isInterlude) {
-        renderPrizes();
-        renderControls();
-        renderLifelines();
-        renderSoundToggle();
-        return;
-      }
 
       question.answers.forEach((answer, index) => {
         const button = document.createElement("button");
@@ -1251,7 +1637,133 @@
       renderPrizes();
       renderControls();
       renderLifelines();
-      renderSoundToggle();
+    }
+
+    function renderSlide(question) {
+      elements.slideStage.className = state.mode === "interlude"
+        ? "full-slide interlude-slide"
+        : `full-slide choice-slide ${state.mode}-slide`;
+      elements.slideRules.innerHTML = "";
+      elements.drinkChoices.innerHTML = "";
+      elements.slideActions.innerHTML = "";
+
+      if (state.mode === "seat") {
+        renderSeatSlide();
+        return;
+      }
+
+      if (state.mode === "summary") {
+        renderSummarySlide();
+        return;
+      }
+
+      renderInterludeSlide(question);
+    }
+
+    function renderSeatSlide() {
+      elements.statusPill.textContent = `Hot seat ${state.playerNumber}`;
+      elements.slideMedia.hidden = true;
+      elements.slideRules.hidden = false;
+      elements.drinkChoices.hidden = false;
+      elements.slideActions.hidden = true;
+      elements.slideKicker.textContent = "New hot seat";
+      elements.slideTitle.textContent = `Player ${state.playerNumber}, choose the drink`;
+      elements.slideMessage.textContent = "Water, beer, wine, or liquor is locked for this player until they leave the chair.";
+
+      hotSeatRules.forEach((rule) => {
+        const tile = document.createElement("div");
+        tile.className = "rule-tile";
+        tile.innerHTML = `<strong>${rule.title}</strong><span>${rule.copy}</span>`;
+        elements.slideRules.appendChild(tile);
+      });
+
+      drinkOptions.forEach((drink) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "drink-option";
+        button.innerHTML = `<strong>${drink.name}</strong><span>${drink.note}</span>`;
+        button.addEventListener("click", () => selectDrink(drink.name));
+        elements.drinkChoices.appendChild(button);
+      });
+    }
+
+    function renderInterludeSlide(question) {
+      const media = getInterludeMedia(question);
+      elements.statusPill.textContent = `Fun slide ${state.questionIndex + 1} of ${activeQuestions.length}`;
+      elements.slideRules.hidden = true;
+      elements.drinkChoices.hidden = true;
+      elements.slideActions.hidden = false;
+      renderSlideMedia(media);
+
+      elements.slideKicker.textContent = state.pendingTransition === "playOn" ? "Between questions" : "Between players";
+      elements.slideTitle.textContent = question.interludeTitle || "Bonus Content";
+      elements.slideMessage.textContent = question.interludeCaption || getInterludeMessage();
+
+      const nextButton = createSlideButton(getPendingTransitionLabel(), true);
+      nextButton.addEventListener("click", completePendingTransition);
+      elements.slideActions.appendChild(nextButton);
+    }
+
+    function renderSummarySlide() {
+      elements.statusPill.textContent = "Game complete";
+      elements.slideMedia.hidden = true;
+      elements.slideRules.hidden = true;
+      elements.drinkChoices.hidden = true;
+      elements.slideActions.hidden = false;
+      elements.slideKicker.textContent = "Last question";
+      elements.slideTitle.textContent = "Game over";
+      elements.slideMessage.textContent = `Final score: ${state.correctAnswers} of ${activeQuestions.length} questions answered correctly.`;
+
+      const resetButton = createSlideButton("Reset game", true);
+      resetButton.addEventListener("click", resetGame);
+      elements.slideActions.appendChild(resetButton);
+    }
+
+    function renderSlideMedia(media) {
+      const mediaItems = media?.length ? media : [];
+      elements.slideMedia.hidden = false;
+      elements.slideMedia.className = `slide-media media-count-${Math.min(mediaItems.length || 1, 4)}`;
+      elements.slideMedia.innerHTML = "";
+
+      if (!mediaItems.length) {
+        elements.slideMedia.hidden = true;
+        return;
+      }
+
+      mediaItems.forEach((item) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "slide-media-item";
+        if (item.fit) wrapper.classList.add(item.fit);
+
+        const imageElement = document.createElement("img");
+        imageElement.src = item.src;
+        imageElement.alt = item.alt;
+        imageElement.loading = "eager";
+        imageElement.decoding = "async";
+
+        wrapper.appendChild(imageElement);
+        elements.slideMedia.appendChild(wrapper);
+      });
+    }
+
+    function createSlideButton(label, primary = false) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = primary ? "control-button primary" : "control-button";
+      button.textContent = label;
+      return button;
+    }
+
+    function getInterludeMessage() {
+      if (state.pendingTransition === "playOn") {
+        return `${currentDrinkName()} stays with player ${state.playerNumber}.`;
+      }
+
+      if (state.questionIndex >= activeQuestions.length - 1) {
+        return "Final slide before the game ends.";
+      }
+
+      return "Then welcome a new person to the hot seat.";
     }
 
     function renderMedia(question) {
@@ -1325,39 +1837,57 @@
 
     function renderPrizes() {
       elements.prizes.innerHTML = "";
-      activeQuestions
-        .map((_, index) => ({ value: getPrize(index), index }))
-        .reverse()
-        .forEach(({ value, index }) => {
-          const item = document.createElement("li");
-          item.className = "prize";
-          if (index === state.questionIndex) item.classList.add("current");
-          if (index < state.questionIndex) item.classList.add("cleared");
-          if ([4, 9, 14, 16].includes(index)) item.classList.add("safe");
-          item.innerHTML = `<span>${index + 1}</span><span>${value}</span>`;
-          elements.prizes.appendChild(item);
-        });
+      hotSeatRules.forEach((rule, index) => {
+        const item = document.createElement("li");
+        item.className = "prize";
+        if (index + 1 === state.seatQuestionNumber) item.classList.add("current");
+        if (index + 1 < state.seatQuestionNumber) item.classList.add("cleared");
+        if (index + 1 === maxSeatQuestions) item.classList.add("safe");
+        item.innerHTML = `<span>${index + 1}</span><span>${rule.copy}</span>`;
+        elements.prizes.appendChild(item);
+      });
     }
 
     function renderControls() {
-      if (state.mode === "interlude") {
-        elements.revealButton.disabled = true;
-        elements.revealButton.textContent = "Interlude";
-        elements.lockButton.disabled = true;
-        elements.answerButton.disabled = true;
-        elements.nextButton.disabled = false;
-        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next question";
-        return;
-      }
-
       const allAnswersRevealed = state.revealedAnswers >= 4;
-      const hasInterlude = getInterludeMedia(activeQuestions[state.questionIndex]).length > 0;
       elements.revealButton.disabled = allAnswersRevealed || state.answerShown;
       elements.revealButton.textContent = allAnswersRevealed ? "All options revealed" : `Reveal ${letters[state.revealedAnswers]}`;
       elements.lockButton.disabled = state.selectedAnswer === null || state.answerShown;
-      elements.answerButton.disabled = !allAnswersRevealed || state.answerShown;
-      elements.nextButton.disabled = !state.answerShown;
-      elements.nextButton.textContent = state.answerShown && hasInterlude ? "Fun slide" : state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
+
+      if (!state.answerShown) {
+        elements.answerButton.disabled = !allAnswersRevealed;
+        elements.answerButton.textContent = "Show answer";
+        elements.nextButton.disabled = true;
+        elements.nextButton.textContent = "Next";
+        return;
+      }
+
+      elements.revealButton.textContent = "Answer shown";
+      elements.lockButton.disabled = true;
+      elements.answerButton.disabled = false;
+      elements.nextButton.disabled = false;
+
+      if (state.lockedAnswer === null) {
+        elements.answerButton.disabled = true;
+        elements.answerButton.textContent = "No answer locked";
+        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next player";
+        return;
+      }
+
+      if (!state.answerCorrect) {
+        elements.answerButton.textContent = `Drink ${state.seatQuestionNumber} and leave`;
+        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next player";
+        return;
+      }
+
+      if (state.seatQuestionNumber >= maxSeatQuestions) {
+        elements.answerButton.textContent = "Shots for everyone";
+        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next player";
+        return;
+      }
+
+      elements.answerButton.textContent = `Hand out ${handoutShotCount()} and leave`;
+      elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Play on";
     }
 
     function renderLifelines() {
@@ -1438,6 +1968,16 @@
       render();
     }
 
+    function selectDrink(drink) {
+      state.currentDrink = drink;
+      state.mode = "question";
+      state.message = `${drink} selected for this hot seat.`;
+      state.usedLifelines.clear();
+      resetQuestionState();
+      playSound("question");
+      render();
+    }
+
     function showAnswer() {
       const question = activeQuestions[state.questionIndex];
       if (state.mode !== "question" || state.answerShown) return;
@@ -1445,33 +1985,63 @@
       playSound("reveal");
       state.revealedAnswers = 4;
       state.answerShown = true;
+      state.answerCorrect = state.lockedAnswer === question.correct;
 
-      if (state.lockedAnswer === question.correct && !state.awardedQuestions.has(state.questionIndex)) {
+      if (state.answerCorrect && !state.awardedQuestions.has(state.questionIndex)) {
         state.correctAnswers += 1;
         state.awardedQuestions.add(state.questionIndex);
       }
 
       if (state.lockedAnswer === null) {
         state.message = `Correct answer: ${letters[question.correct]}.`;
-      } else if (state.lockedAnswer === question.correct) {
-        state.message = `${letters[question.correct]} is correct.`;
+      } else if (state.answerCorrect) {
+        state.message = state.seatQuestionNumber >= maxSeatQuestions
+          ? `${letters[question.correct]} is correct. Fourth question made: shots for everyone.`
+          : `${letters[question.correct]} is correct. Hand out ${shotText(handoutShotCount())} and leave, or play on.`;
         window.setTimeout(() => playSound("celebration"), 320);
       } else {
-        state.message = `${letters[state.lockedAnswer]} is wrong. Correct answer: ${letters[question.correct]}.`;
+        state.message = `${letters[state.lockedAnswer]} is wrong. Correct answer: ${letters[question.correct]}. Drink ${shotText(state.seatQuestionNumber)} and leave the chair.`;
       }
 
       render();
     }
 
-    async function nextQuestion() {
-      stopRoundSounds();
-
-      if (state.mode === "interlude") {
-        await advanceQuestion();
+    function handleAnswerButton() {
+      if (state.mode !== "question") return;
+      if (!state.answerShown) {
+        showAnswer();
         return;
       }
 
-      if (!state.answerShown) return;
+      if (state.lockedAnswer === null) return;
+      resolveOutcome("newPlayer");
+    }
+
+    async function nextQuestion() {
+      if (state.mode === "interlude") {
+        await completePendingTransition();
+        return;
+      }
+
+      if (state.mode !== "question" || !state.answerShown) return;
+
+      if (state.lockedAnswer === null || !state.answerCorrect || state.seatQuestionNumber >= maxSeatQuestions || state.questionIndex >= activeQuestions.length - 1) {
+        await resolveOutcome("newPlayer");
+        return;
+      }
+
+      await resolveOutcome("playOn");
+    }
+
+    async function resolveOutcome(transition) {
+      if (state.mode !== "question" || !state.answerShown) return;
+      stopRoundSounds();
+
+      const canPlayOn = transition === "playOn"
+        && state.answerCorrect
+        && state.seatQuestionNumber < maxSeatQuestions
+        && state.questionIndex < activeQuestions.length - 1;
+      state.pendingTransition = canPlayOn ? "playOn" : "newPlayer";
 
       const interludeMedia = getInterludeMedia(activeQuestions[state.questionIndex]);
       if (interludeMedia.length > 0) {
@@ -1485,12 +2055,16 @@
         return;
       }
 
-      await advanceQuestion();
+      await completePendingTransition();
     }
 
-    async function advanceQuestion() {
-      if (state.questionIndex === activeQuestions.length - 1) {
-        state.message = `Game complete. Final score: ${state.correctAnswers} of ${activeQuestions.length}.`;
+    async function completePendingTransition() {
+      const transition = state.pendingTransition || "newPlayer";
+      state.pendingTransition = null;
+
+      if (state.questionIndex >= activeQuestions.length - 1) {
+        state.mode = "summary";
+        state.message = "";
         render();
         return;
       }
@@ -1498,29 +2072,37 @@
       const next = activeQuestions[state.questionIndex + 1];
       if (next) await waitForMedia(next.promptMedia || []);
 
-      state.mode = "question";
       state.questionIndex += 1;
-      state.revealedAnswers = 0;
-      state.selectedAnswer = null;
-      state.lockedAnswer = null;
-      state.answerShown = false;
-      state.removedAnswers.clear();
-      state.message = "";
-      playSound("question");
+      resetQuestionState();
+
+      if (transition === "playOn" && state.seatQuestionNumber < maxSeatQuestions) {
+        state.seatQuestionNumber += 1;
+        state.mode = "question";
+        state.message = `${currentDrinkName()} stays with player ${state.playerNumber}.`;
+        playSound("question");
+      } else {
+        state.playerNumber += 1;
+        state.seatQuestionNumber = 1;
+        state.currentDrink = "";
+        state.usedLifelines.clear();
+        state.mode = "seat";
+        state.message = "";
+      }
+
       render();
     }
 
     function resetGame() {
       stopRoundSounds();
       state.questionIndex = 0;
-      state.mode = "question";
-      state.revealedAnswers = 0;
-      state.selectedAnswer = null;
-      state.lockedAnswer = null;
-      state.answerShown = false;
+      state.mode = "seat";
+      state.playerNumber = 1;
+      state.seatQuestionNumber = 1;
+      state.currentDrink = "";
+      state.pendingTransition = null;
+      resetQuestionState();
       state.correctAnswers = 0;
       state.awardedQuestions.clear();
-      state.removedAnswers.clear();
       state.usedLifelines.clear();
       state.message = "";
       render();
@@ -1761,7 +2343,7 @@
     elements.soundButton.addEventListener("click", toggleSound);
     elements.revealButton.addEventListener("click", revealOption);
     elements.lockButton.addEventListener("click", lockAnswer);
-    elements.answerButton.addEventListener("click", showAnswer);
+    elements.answerButton.addEventListener("click", handleAnswerButton);
     elements.nextButton.addEventListener("click", nextQuestion);
     elements.resetButton.addEventListener("click", resetGame);
     elements.fiftyButton.addEventListener("click", useFiftyFifty);
