@@ -35,6 +35,15 @@ owners, deadlines, risks, and follow-up needs. It should keep slides visual and
 short, avoid inventing unsupported conclusions, and avoid committing raw meeting
 recordings or transcripts.
 
+## PowerPoint Media
+
+Rendered PowerPoint slides are still images. When a deck contains embedded
+video, extract the referenced files from `ppt/media/`, convert them to
+browser-friendly MP4 when needed, place them in the page's `media/` folder, and
+wire the viewer to show them on the matching slides. GitHub Pages can serve
+static MP4 files; a backend is only needed for private access, streaming,
+transcoding, or files that are too large for GitHub.
+
 ## Publishing
 
 There is no build step. Add or update static files, then commit and push to

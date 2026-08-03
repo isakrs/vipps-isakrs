@@ -197,6 +197,14 @@ Claude will read the existing file, make the changes, commit, and push.
   viewer self-contained. Do not commit source PowerPoint files. If a card's
   source deck cannot be found, keep the card visibly pending instead of making
   up a presentation.
+- PowerPoint slide rendering flattens embedded videos into still slide images.
+  For Millionaire or presentation decks with video, inspect the `.pptx` package
+  for `ppt/media/*`, extract referenced video files, convert QuickTime or very
+  large files to browser-friendly MP4, place them under the page's `media/`
+  folder, and wire the viewer to show `<video controls playsinline>` on those
+  slide numbers. Static MP4 files work on GitHub Pages; use a backend or object
+  storage only if media needs private access, streaming, transcoding, or files
+  larger than GitHub's per-file limit.
 - For a meeting-recording-to-presentation request, treat the transcript,
   recording, chat export, notes, or agenda as source material. Extract the
   actual conclusions first: decisions, rationale, open questions, action items,

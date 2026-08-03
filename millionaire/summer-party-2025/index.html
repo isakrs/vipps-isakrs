@@ -26,8 +26,11 @@
     .button.ghost { border-color: var(--line); background: rgba(255,255,255,.08); color: var(--ink); }
     .button:disabled { opacity: .42; cursor: default; }
     .stage { display: grid; gap: 10px; }
-    .frame { display: grid; place-items: center; min-height: min(70dvh, 780px); border: 1px solid var(--line); border-radius: 8px; background: #000; overflow: hidden; box-shadow: 0 22px 90px rgba(0,0,0,.5); }
+    .frame { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 9; min-height: min(70dvh, 780px); border: 1px solid var(--line); border-radius: 8px; background: #000; overflow: hidden; box-shadow: 0 22px 90px rgba(0,0,0,.5); }
     .slide { width: 100%; height: auto; max-height: min(70dvh, 780px); display: block; object-fit: contain; }
+    .slide-video { width: 100%; height: auto; max-height: min(70dvh, 780px); display: none; object-fit: contain; background: #000; }
+    .frame.has-video .slide { display: none; }
+    .frame.has-video .slide-video { display: block; }
     .controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
     .control-group { display: flex; gap: 8px; }
     .control-group:last-child { justify-content: flex-end; }
@@ -42,7 +45,7 @@
       .actions { width: 100%; justify-content: flex-start; }
       .button { flex: 1 1 auto; }
       .frame { min-height: auto; }
-      .slide { max-height: 58dvh; }
+      .slide, .slide-video { max-height: 58dvh; }
       .controls { grid-template-columns: 1fr; }
       .control-group, .control-group:last-child { justify-content: stretch; }
       .control-group .button { flex: 1; }
@@ -69,6 +72,7 @@
     <section class="stage" aria-label="Summer party slide viewer">
       <div class="frame" id="frame">
         <img class="slide" id="slideImage" src="slides/slide-001.jpg" alt="Summer party slide 1" />
+        <video class="slide-video" id="slideVideo" controls playsinline preload="metadata"></video>
       </div>
       <div class="controls">
         <div class="control-group">
@@ -251,9 +255,22 @@
   </main>
   <script>
     const slides = ["slides/slide-001.jpg", "slides/slide-002.jpg", "slides/slide-003.jpg", "slides/slide-004.jpg", "slides/slide-005.jpg", "slides/slide-006.jpg", "slides/slide-007.jpg", "slides/slide-008.jpg", "slides/slide-009.jpg", "slides/slide-010.jpg", "slides/slide-011.jpg", "slides/slide-012.jpg", "slides/slide-013.jpg", "slides/slide-014.jpg", "slides/slide-015.jpg", "slides/slide-016.jpg", "slides/slide-017.jpg", "slides/slide-018.jpg", "slides/slide-019.jpg", "slides/slide-020.jpg", "slides/slide-021.jpg", "slides/slide-022.jpg", "slides/slide-023.jpg", "slides/slide-024.jpg", "slides/slide-025.jpg", "slides/slide-026.jpg", "slides/slide-027.jpg", "slides/slide-028.jpg", "slides/slide-029.jpg", "slides/slide-030.jpg", "slides/slide-031.jpg", "slides/slide-032.jpg", "slides/slide-033.jpg", "slides/slide-034.jpg", "slides/slide-035.jpg", "slides/slide-036.jpg", "slides/slide-037.jpg", "slides/slide-038.jpg", "slides/slide-039.jpg", "slides/slide-040.jpg", "slides/slide-041.jpg", "slides/slide-042.jpg", "slides/slide-043.jpg", "slides/slide-044.jpg", "slides/slide-045.jpg", "slides/slide-046.jpg", "slides/slide-047.jpg", "slides/slide-048.jpg", "slides/slide-049.jpg", "slides/slide-050.jpg", "slides/slide-051.jpg", "slides/slide-052.jpg", "slides/slide-053.jpg", "slides/slide-054.jpg", "slides/slide-055.jpg", "slides/slide-056.jpg", "slides/slide-057.jpg", "slides/slide-058.jpg", "slides/slide-059.jpg", "slides/slide-060.jpg", "slides/slide-061.jpg", "slides/slide-062.jpg", "slides/slide-063.jpg", "slides/slide-064.jpg", "slides/slide-065.jpg", "slides/slide-066.jpg", "slides/slide-067.jpg", "slides/slide-068.jpg", "slides/slide-069.jpg", "slides/slide-070.jpg", "slides/slide-071.jpg", "slides/slide-072.jpg", "slides/slide-073.jpg", "slides/slide-074.jpg", "slides/slide-075.jpg", "slides/slide-076.jpg", "slides/slide-077.jpg", "slides/slide-078.jpg", "slides/slide-079.jpg", "slides/slide-080.jpg", "slides/slide-081.jpg", "slides/slide-082.jpg", "slides/slide-083.jpg", "slides/slide-084.jpg", "slides/slide-085.jpg", "slides/slide-086.jpg", "slides/slide-087.jpg", "slides/slide-088.jpg", "slides/slide-089.jpg", "slides/slide-090.jpg", "slides/slide-091.jpg", "slides/slide-092.jpg", "slides/slide-093.jpg", "slides/slide-094.jpg", "slides/slide-095.jpg", "slides/slide-096.jpg", "slides/slide-097.jpg", "slides/slide-098.jpg", "slides/slide-099.jpg", "slides/slide-100.jpg", "slides/slide-101.jpg", "slides/slide-102.jpg", "slides/slide-103.jpg", "slides/slide-104.jpg", "slides/slide-105.jpg", "slides/slide-106.jpg", "slides/slide-107.jpg", "slides/slide-108.jpg", "slides/slide-109.jpg", "slides/slide-110.jpg", "slides/slide-111.jpg", "slides/slide-112.jpg", "slides/slide-113.jpg", "slides/slide-114.jpg", "slides/slide-115.jpg", "slides/slide-116.jpg", "slides/slide-117.jpg", "slides/slide-118.jpg", "slides/slide-119.jpg", "slides/slide-120.jpg", "slides/slide-121.jpg", "slides/slide-122.jpg", "slides/slide-123.jpg", "slides/slide-124.jpg", "slides/slide-125.jpg", "slides/slide-126.jpg", "slides/slide-127.jpg", "slides/slide-128.jpg", "slides/slide-129.jpg", "slides/slide-130.jpg", "slides/slide-131.jpg", "slides/slide-132.jpg", "slides/slide-133.jpg", "slides/slide-134.jpg", "slides/slide-135.jpg", "slides/slide-136.jpg", "slides/slide-137.jpg", "slides/slide-138.jpg", "slides/slide-139.jpg", "slides/slide-140.jpg", "slides/slide-141.jpg", "slides/slide-142.jpg", "slides/slide-143.jpg", "slides/slide-144.jpg", "slides/slide-145.jpg", "slides/slide-146.jpg", "slides/slide-147.jpg", "slides/slide-148.jpg", "slides/slide-149.jpg", "slides/slide-150.jpg", "slides/slide-151.jpg", "slides/slide-152.jpg", "slides/slide-153.jpg", "slides/slide-154.jpg", "slides/slide-155.jpg", "slides/slide-156.jpg", "slides/slide-157.jpg", "slides/slide-158.jpg", "slides/slide-159.jpg", "slides/slide-160.jpg", "slides/slide-161.jpg", "slides/slide-162.jpg", "slides/slide-163.jpg", "slides/slide-164.jpg"];
+    const videoBySlide = {
+      18: "media/slide-019-video.mp4",
+      27: "media/slide-028-video.mp4",
+      50: "media/slide-051-video.mp4",
+      58: "media/slide-059-video.mp4",
+      132: "media/slide-133-video.mp4",
+      139: "media/slide-140-video.mp4",
+      140: "media/slide-141-video.mp4",
+      153: "media/slide-154-video.mp4",
+      154: "media/slide-154-video.mp4",
+      163: "media/slide-140-video.mp4"
+    };
     const title = "Summer party";
     let current = 0;
     const slideImage = document.getElementById('slideImage');
+    const slideVideo = document.getElementById('slideVideo');
     const counter = document.getElementById('counter');
     const thumbs = Array.from(document.querySelectorAll('.thumb'));
     const prevButton = document.getElementById('prevButton');
@@ -267,6 +284,22 @@
       current = Math.max(0, Math.min(slides.length - 1, index));
       slideImage.src = slides[current];
       slideImage.alt = `${title} slide ${current + 1}`;
+      slideVideo.pause();
+      try { slideVideo.currentTime = 0; } catch (error) {}
+      const videoSrc = videoBySlide[current];
+      if (videoSrc) {
+        frame.classList.add('has-video');
+        slideVideo.poster = slides[current];
+        if (slideVideo.getAttribute('src') !== videoSrc) {
+          slideVideo.src = videoSrc;
+          slideVideo.load();
+        }
+      } else {
+        frame.classList.remove('has-video');
+        slideVideo.removeAttribute('src');
+        slideVideo.removeAttribute('poster');
+        slideVideo.load();
+      }
       counter.textContent = `${current + 1} / ${slides.length}`;
       prevButton.disabled = current === 0;
       firstButton.disabled = current === 0;
