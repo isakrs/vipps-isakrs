@@ -402,6 +402,15 @@
       background: linear-gradient(180deg, #8d2424, #430909);
     }
 
+    .answers.interlude {
+      display: none;
+    }
+
+    .question.interlude-title {
+      background: linear-gradient(180deg, #4c2415, #1b0d08);
+      border-color: rgba(255, 91, 36, 0.5);
+    }
+
     .control-strip {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -542,6 +551,113 @@
       font-weight: 700;
     }
 
+    .studio {
+      margin-top: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(27, 26, 23, 0.96), rgba(10, 10, 9, 0.96));
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .studio[hidden] {
+      display: none;
+    }
+
+    .studio h2,
+    .studio h3 {
+      margin: 0;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+
+    .studio h2 {
+      font-size: 1.1rem;
+    }
+
+    .studio h3 {
+      font-size: 0.95rem;
+      color: var(--gold);
+    }
+
+    .studio-note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .studio-field {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .studio-field label {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .studio input,
+    .studio select,
+    .studio textarea {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink);
+      font: inherit;
+      padding: 10px 12px;
+    }
+
+    .studio textarea {
+      min-height: 160px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.78rem;
+    }
+
+    .studio-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .studio-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .custom-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .custom-list li {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+      padding: 10px 12px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
     @media (max-width: 900px) {
       .game {
         grid-template-columns: 1fr;
@@ -642,6 +758,11 @@
       .footer {
         flex-direction: column;
       }
+
+      .studio-grid,
+      .studio-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -656,6 +777,7 @@
         </div>
       </div>
       <div class="top-actions">
+        <button class="sound-toggle" type="button" id="studioButton" hidden>Studio</button>
         <button class="sound-toggle" type="button" id="soundButton">Enable sound</button>
         <div class="status-pill" id="statusPill">Question 1 of 17</div>
       </div>
@@ -716,6 +838,81 @@
       </aside>
     </section>
 
+    <section class="studio" id="studioPanel" hidden aria-label="Millionaire studio">
+      <div>
+        <h2>Studio</h2>
+        <p class="studio-note">Local drafts stay in this browser. Export data when you want to keep or publish them.</p>
+      </div>
+
+      <div class="studio-grid">
+        <div>
+          <h3>New Question</h3>
+          <div class="studio-field">
+            <label for="studioQuestion">Question</label>
+            <input id="studioQuestion" type="text" autocomplete="off" />
+          </div>
+          <div class="studio-row">
+            <div class="studio-field">
+              <label for="studioAnswerA">Answer A</label>
+              <input id="studioAnswerA" type="text" autocomplete="off" />
+            </div>
+            <div class="studio-field">
+              <label for="studioAnswerB">Answer B</label>
+              <input id="studioAnswerB" type="text" autocomplete="off" />
+            </div>
+            <div class="studio-field">
+              <label for="studioAnswerC">Answer C</label>
+              <input id="studioAnswerC" type="text" autocomplete="off" />
+            </div>
+            <div class="studio-field">
+              <label for="studioAnswerD">Answer D</label>
+              <input id="studioAnswerD" type="text" autocomplete="off" />
+            </div>
+          </div>
+          <div class="studio-row">
+            <div class="studio-field">
+              <label for="studioCorrect">Correct</label>
+              <select id="studioCorrect">
+                <option value="0">A</option>
+                <option value="1">B</option>
+                <option value="2">C</option>
+                <option value="3">D</option>
+              </select>
+            </div>
+            <div class="studio-field">
+              <label for="studioPromptFiles">Question Photos</label>
+              <input id="studioPromptFiles" type="file" accept="image/*" multiple />
+            </div>
+          </div>
+          <div class="studio-field">
+            <label for="studioInterludeFiles">Between-Question Photos</label>
+            <input id="studioInterludeFiles" type="file" accept="image/*" multiple />
+          </div>
+          <div class="studio-field">
+            <label for="studioInterludeTitle">Between-Question Title</label>
+            <input id="studioInterludeTitle" type="text" autocomplete="off" />
+          </div>
+          <div class="studio-buttons">
+            <button class="control-button primary" type="button" id="studioAddButton">Add question</button>
+            <button class="control-button" type="button" id="studioClearButton">Clear drafts</button>
+          </div>
+        </div>
+
+        <div>
+          <h3>Drafts</h3>
+          <ul class="custom-list" id="customQuestionList"></ul>
+          <div class="studio-buttons">
+            <button class="control-button" type="button" id="studioExportButton">Export data</button>
+            <button class="control-button" type="button" id="studioImportButton">Import data</button>
+          </div>
+          <div class="studio-field">
+            <label for="studioJson">Data</label>
+            <textarea id="studioJson" spellcheck="false"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer class="footer">
       <span>Built from the Vipps Aarhus PowerPoint deck.</span>
       <span>Unlisted static page.</span>
@@ -752,6 +949,7 @@
         answers: ["600,000 Norwegian kroner", "1.5 million Norwegian kroner", "6 million Norwegian kroner", "10 million Norwegian kroner"],
         correct: 3,
         promptMedia: [image("q01-break-even-party.webp", "Break-even party meme")],
+        interludeTitle: "Reward Time",
         resultMedia: [
           image("q01-reward-one.webp", "Reward photo one"),
           image("q01-reward-two.webp", "Reward photo two"),
@@ -762,7 +960,9 @@
         question: "How many developers are we?",
         answers: ["184", "312", "400", "Only Thomas Townsend"],
         correct: 0,
-        promptMedia: [image("q02-developers.webp", "Vipps MobilePay developer group photo", "fit-cover")]
+        promptMedia: [image("q02-developers.webp", "Vipps MobilePay developer group photo", "fit-cover")],
+        interludeTitle: "Bonus Clip",
+        resultMedia: [image("q02-interlude-skater.webp", "Skating video still")]
       },
       {
         question: "Who is the biggest contributor to Vipps MobilePay?",
@@ -776,7 +976,8 @@
         ],
         resultMedia: [
           image("q03-github-profile.webp", "GitHub contribution profile"),
-          image("q03-contributions.webp", "Contribution count")
+          image("q03-contributions.webp", "Contribution count"),
+          image("q03-interlude-microsoft.webp", "Microsoft video still")
         ]
       },
       {
@@ -791,19 +992,27 @@
         answers: ["vmp-data-platform-config", "Databricks - Dataverse Genie", "Jørgen the Great", "Google form or Typeform"],
         correct: 0,
         promptMedia: [image("q05-access-jorgen.webp", "Jørgen portrait")],
-        resultMedia: [image("q05-money.webp", "Jørgen money portrait")]
+        interludeTitle: "Bonus Hair",
+        resultMedia: [
+          image("q05-money.webp", "Jørgen money portrait"),
+          image("q05-interlude-hair.webp", "Hair video still")
+        ]
       },
       {
         question: "What is our biggest product by revenue?",
         answers: ["Ecommerce", "Recurring", "Vipps MobilePay Number", "Person-to-person"],
         correct: 0,
-        promptMedia: [image("q06-safe-payments.webp", "Safe payments illustration", "fit-cover")]
+        promptMedia: [image("q06-safe-payments.webp", "Safe payments illustration", "fit-cover")],
+        interludeTitle: "Party Break",
+        resultMedia: [image("q06-interlude-party.webp", "Party video still")]
       },
       {
         question: "What is our second biggest product by revenue?",
         answers: ["Ecommerce", "Recurring", "Vipps MobilePay Number", "Person-to-person"],
         correct: 2,
-        promptMedia: [image("q07-revenue-bus.webp", "Election bus meme")]
+        promptMedia: [image("q07-revenue-bus.webp", "Election bus meme")],
+        interludeTitle: "Gym Break",
+        resultMedia: [image("q07-interlude-gym.webp", "Gym video still", "fit-cover")]
       },
       {
         question: "How much were Vipps users scammed for during April 2024?",
@@ -875,7 +1084,9 @@
         question: "Who is Rune Garborg's secret helper?",
         answers: ["He obviously does not have one", "Thomas Townsend", "Marius the Meme Machine", "Christina The Fixer Amble"],
         correct: 3,
-        promptMedia: [image("q16-secret-helper.webp", "Secret helper Slack screenshot")]
+        promptMedia: [image("q16-secret-helper.webp", "Secret helper Slack screenshot")],
+        interludeTitle: "One More Thing",
+        resultMedia: [image("q16-interlude-pinball.webp", "Pinball video still")]
       },
       {
         question: "Which Nobel Prize is awarded in Norway?",
@@ -889,8 +1100,14 @@
       }
     ];
 
+    const studioEnabled = new URLSearchParams(window.location.search).get("studio") === "1";
+    const customStorageKey = "vipps-millionaire-custom-questions-v1";
+    let customQuestions = loadCustomQuestions();
+    let activeQuestions = [...questions, ...customQuestions];
+
     const state = {
       questionIndex: 0,
+      mode: "question",
       revealedAnswers: 0,
       selectedAnswer: null,
       lockedAnswer: null,
@@ -925,8 +1142,10 @@
     sounds.thinking.volume = 0.46;
     sounds.celebration.volume = 0.52;
     const preloadedImages = new Set();
+    const loadedImages = new Set();
 
     const elements = {
+      studioButton: document.getElementById("studioButton"),
       soundButton: document.getElementById("soundButton"),
       statusPill: document.getElementById("statusPill"),
       roundLabel: document.getElementById("roundLabel"),
@@ -945,7 +1164,23 @@
       revealButton: document.getElementById("revealButton"),
       lockButton: document.getElementById("lockButton"),
       answerButton: document.getElementById("answerButton"),
-      nextButton: document.getElementById("nextButton")
+      nextButton: document.getElementById("nextButton"),
+      studioPanel: document.getElementById("studioPanel"),
+      studioQuestion: document.getElementById("studioQuestion"),
+      studioAnswerA: document.getElementById("studioAnswerA"),
+      studioAnswerB: document.getElementById("studioAnswerB"),
+      studioAnswerC: document.getElementById("studioAnswerC"),
+      studioAnswerD: document.getElementById("studioAnswerD"),
+      studioCorrect: document.getElementById("studioCorrect"),
+      studioPromptFiles: document.getElementById("studioPromptFiles"),
+      studioInterludeFiles: document.getElementById("studioInterludeFiles"),
+      studioInterludeTitle: document.getElementById("studioInterludeTitle"),
+      studioAddButton: document.getElementById("studioAddButton"),
+      studioClearButton: document.getElementById("studioClearButton"),
+      studioExportButton: document.getElementById("studioExportButton"),
+      studioImportButton: document.getElementById("studioImportButton"),
+      studioJson: document.getElementById("studioJson"),
+      customQuestionList: document.getElementById("customQuestionList")
     };
 
     function formatRoundLabel() {
@@ -955,21 +1190,43 @@
       return "Millionaire Round";
     }
 
-    function render() {
-      const question = questions[state.questionIndex];
-      const progress = ((state.questionIndex + 1) / questions.length) * 100;
-      preloadQuestionMedia(question);
+    function getPrize(index) {
+      return prizeLadder[index] || `Bonus ${index - prizeLadder.length + 1}`;
+    }
 
-      elements.statusPill.textContent = `Question ${state.questionIndex + 1} of ${questions.length}`;
-      elements.roundLabel.textContent = formatRoundLabel();
-      elements.message.textContent = state.message;
+    function getInterludeMedia(question) {
+      return question.interludeMedia || question.resultMedia || [];
+    }
+
+    function render() {
+      const question = activeQuestions[state.questionIndex];
+      const isInterlude = state.mode === "interlude";
+      const progress = ((state.questionIndex + 1) / activeQuestions.length) * 100;
+      preloadQuestionMedia(question);
+      if (activeQuestions[state.questionIndex + 1]) preloadQuestionMedia(activeQuestions[state.questionIndex + 1]);
+
+      elements.statusPill.textContent = isInterlude
+        ? `Fun ${state.questionIndex + 1} of ${activeQuestions.length}`
+        : `Question ${state.questionIndex + 1} of ${activeQuestions.length}`;
+      elements.roundLabel.textContent = isInterlude ? "Between Questions" : formatRoundLabel();
+      elements.message.textContent = isInterlude ? (state.message || question.interludeCaption || "") : state.message;
       elements.meterFill.style.width = `${progress}%`;
-      elements.questionText.textContent = question.question;
-      elements.currentPrize.textContent = prizeLadder[state.questionIndex];
-      elements.correctCount.textContent = `${state.correctAnswers} of ${questions.length}`;
+      elements.questionText.textContent = isInterlude ? (question.interludeTitle || "Bonus Content") : question.question;
+      elements.questionText.classList.toggle("interlude-title", isInterlude);
+      elements.answers.classList.toggle("interlude", isInterlude);
+      elements.currentPrize.textContent = getPrize(state.questionIndex);
+      elements.correctCount.textContent = `${state.correctAnswers} of ${activeQuestions.length}`;
 
       renderMedia(question);
       elements.answers.innerHTML = "";
+      if (isInterlude) {
+        renderPrizes();
+        renderControls();
+        renderLifelines();
+        renderSoundToggle();
+        return;
+      }
+
       question.answers.forEach((answer, index) => {
         const button = document.createElement("button");
         const isRevealed = index < state.revealedAnswers;
@@ -998,11 +1255,24 @@
     }
 
     function renderMedia(question) {
-      const media = state.answerShown && question.resultMedia?.length ? question.resultMedia : question.promptMedia;
+      const media = state.mode === "interlude" ? getInterludeMedia(question) : question.promptMedia;
       const mediaItems = media?.length ? media : [];
 
       elements.mediaBoard.className = `media-board media-count-${Math.min(mediaItems.length || 1, 4)}`;
       elements.mediaBoard.innerHTML = "";
+
+      if (!mediaItems.length) {
+        elements.mediaBoard.innerHTML = `
+          <div class="emblem" aria-hidden="true">
+            <div class="emblem-inner">
+              <span class="emblem-word">Vipps</span>
+              <span class="emblem-word">Millionaire</span>
+              <span class="emblem-small">Data and Insights</span>
+            </div>
+          </div>
+        `;
+        return;
+      }
 
       mediaItems.forEach((item) => {
         const wrapper = document.createElement("div");
@@ -1021,18 +1291,42 @@
     }
 
     function preloadQuestionMedia(question) {
-      [...(question.promptMedia || []), ...(question.resultMedia || [])].forEach((item) => {
+      [...(question.promptMedia || []), ...getInterludeMedia(question)].forEach((item) => {
         if (preloadedImages.has(item.src)) return;
         const imageElement = new Image();
+        imageElement.onload = () => loadedImages.add(item.src);
         imageElement.src = item.src;
+        if (imageElement.complete && imageElement.naturalWidth > 0) loadedImages.add(item.src);
         preloadedImages.add(item.src);
       });
     }
 
+    function waitForImage(source) {
+      if (!source || loadedImages.has(source)) return Promise.resolve();
+
+      return new Promise((resolve) => {
+        const imageElement = new Image();
+        const finish = () => {
+          if (imageElement.naturalWidth > 0) loadedImages.add(source);
+          resolve();
+        };
+
+        imageElement.onload = finish;
+        imageElement.onerror = finish;
+        imageElement.src = source;
+        if (imageElement.complete) finish();
+        window.setTimeout(resolve, 2500);
+      });
+    }
+
+    function waitForMedia(media) {
+      return Promise.all((media || []).map((item) => waitForImage(item.src)));
+    }
+
     function renderPrizes() {
       elements.prizes.innerHTML = "";
-      prizeLadder
-        .map((value, index) => ({ value, index }))
+      activeQuestions
+        .map((_, index) => ({ value: getPrize(index), index }))
         .reverse()
         .forEach(({ value, index }) => {
           const item = document.createElement("li");
@@ -1046,19 +1340,31 @@
     }
 
     function renderControls() {
+      if (state.mode === "interlude") {
+        elements.revealButton.disabled = true;
+        elements.revealButton.textContent = "Interlude";
+        elements.lockButton.disabled = true;
+        elements.answerButton.disabled = true;
+        elements.nextButton.disabled = false;
+        elements.nextButton.textContent = state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next question";
+        return;
+      }
+
       const allAnswersRevealed = state.revealedAnswers >= 4;
+      const hasInterlude = getInterludeMedia(activeQuestions[state.questionIndex]).length > 0;
       elements.revealButton.disabled = allAnswersRevealed || state.answerShown;
       elements.revealButton.textContent = allAnswersRevealed ? "All options revealed" : `Reveal ${letters[state.revealedAnswers]}`;
       elements.lockButton.disabled = state.selectedAnswer === null || state.answerShown;
       elements.answerButton.disabled = !allAnswersRevealed || state.answerShown;
       elements.nextButton.disabled = !state.answerShown;
-      elements.nextButton.textContent = state.questionIndex === questions.length - 1 ? "Finish" : "Next";
+      elements.nextButton.textContent = state.answerShown && hasInterlude ? "Fun slide" : state.questionIndex === activeQuestions.length - 1 ? "Finish" : "Next";
     }
 
     function renderLifelines() {
-      elements.fiftyButton.disabled = state.usedLifelines.has("fifty") || state.answerShown;
-      elements.audienceButton.disabled = state.usedLifelines.has("audience") || state.answerShown;
-      elements.phoneButton.disabled = state.usedLifelines.has("phone") || state.answerShown;
+      const lifelinesDisabled = state.mode === "interlude" || state.answerShown;
+      elements.fiftyButton.disabled = state.usedLifelines.has("fifty") || lifelinesDisabled;
+      elements.audienceButton.disabled = state.usedLifelines.has("audience") || lifelinesDisabled;
+      elements.phoneButton.disabled = state.usedLifelines.has("phone") || lifelinesDisabled;
       elements.fiftyButton.classList.toggle("used", state.usedLifelines.has("fifty"));
       elements.audienceButton.classList.toggle("used", state.usedLifelines.has("audience"));
       elements.phoneButton.classList.toggle("used", state.usedLifelines.has("phone"));
@@ -1109,7 +1415,7 @@
     }
 
     function selectAnswer(index) {
-      if (state.removedAnswers.has(index) || state.answerShown || index >= state.revealedAnswers) return;
+      if (state.mode !== "question" || state.removedAnswers.has(index) || state.answerShown || index >= state.revealedAnswers) return;
       state.selectedAnswer = index;
       state.lockedAnswer = null;
       state.message = `${letters[index]} selected`;
@@ -1117,7 +1423,7 @@
     }
 
     function revealOption() {
-      if (state.revealedAnswers >= 4 || state.answerShown) return;
+      if (state.mode !== "question" || state.revealedAnswers >= 4 || state.answerShown) return;
       state.revealedAnswers += 1;
       state.message = state.revealedAnswers === 4 ? "All options are on the board." : `${letters[state.revealedAnswers - 1]} revealed.`;
       if (state.revealedAnswers === 1) playSound("question");
@@ -1126,15 +1432,15 @@
     }
 
     function lockAnswer() {
-      if (state.selectedAnswer === null || state.answerShown) return;
+      if (state.mode !== "question" || state.selectedAnswer === null || state.answerShown) return;
       state.lockedAnswer = state.selectedAnswer;
       state.message = `${letters[state.lockedAnswer]} locked.`;
       render();
     }
 
     function showAnswer() {
-      const question = questions[state.questionIndex];
-      if (state.answerShown) return;
+      const question = activeQuestions[state.questionIndex];
+      if (state.mode !== "question" || state.answerShown) return;
       stopSound("thinking");
       playSound("reveal");
       state.revealedAnswers = 4;
@@ -1157,16 +1463,42 @@
       render();
     }
 
-    function nextQuestion() {
-      if (!state.answerShown) return;
+    async function nextQuestion() {
       stopRoundSounds();
 
-      if (state.questionIndex === questions.length - 1) {
-        state.message = `Game complete. Final score: ${state.correctAnswers} of ${questions.length}.`;
+      if (state.mode === "interlude") {
+        await advanceQuestion();
+        return;
+      }
+
+      if (!state.answerShown) return;
+
+      const interludeMedia = getInterludeMedia(activeQuestions[state.questionIndex]);
+      if (interludeMedia.length > 0) {
+        state.message = "Loading fun slide.";
+        render();
+        await waitForMedia(interludeMedia);
+        state.mode = "interlude";
+        state.message = "";
+        playSound("celebration");
         render();
         return;
       }
 
+      await advanceQuestion();
+    }
+
+    async function advanceQuestion() {
+      if (state.questionIndex === activeQuestions.length - 1) {
+        state.message = `Game complete. Final score: ${state.correctAnswers} of ${activeQuestions.length}.`;
+        render();
+        return;
+      }
+
+      const next = activeQuestions[state.questionIndex + 1];
+      if (next) await waitForMedia(next.promptMedia || []);
+
+      state.mode = "question";
       state.questionIndex += 1;
       state.revealedAnswers = 0;
       state.selectedAnswer = null;
@@ -1181,6 +1513,7 @@
     function resetGame() {
       stopRoundSounds();
       state.questionIndex = 0;
+      state.mode = "question";
       state.revealedAnswers = 0;
       state.selectedAnswer = null;
       state.lockedAnswer = null;
@@ -1194,8 +1527,8 @@
     }
 
     function useFiftyFifty() {
-      if (state.usedLifelines.has("fifty") || state.answerShown) return;
-      const correct = questions[state.questionIndex].correct;
+      if (state.mode !== "question" || state.usedLifelines.has("fifty") || state.answerShown) return;
+      const correct = activeQuestions[state.questionIndex].correct;
       const wrongAnswers = [0, 1, 2, 3].filter((index) => index !== correct);
       state.revealedAnswers = 4;
       state.removedAnswers = new Set(wrongAnswers.slice(0, 2));
@@ -1210,8 +1543,8 @@
     }
 
     function useAudience() {
-      if (state.usedLifelines.has("audience") || state.answerShown) return;
-      const correct = questions[state.questionIndex].correct;
+      if (state.mode !== "question" || state.usedLifelines.has("audience") || state.answerShown) return;
+      const correct = activeQuestions[state.questionIndex].correct;
       const correctShare = 48 + ((state.questionIndex * 7) % 18);
       const remaining = 100 - correctShare;
       const shares = [0, 1, 2, 3].map((index) => index === correct ? correctShare : Math.floor(remaining / 3));
@@ -1223,8 +1556,8 @@
     }
 
     function usePhone() {
-      if (state.usedLifelines.has("phone") || state.answerShown) return;
-      const correctLetter = letters[questions[state.questionIndex].correct];
+      if (state.mode !== "question" || state.usedLifelines.has("phone") || state.answerShown) return;
+      const correctLetter = letters[activeQuestions[state.questionIndex].correct];
       const moods = ["calmly says", "is leaning toward", "would lock"];
       state.usedLifelines.add("phone");
       state.message = `Phone helper ${moods[state.questionIndex % moods.length]} ${correctLetter}.`;
@@ -1232,6 +1565,199 @@
       render();
     }
 
+    function normalizeMedia(item, fallbackAlt) {
+      if (!item) return null;
+      if (typeof item === "string") return { src: item, alt: fallbackAlt };
+      if (!item.src) return null;
+      return {
+        src: item.src,
+        alt: item.alt || fallbackAlt,
+        fit: item.fit || ""
+      };
+    }
+
+    function normalizeQuestion(item) {
+      if (!item || typeof item.question !== "string" || !Array.isArray(item.answers)) return null;
+      const answers = item.answers.map((answer) => String(answer || "").trim()).slice(0, 4);
+      const correct = Number(item.correct);
+
+      if (!item.question.trim() || answers.length !== 4 || answers.some((answer) => !answer) || !Number.isInteger(correct) || correct < 0 || correct > 3) {
+        return null;
+      }
+
+      return {
+        question: item.question.trim(),
+        answers,
+        correct,
+        promptMedia: (item.promptMedia || []).map((media, index) => normalizeMedia(media, `Question photo ${index + 1}`)).filter(Boolean),
+        interludeMedia: (item.interludeMedia || item.resultMedia || []).map((media, index) => normalizeMedia(media, `Between-question photo ${index + 1}`)).filter(Boolean),
+        interludeTitle: String(item.interludeTitle || "").trim(),
+        interludeCaption: String(item.interludeCaption || "").trim()
+      };
+    }
+
+    function loadCustomQuestions() {
+      try {
+        const raw = window.localStorage.getItem(customStorageKey);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        const items = Array.isArray(parsed) ? parsed : parsed.questions;
+        if (!Array.isArray(items)) return [];
+        return items.map(normalizeQuestion).filter(Boolean);
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCustomQuestions() {
+      try {
+        window.localStorage.setItem(customStorageKey, JSON.stringify(customQuestions));
+      } catch {
+        elements.studioJson.value = JSON.stringify({ questions: customQuestions }, null, 2);
+        state.message = "Draft storage is full. Export data to keep these changes.";
+      }
+    }
+
+    function refreshActiveQuestions() {
+      activeQuestions = [...questions, ...customQuestions];
+      state.questionIndex = Math.min(state.questionIndex, activeQuestions.length - 1);
+      renderCustomQuestionList();
+      render();
+    }
+
+    function renderCustomQuestionList() {
+      if (!studioEnabled) return;
+      elements.customQuestionList.innerHTML = "";
+
+      if (!customQuestions.length) {
+        const empty = document.createElement("li");
+        empty.textContent = "No local drafts.";
+        elements.customQuestionList.appendChild(empty);
+      } else {
+        customQuestions.forEach((question, index) => {
+          const item = document.createElement("li");
+          const mediaCount = (question.promptMedia?.length || 0) + (question.interludeMedia?.length || 0);
+          item.textContent = `${questions.length + index + 1}. ${question.question} · ${mediaCount} photos`;
+          elements.customQuestionList.appendChild(item);
+        });
+      }
+
+      elements.studioJson.value = JSON.stringify({ questions: customQuestions }, null, 2);
+    }
+
+    function readFileAsMedia(file, index, type) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({
+          src: reader.result,
+          alt: `${type} ${index + 1}`,
+          fit: "fit-cover"
+        });
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function readFilesAsMedia(fileList, type) {
+      const files = Array.from(fileList || []);
+      const media = await Promise.all(files.map((file, index) => readFileAsMedia(file, index, type)));
+      return media.slice(0, 4);
+    }
+
+    function clearStudioForm() {
+      elements.studioQuestion.value = "";
+      elements.studioAnswerA.value = "";
+      elements.studioAnswerB.value = "";
+      elements.studioAnswerC.value = "";
+      elements.studioAnswerD.value = "";
+      elements.studioCorrect.value = "0";
+      elements.studioPromptFiles.value = "";
+      elements.studioInterludeFiles.value = "";
+      elements.studioInterludeTitle.value = "";
+    }
+
+    async function addStudioQuestion() {
+      const promptMedia = await readFilesAsMedia(elements.studioPromptFiles.files, "Question photo");
+      const interludeMedia = await readFilesAsMedia(elements.studioInterludeFiles.files, "Between-question photo");
+      const question = normalizeQuestion({
+        question: elements.studioQuestion.value,
+        answers: [
+          elements.studioAnswerA.value,
+          elements.studioAnswerB.value,
+          elements.studioAnswerC.value,
+          elements.studioAnswerD.value
+        ],
+        correct: Number(elements.studioCorrect.value),
+        promptMedia,
+        interludeMedia,
+        interludeTitle: elements.studioInterludeTitle.value || "Bonus Content"
+      });
+
+      if (!question) {
+        state.message = "Fill in the question, four answers, and the correct option.";
+        render();
+        return;
+      }
+
+      customQuestions.push(question);
+      saveCustomQuestions();
+      clearStudioForm();
+      state.message = "Draft question added.";
+      refreshActiveQuestions();
+    }
+
+    function exportStudioJson() {
+      const json = JSON.stringify({ questions: customQuestions }, null, 2);
+      elements.studioJson.value = json;
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "vipps-millionaire-questions.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importStudioJson() {
+      try {
+        const parsed = JSON.parse(elements.studioJson.value);
+        const items = Array.isArray(parsed) ? parsed : parsed.questions;
+        if (!Array.isArray(items)) throw new Error("Missing questions array");
+        const normalized = items.map(normalizeQuestion).filter(Boolean);
+        customQuestions = normalized;
+        saveCustomQuestions();
+        resetGame();
+        state.message = `${customQuestions.length} draft questions loaded.`;
+        refreshActiveQuestions();
+      } catch {
+        state.message = "Could not import data.";
+        render();
+      }
+    }
+
+    function clearStudioQuestions() {
+      customQuestions = [];
+      saveCustomQuestions();
+      resetGame();
+      state.message = "Local drafts cleared.";
+      refreshActiveQuestions();
+    }
+
+    function setupStudio() {
+      if (!studioEnabled) return;
+      elements.studioButton.hidden = false;
+      elements.studioPanel.hidden = false;
+      elements.studioButton.addEventListener("click", () => {
+        elements.studioPanel.hidden = !elements.studioPanel.hidden;
+      });
+      elements.studioAddButton.addEventListener("click", addStudioQuestion);
+      elements.studioClearButton.addEventListener("click", clearStudioQuestions);
+      elements.studioExportButton.addEventListener("click", exportStudioJson);
+      elements.studioImportButton.addEventListener("click", importStudioJson);
+      renderCustomQuestionList();
+    }
+
+    setupStudio();
     elements.soundButton.addEventListener("click", toggleSound);
     elements.revealButton.addEventListener("click", revealOption);
     elements.lockButton.addEventListener("click", lockAnswer);
