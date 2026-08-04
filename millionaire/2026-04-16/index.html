@@ -1857,6 +1857,7 @@
 
     const studioEnabled = new URLSearchParams(window.location.search).get("studio") === "1";
     const customStorageKey = "vipps-millionaire-custom-questions-v1";
+    const gameStorageKey = "vipps-millionaire-game-state-v1";
     let customQuestions = loadCustomQuestions();
     let activeQuestions = [...questions, ...customQuestions];
 
@@ -2125,6 +2126,98 @@
       return "next";
     }
 
+    function clampInteger(value, min, max, fallback) {
+      const number = Number(value);
+      if (!Number.isInteger(number)) return fallback;
+      return Math.min(Math.max(number, min), max);
+    }
+
+    function optionalAnswerIndex(value) {
+      if (value === null || value === undefined) return null;
+      const number = Number(value);
+      return Number.isInteger(number) && number >= 0 && number <= 3 ? number : null;
+    }
+
+    function optionalBoolean(value) {
+      return typeof value === "boolean" ? value : null;
+    }
+
+    function filteredSet(values, allowedValues = null) {
+      if (!Array.isArray(values)) return new Set();
+      return new Set(values.filter((value) => {
+        if (!Number.isInteger(value) && typeof value !== "string") return false;
+        return !allowedValues || allowedValues.includes(value);
+      }));
+    }
+
+    function saveGameState() {
+      try {
+        window.localStorage.setItem(gameStorageKey, JSON.stringify({
+          questionIndex: state.questionIndex,
+          mode: state.mode,
+          playerNumber: state.playerNumber,
+          seatQuestionNumber: state.seatQuestionNumber,
+          currentDrink: state.currentDrink,
+          revealedAnswers: state.revealedAnswers,
+          selectedAnswer: state.selectedAnswer,
+          lockedAnswer: state.lockedAnswer,
+          answerShown: state.answerShown,
+          answerCorrect: state.answerCorrect,
+          correctAnswers: state.correctAnswers,
+          pendingTransition: state.pendingTransition,
+          awardedQuestions: [...state.awardedQuestions],
+          removedAnswers: [...state.removedAnswers],
+          usedLifelines: [...state.usedLifelines],
+          message: state.message,
+          messageDrink: state.messageDrink
+        }));
+      } catch {
+        // Autosave is best effort; the game should still run if storage is unavailable.
+      }
+    }
+
+    function restoreGameState() {
+      try {
+        const raw = window.localStorage.getItem(gameStorageKey);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || typeof saved !== "object") return;
+
+        const validModes = ["seat", "question", "interlude", "summary"];
+        const validDrinks = ["", ...drinkOptions];
+        const validTransitions = [null, "newPlayer", "playOn"];
+        const maxQuestionIndex = Math.max(activeQuestions.length - 1, 0);
+
+        state.questionIndex = clampInteger(saved.questionIndex, 0, maxQuestionIndex, 0);
+        state.mode = validModes.includes(saved.mode) ? saved.mode : "seat";
+        state.playerNumber = clampInteger(saved.playerNumber, 1, 99, 1);
+        state.seatQuestionNumber = clampInteger(saved.seatQuestionNumber, 1, maxSeatQuestions, 1);
+        state.currentDrink = validDrinks.includes(saved.currentDrink) ? saved.currentDrink : "";
+        state.revealedAnswers = clampInteger(saved.revealedAnswers, 0, 4, 0);
+        state.selectedAnswer = optionalAnswerIndex(saved.selectedAnswer);
+        state.lockedAnswer = optionalAnswerIndex(saved.lockedAnswer);
+        state.answerShown = Boolean(saved.answerShown);
+        state.answerCorrect = optionalBoolean(saved.answerCorrect);
+        state.correctAnswers = clampInteger(saved.correctAnswers, 0, activeQuestions.length, 0);
+        state.pendingTransition = validTransitions.includes(saved.pendingTransition) ? saved.pendingTransition : null;
+        state.awardedQuestions = filteredSet(saved.awardedQuestions);
+        state.removedAnswers = filteredSet(saved.removedAnswers, [0, 1, 2, 3]);
+        state.usedLifelines = filteredSet(saved.usedLifelines, ["fifty", "audience", "phone"]);
+        state.message = typeof saved.message === "string" ? saved.message.slice(0, 160) : "";
+        state.messageDrink = validDrinks.includes(saved.messageDrink) ? saved.messageDrink : "";
+
+        state.awardedQuestions = new Set([...state.awardedQuestions].filter((index) => Number.isInteger(index) && index >= 0 && index < activeQuestions.length));
+        if (!state.answerShown) state.answerCorrect = null;
+        if (state.mode === "question" && !state.currentDrink) state.mode = "seat";
+        if (state.selectedAnswer !== null && state.selectedAnswer >= state.revealedAnswers && !state.answerShown) state.selectedAnswer = null;
+        if (state.lockedAnswer !== null && state.lockedAnswer >= state.revealedAnswers && !state.answerShown) state.lockedAnswer = null;
+      } catch {
+        try {
+          window.localStorage.removeItem(gameStorageKey);
+        } catch {}
+      }
+    }
+
     function renderStatusMessage() {
       if (state.message) {
         renderStatusText(elements.message, state.message, state.messageDrink);
@@ -2141,6 +2234,7 @@
     }
 
     function render() {
+      saveGameState();
       const question = activeQuestions[state.questionIndex];
       const isSlide = state.mode === "seat" || state.mode === "interlude" || state.mode === "summary";
 
@@ -2552,7 +2646,6 @@
       state.currentDrink = drink;
       state.mode = "question";
       setStatusMessage("selected for this hot seat.", drink);
-      state.usedLifelines.clear();
       resetQuestionState();
       playSound("question");
       render();
@@ -2662,7 +2755,6 @@
         state.playerNumber += 1;
         state.seatQuestionNumber = 1;
         state.currentDrink = "";
-        state.usedLifelines.clear();
         state.mode = "seat";
         setStatusMessage("");
       }
@@ -2917,6 +3009,7 @@
       renderCustomQuestionList();
     }
 
+    restoreGameState();
     setupStudio();
     elements.soundButton.addEventListener("click", toggleSound);
     elements.revealButton.addEventListener("click", revealOption);
