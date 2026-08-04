@@ -956,7 +956,19 @@
       filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
     }
 
+    .shot-strip .drink-icon {
+      width: 23px;
+      height: 23px;
+      flex: 0 0 auto;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+    }
+
     .rule-visual.compact .shot-strip img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .rule-visual.compact .shot-strip .drink-icon {
       width: 18px;
       height: 18px;
     }
@@ -979,6 +991,11 @@
       height: 16px;
     }
 
+    .rule-visual.ladder .shot-strip .drink-icon {
+      width: 16px;
+      height: 16px;
+    }
+
     .button-content {
       position: relative;
       min-width: 0;
@@ -993,6 +1010,11 @@
     }
 
     .button-content .shot-strip img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .button-content .shot-strip .drink-icon {
       width: 18px;
       height: 18px;
     }
@@ -2001,10 +2023,10 @@
       const rule = getRule(questionNumber);
 
       if (rule.rewardShots === "all") {
-        return `${rule.title}: everyone if correct, ${rule.penaltyShots} if wrong`;
+        return `${rule.title}: ${stakeLabel(rule.rewardShots)} if correct, ${stakeLabel(rule.penaltyShots)} if wrong`;
       }
 
-      return `${rule.title}: give ${rule.rewardShots} if correct, drink ${rule.penaltyShots} if wrong`;
+      return `${rule.title}: give ${stakeLabel(rule.rewardShots)} if correct, ${stakeLabel(rule.penaltyShots)} if wrong`;
     }
 
     function shotLabel(count) {
@@ -2019,20 +2041,50 @@
       return `<span class="shot-strip ${className}" role="img" aria-label="${label}">${icons}</span>`;
     }
 
+    function stakeUnitLabel() {
+      if (state.currentDrink === "Water") return "water";
+      if (state.currentDrink === "Beer") return "beer";
+      if (state.currentDrink === "Wine") return "wine";
+      if (state.currentDrink === "Liquor") return "shot";
+      return "shot";
+    }
+
+    function pluralizedStakeUnit(count) {
+      const unit = stakeUnitLabel();
+      if (unit === "water" || unit === "wine") return unit;
+      return count === 1 ? unit : `${unit}s`;
+    }
+
+    function stakeLabel(count) {
+      if (!state.currentDrink) return shotLabel(count);
+      if (count === "all") return `${pluralizedStakeUnit(2)} for everyone`;
+      const iconCount = Number(count);
+      return `${iconCount} ${pluralizedStakeUnit(iconCount)}`;
+    }
+
+    function stakeIconMarkup(count, className = "") {
+      if (!state.currentDrink) return shotIconMarkup(count, className);
+
+      const iconCount = count === "all" ? 9 : Number(count);
+      const label = stakeLabel(count);
+      const icons = Array.from({ length: iconCount }, () => drinkIconMarkup(state.currentDrink, "stake")).join("");
+      return `<span class="shot-strip ${className}" role="img" aria-label="${label}">${icons}</span>`;
+    }
+
     function ruleVisualMarkup(questionNumber = state.seatQuestionNumber, variant = "") {
       const rule = getRule(questionNumber);
-      const rewardLabel = rule.rewardShots === "all" ? "everyone drinks if correct" : `give ${rule.rewardShots} if correct`;
-      const penaltyLabel = `drink ${rule.penaltyShots} if wrong`;
+      const rewardLabel = rule.rewardShots === "all" ? `${stakeLabel(rule.rewardShots)} if correct` : `give ${stakeLabel(rule.rewardShots)} if correct`;
+      const penaltyLabel = `${stakeLabel(rule.penaltyShots)} if wrong`;
 
       return `
         <span class="rule-visual ${variant}" aria-label="${currentRuleText(questionNumber)}">
           <span class="rule-line reward" aria-label="${rewardLabel}">
             <span class="rule-sign" aria-hidden="true">+</span>
-            ${shotIconMarkup(rule.rewardShots)}
+            ${stakeIconMarkup(rule.rewardShots)}
           </span>
           <span class="rule-line penalty" aria-label="${penaltyLabel}">
             <span class="rule-sign" aria-hidden="true">-</span>
-            ${shotIconMarkup(rule.penaltyShots)}
+            ${stakeIconMarkup(rule.penaltyShots)}
           </span>
         </span>
       `;
@@ -2059,10 +2111,10 @@
 
     function setShotButton(button, label, count) {
       const actionIcon = label === "Give" ? uiIcons.give : label === "Everyone" ? uiIcons.users : "";
-      const spokenLabel = label ? `${label} ${shotLabel(count)}` : shotLabel(count);
+      const spokenLabel = label ? `${label} ${stakeLabel(count)}` : stakeLabel(count);
       button.classList.remove("icon-button");
       button.classList.add("shot-action");
-      button.innerHTML = `<span class="button-content">${actionIcon}${shotIconMarkup(count)}</span>`;
+      button.innerHTML = `<span class="button-content">${actionIcon}${stakeIconMarkup(count)}</span>`;
       button.setAttribute("aria-label", spokenLabel);
       button.title = spokenLabel;
     }
