@@ -109,16 +109,16 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-now">
     <h3 id="backlog-now">Now</h3>
     <article class="data-platform-card">
-      <strong>Choose the first playable signal</strong>
-      <span>Pick one journey to build end to end before adding more paths.</span>
-    </article>
-    <article class="data-platform-card">
-      <strong>Create Isak knowledge file</strong>
-      <span>Make Isak the main data platform guide with reviewable Markdown knowledge.</span>
-    </article>
-    <article class="data-platform-card">
       <strong>Improve world interaction</strong>
       <span>Make walking, tapping people, and following pipes feel natural on desktop and mobile.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Explain payment event journey</strong>
+      <span>Make a tap or send payment event readable from source to data product.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Connect character knowledge</strong>
+      <span>Use the Markdown knowledge files as source material for richer dialogue.</span>
     </article>
   </section>
 
@@ -200,6 +200,18 @@ event version more convincing.
       <strong>First house shell</strong>
       <span>The first scene has rooms, animated data pipes, avatars, and repository blueprints.</span>
     </article>
+    <article class="data-platform-card">
+      <strong>First playable signal chosen</strong>
+      <span>The first journey is a payment event, such as tapping or sending to a person.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>First knowledge files</strong>
+      <span>Isak, Param, Kien, and Malo now have public-safe Markdown source files.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>First repository blueprints chosen</strong>
+      <span>modern-data-platform-example and vipps-isakrs are the first public examples.</span>
+    </article>
   </section>
 </div>
 
@@ -262,6 +274,35 @@ First concepts to explain:
 - Analytics projects.
 - Data export.
 - Data products.
+
+First signal journey:
+
+- A payment event, such as tapping to pay or sending money to a person.
+- The public story should stay conceptual and must not expose real Vipps
+  MobilePay payment data or real user data.
+- The first path should show the event becoming a platform signal, landing in a
+  storage account, moving through Databricks and Spark-style processing, being
+  modeled with dbt-style transformations, and then becoming useful as a data
+  product, analytics project, or declared data export.
+
+Technologies that can be named:
+
+- Databricks.
+- dbt.
+- GitHub Actions.
+- Spark.
+- Storage account, with Azure Storage Account or S3 as concrete examples.
+- GitHub repositories as public, inspectable examples.
+
+Large language model boundary:
+
+- Characters can answer public-safe conceptual questions about data platform
+  design, technologies, repositories, rooms, and the visible signal journey.
+- Characters must not expose real Vipps MobilePay data, real Vipps MobilePay
+  user data, secrets, private source images, or sensitive internal details.
+- If internal and public modes are ever added, they should be separated clearly.
+- Until that exists, default to public-safe explanations and metaphorical
+  examples.
 
 Architecture direction:
 
@@ -327,6 +368,70 @@ Possible direction:
 
 None of this is locked in yet.
 
+## First Playable Journey
+
+The first playable journey is a payment event.
+
+The visitor should be able to follow a payment-related signal, such as a tap or
+send action, without seeing real payment data or real user data.
+
+Suggested journey:
+
+1. A person taps or sends a payment.
+2. The application emits a conceptual payment event.
+3. The event is captured by the ingestion process.
+4. The event lands in a storage account, such as Azure Storage Account or S3.
+5. Databricks and Spark-style processing validate and shape the data.
+6. dbt-style models turn the signal into reusable analytical meaning.
+7. An analytics project consumes the modeled data.
+8. A declared data export sends an approved output to a destination.
+9. A data product presents governed, useful data with ownership and support.
+
+The experience should show both the happy path and the platform thinking around
+it: ownership, contracts, quality gates, lineage, privacy, and safe use.
+
+## Real Artifacts
+
+"Real artifacts" means evidence that a character, room, or repository
+conversation is grounded in something concrete instead of invented decoration.
+
+Artifacts can include:
+
+- Public GitHub repositories.
+- Specific public files or examples.
+- Local personal repository paths that are safe to summarize.
+- Documentation pages.
+- GitHub Actions workflows.
+- Markdown knowledge files for characters.
+- A dashboard, notebook, table, model, or job when it is safe and approved to
+  mention.
+
+For the first version, use public-safe artifacts:
+
+- `https://github.com/isakrs/modern-data-platform-example` for the operating
+  model, contracts, governance, analytics projects, data products, and declared
+  exports.
+- `https://github.com/isakrs/vipps-isakrs` for the live Three.js/static-site
+  implementation, automation direction, backlog, and feedback loop.
+- `https://github.com/isakrs/opcua-influxdb-grafana-dummy` or
+  `https://github.com/isakrs/node-opcua-logger` later as older sensor-event
+  examples if the house needs a non-payment contrast journey.
+
+This means the first characters can explain real, public examples without
+claiming ownership over sensitive internal systems.
+
+## Character Knowledge Files
+
+These files are the first public-safe source material for future character
+conversations:
+
+- [Isak](/data-platform-example/characters/isak.html)
+- [Param](/data-platform-example/characters/param.html)
+- [Kien](/data-platform-example/characters/kien.html)
+- [Malo](/data-platform-example/characters/malo.html)
+
+They should stay reviewable, concise, and safe for the public version.
+
 ## GitHub Repository Conversations
 
 Characters should also be able to talk about public GitHub repositories on
@@ -363,6 +468,16 @@ Possible first treatment:
 4. Add a link out to the repository for visitors who want to go deeper.
 5. Let the automation notice new public repository work and suggest better
    repository dialogue when it clarifies the experience.
+
+First repositories to represent:
+
+- `modern-data-platform-example`: the main blueprint for producer-owned
+  contracts, platform validation, governed access, analytics projects, declared
+  exports, and data products.
+- `vipps-isakrs`: the repository that contains this public experience, the
+  instructions, the backlog, the feedback form, and the automation direction.
+- `opcua-influxdb-grafana-dummy` or `node-opcua-logger`: optional later
+  historical examples for sensor-style event ingestion and observability.
 
 ## Written Explainer Direction
 
@@ -613,6 +728,16 @@ A person taps a button in an application. The click becomes an event. The event
 is captured, landed, validated, modeled, and eventually used to understand
 behavior, product quality, or business impact.
 
+### Payment Event
+
+A person taps to pay or sends money to another person. The application emits a
+conceptual payment event. The platform captures the event, lands it in a storage
+account, processes it with Databricks and Spark-style jobs, models it with
+dbt-style transformations, and serves safe, governed outputs through analytics
+projects, declared data exports, or data products.
+
+This journey must never show real payment data or real user data.
+
 ### Temperature Reading
 
 A sensor emits a temperature reading. The reading flows through capture,
@@ -828,33 +953,47 @@ Examples of "only more":
     especially when a repository demonstrates a data platform concept, a room,
     a pipe, or a consulting showcase idea.
 
+18. First playable journey:
+    a payment event, such as tapping to pay or sending money to a person.
+
+19. First public repositories:
+    `modern-data-platform-example` and `vipps-isakrs` should be represented
+    first. Older sensor-event repositories can be used later as contrast
+    examples.
+
+20. Real artifacts:
+    "real artifacts" means concrete sources such as public repositories,
+    documentation, workflows, files, dashboards, models, notebooks, jobs, or
+    Markdown knowledge files. Use public-safe artifacts first.
+
+21. Character approval assumption:
+    proceed as if the first teammate-inspired characters are approved for now,
+    with the understanding that they can be removed, anonymized, or changed if
+    someone does not approve after seeing it.
+
+22. Large language model safety:
+    use judgement, keep answers public-safe by default, and do not expose real
+    Vipps MobilePay data, real user data, secrets, or sensitive internal
+    details.
+
+23. Named technologies:
+    Databricks, dbt, GitHub Actions, Spark, storage account, Azure Storage
+    Account, and S3 can be named when useful.
+
+24. Minimum playable scope:
+    the work can move into Three.js when one concept is explained or when the
+    contours of the page show that it is moving in the right direction.
+
 ## Remaining Clarifying Questions
 
-1. Which exact signal should become the first playable journey: application
-   button click, payment event, temperature reading, scheduled export,
-   storage-account-to-database movement, or another signal?
+1. Should the first repository links open in the same tab or as an explicit
+   "learn more" action from the GitHub room?
 
-2. Which public GitHub repositories from Isak's account should be represented
-   first inside the house?
-
-3. Which real artifacts should ground Isak, Param, Kien, and Malo in the first
-   version?
-
-4. Who has approved being represented with recognizable likeness, speech style,
-   or behavior style?
-
-5. What should the first large language model integration be allowed to answer:
-   only public-safe conceptual questions, internal Vipps MobilePay questions for
-   logged-in users, or both with separate modes?
-
-6. Which technologies should be named directly in the public version, and which
-   should stay metaphorical or customer-specific?
-
-7. What is the minimum playable scope before this should move from Markdown
-   brief into the first Three.js implementation?
+2. Which character should explain dbt modeling first: Param, Kien, or both
+   together?
 
 ## Suggested Next Step
 
-Choose the first playable signal journey and the first artifacts for Isak,
-Param, Kien, and Malo. After that, build the first Three.js room-and-pipe
-prototype instead of expanding the brief much further.
+Make the Three.js scene explain the payment event journey more clearly by
+connecting visible pipe motion, room labels, and character dialogue to the same
+tap-or-send story.

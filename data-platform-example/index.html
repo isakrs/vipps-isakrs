@@ -177,6 +177,39 @@
         min-height: 38px;
       }
 
+      .repository-links {
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .repository-links[hidden] {
+        display: none;
+      }
+
+      .repository-links a {
+        align-items: center;
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        display: flex;
+        font-size: 0.78rem;
+        font-weight: 800;
+        justify-content: space-between;
+        min-height: 34px;
+        padding: 8px 10px;
+        text-decoration: none;
+      }
+
+      .repository-links a:hover,
+      .repository-links a:focus-visible {
+        outline: 2px solid rgba(255, 91, 36, 0.35);
+        outline-offset: 2px;
+      }
+
       .focus-button:hover,
       .focus-button:focus-visible,
       .nav a:hover,
@@ -294,7 +327,7 @@
     <header class="topbar">
       <div class="brand">
         <strong>Data Platform House</strong>
-        <span id="scene-summary">Follow a signal through rooms, pipes, people, and repositories.</span>
+        <span id="scene-summary">Follow a payment event through rooms, pipes, people, and repositories.</span>
       </div>
       <nav class="nav" aria-label="Data Platform House links">
         <a href="/data-platform-example/instructions/">Instructions</a>
@@ -306,8 +339,8 @@
     <section class="panel" aria-label="Current room">
       <h2 id="current-room">Signal Hall</h2>
       <p id="current-copy">
-        Data starts outside the house, enters ingestion, becomes trusted enough
-        for analytics, and leaves as products, exports, or decisions.
+        A tap or send payment event enters ingestion, lands safely, becomes
+        modeled data, and leaves as products, exports, or decisions.
       </p>
       <div class="focus-grid" aria-label="Focus rooms">
         <button class="focus-button" type="button" data-focus="ingestion">Ingestion</button>
@@ -316,6 +349,11 @@
         <button class="focus-button" type="button" data-focus="product">Product</button>
         <button class="focus-button" type="button" data-focus="github">GitHub</button>
         <button class="focus-button" type="button" data-focus="house">House</button>
+      </div>
+      <div class="repository-links" id="repository-links" hidden aria-label="Public repository links">
+        <a href="https://github.com/isakrs/modern-data-platform-example">modern-data-platform-example <span>Blueprint</span></a>
+        <a href="https://github.com/isakrs/vipps-isakrs">vipps-isakrs <span>This world</span></a>
+        <a href="https://github.com/isakrs/opcua-influxdb-grafana-dummy">opcua-influxdb-grafana-dummy <span>Later</span></a>
       </div>
     </section>
 
@@ -351,6 +389,7 @@
       const loading = document.querySelector("#loading");
       const currentRoom = document.querySelector("#current-room");
       const currentCopy = document.querySelector("#current-copy");
+      const repositoryLinks = document.querySelector("#repository-links");
       const dialogue = document.querySelector("#dialogue");
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
@@ -389,28 +428,28 @@
 
       const roomDetails = {
         house: {
-          title: "Signal Hall",
-          copy: "The house shows one signal becoming useful through ingestion, analytics work, export, and data product serving."
+          title: "Payment Signal Hall",
+          copy: "The first journey follows a payment event, such as tapping to pay or sending money, without exposing real payment data."
         },
         ingestion: {
-          title: "Ingestion Room",
-          copy: "Files and events enter here. The first pipe makes landing, validation, and freshness visible."
+          title: "Payment Ingestion Room",
+          copy: "The event is captured, checked, and landed in a storage account such as Azure Storage Account or S3."
         },
         analytics: {
-          title: "Analytics Project Room",
-          copy: "This room turns trusted platform data into models and reusable project work."
+          title: "dbt Modeling Room",
+          copy: "Databricks, Spark, and dbt-style transformations turn the safe payment signal into reusable analytical meaning."
         },
         export: {
           title: "Data Export Room",
-          copy: "Exports leave the house with a declared destination, schedule, and owner."
+          copy: "Declared exports leave with a destination, owner, schedule, and data contract instead of leaking raw operational data."
         },
         product: {
           title: "Data Product Room",
-          copy: "The signal becomes something people can use: a governed table, insight, dashboard, alert, or downstream feature."
+          copy: "The payment signal becomes a governed table, insight, dashboard, alert, or downstream data product."
         },
         github: {
           title: "GitHub Library",
-          copy: "Public repositories from Isak's account become blueprints and examples that characters can explain."
+          copy: "Public repositories from Isak's account become blueprints: platform operating model, this Three.js world, and later sensor-event examples."
         }
       };
 
@@ -424,9 +463,9 @@
       };
 
       const rooms = [
-        { id: "ingestion", name: "Ingestion", x: -7.5, z: -3.8, color: 0xff7a45 },
-        { id: "analytics", name: "Analytics", x: -1.7, z: -3.8, color: 0x2f9e73 },
-        { id: "export", name: "Export", x: 4.3, z: -3.8, color: 0x2c7be5 },
+        { id: "ingestion", name: "Payment Ingestion", x: -7.5, z: -3.8, color: 0xff7a45 },
+        { id: "analytics", name: "dbt Models", x: -1.7, z: -3.8, color: 0x2f9e73 },
+        { id: "export", name: "Declared Export", x: 4.3, z: -3.8, color: 0x2c7be5 },
         { id: "github", name: "GitHub Library", x: -5.5, z: 3.4, color: 0xf2bd2a },
         { id: "product", name: "Data Product", x: 4.8, z: 3.4, color: 0x7c5cff }
       ];
@@ -608,11 +647,11 @@
       }
 
       function addPipes() {
-        makePipe("Storage", [-10.7, 0.75, -3.8], [-7.5, 0.75, -3.8], 0xff5b24, "batch", 3);
-        makePipe("Incremental", [-6.1, 0.85, -3.8], [-3.1, 0.85, -3.8], 0x2f9e73, "incremental", 5);
-        makePipe("Model", [-0.4, 0.85, -3.8], [3.1, 0.85, -3.8], 0x2c7be5, "incremental", 4);
-        makePipe("Export", [4.7, 0.8, -2.4], [4.9, 0.8, 1.85], 0x7c5cff, "export", 4);
-        makePipe("Repository", [-4.8, 0.75, 2.1], [-2.1, 0.75, -2.4], 0xf2bd2a, "reference", 3);
+        makePipe("Tap or send", [-10.7, 0.75, -3.8], [-7.5, 0.75, -3.8], 0xff5b24, "stream", 5);
+        makePipe("Storage account", [-6.1, 0.85, -3.8], [-3.1, 0.85, -3.8], 0x2f9e73, "incremental", 5);
+        makePipe("Spark + dbt", [-0.4, 0.85, -3.8], [3.1, 0.85, -3.8], 0x2c7be5, "incremental", 4);
+        makePipe("Declared export", [4.7, 0.8, -2.4], [4.9, 0.8, 1.85], 0x7c5cff, "export", 4);
+        makePipe("GitHub Actions", [-4.8, 0.75, 2.1], [-2.1, 0.75, -2.4], 0xf2bd2a, "reference", 3);
       }
 
       function makePipe(name, from, to, color, type, count) {
@@ -651,7 +690,7 @@
           packet.userData = {
             curve,
             offset: index / count,
-            speed: type === "batch" ? 0.14 : type === "export" ? 0.22 : 0.18,
+            speed: type === "batch" ? 0.14 : type === "stream" ? 0.3 : type === "export" ? 0.22 : 0.18,
             type
           };
           packets.push(packet);
@@ -666,7 +705,7 @@
           position: [-6.35, 0, -2.6],
           colors: [0xff5b24, 0x243447, 0xf1c7a8],
           dialogue:
-            "I am watching the ingestion pipe and the storage-to-database movement. Ask me why the signal lands, how it gets validated, and which repository blueprint explains the platform idea."
+            "I am watching a payment event enter the house. The important trick is to explain the tap or send journey without exposing real payment data or real user data."
         });
 
         makePerson({
@@ -675,7 +714,7 @@
           position: [-1.35, 0, -2.35],
           colors: [0x2f9e73, 0x27384d, 0xd8a17d],
           dialogue:
-            "I am in the analytics project room. This is where trustworthy platform data becomes models that people can reuse instead of rebuilding the same logic."
+            "I am in the dbt modeling room. Databricks and Spark shape the payment signal, then dbt-style models make the result understandable for analytics projects."
         });
 
         makePerson({
@@ -684,7 +723,7 @@
           position: [-0.35, 0, -4.75],
           colors: [0x2c7be5, 0x1f2a44, 0xe0b08f],
           dialogue:
-            "I am pairing on the model bench. The important thing here is lineage: what entered, what changed, and how someone can trust the output."
+            "I am pairing on lineage and data quality. For a payment event, we need to know what entered, what changed, and why the modeled output can be trusted."
         });
 
         makePerson({
@@ -693,7 +732,7 @@
           position: [-4.9, 0, 4.35],
           colors: [0xf2bd2a, 0x27384d, 0xc98f6f],
           dialogue:
-            "I am at the blueprint table. The house should show architecture choices, not only happy data paths: ownership, gates, exports, and where the design bends."
+            "I am at the blueprint table. modern-data-platform-example explains the operating model, and vipps-isakrs shows how this world is built and automated."
         });
       }
 
@@ -766,6 +805,14 @@
         blueprint.position.set(0, 0.71, 0);
         table.add(blueprint);
 
+        const siteBlueprint = new THREE.Mesh(
+          new THREE.BoxGeometry(0.95, 0.035, 0.38),
+          new THREE.MeshStandardMaterial({ color: 0xff5b24, emissive: 0xff5b24, emissiveIntensity: 0.16 })
+        );
+        siteBlueprint.position.set(0.25, 0.76, 0.22);
+        siteBlueprint.rotation.y = -0.28;
+        table.add(siteBlueprint);
+
         for (const x of [-0.75, 0.75]) {
           for (const z of [-0.32, 0.32]) {
             const leg = new THREE.Mesh(
@@ -780,6 +827,8 @@
 
         scene.add(table);
         scene.add(makeLabel("repository blueprints", new THREE.Vector3(-5.6, 1.45, 3.35), 0xf2bd2a, 0.62));
+        scene.add(makeLabel("modern data platform", new THREE.Vector3(-5.95, 1.12, 3.02), 0x2c7be5, 0.46));
+        scene.add(makeLabel("vipps-isakrs", new THREE.Vector3(-5.2, 1.08, 3.72), 0xff5b24, 0.46));
       }
 
       function addSmokePuffs() {
@@ -846,6 +895,7 @@
         const details = roomDetails[id] ?? roomDetails.house;
         currentRoom.textContent = details.title;
         currentCopy.textContent = details.copy;
+        repositoryLinks.hidden = id !== "github";
       }
 
       function pickCharacter(event) {
