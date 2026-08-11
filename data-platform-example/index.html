@@ -471,6 +471,11 @@
     <p class="guide-copy" id="guide-copy">Start with the whole house. Data arrives from teams and systems, moves through governed platform rooms, and leaves as tables, dashboards, exports, and partner deliveries.</p>
     <div class="stepper" aria-label="Presentation scenes">
       <button type="button" data-view="overview" aria-pressed="true">House</button>
+      <button type="button" data-view="rooms" aria-pressed="false">Rooms</button>
+      <button type="button" data-view="producers" aria-pressed="false">Producer</button>
+      <button type="button" data-view="governance" aria-pressed="false">Govern</button>
+      <button type="button" data-view="analytics" aria-pressed="false">Analytics</button>
+      <button type="button" data-view="exports" aria-pressed="false">Exports</button>
       <button type="button" data-view="incoming" aria-pressed="false">Incoming</button>
       <button type="button" data-view="core" aria-pressed="false">Core</button>
       <button type="button" data-view="models" aria-pressed="false">Models</button>
@@ -484,7 +489,7 @@
     <div class="portrait" id="dialogue-portrait" aria-hidden="true"></div>
     <div>
       <strong id="dialogue-speaker">Isak</strong>
-      <p id="dialogue-text">Press a character or a scene button to ask what they are doing.</p>
+      <p id="dialogue-text">Press a character, room, pipe, or scene button to ask what they are doing.</p>
     </div>
   </aside>
 
@@ -548,6 +553,9 @@
     const mixers = [];
     const characterRecords = [];
     const roomLabelSprites = [];
+    const interiorMeshes = [];
+    const interiorLabelSprites = [];
+    const interiorViews = new Set(["rooms", "producers", "governance", "analytics", "exports"]);
     const clock = new THREE.Clock();
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -556,6 +564,11 @@
         heading: "Meet Isak by the platform pipe",
         kicker: "Data platform guide",
         copy: "Start with the whole house. Data arrives from teams and systems, moves through governed platform rooms, and leaves as tables, dashboards, exports, and partner deliveries."
+      },
+      rooms: {
+        heading: "Step inside the platform house",
+        kicker: "Rooms are platform responsibilities",
+        copy: "Inside the house, each room is a shared interface: producers bring contracts, platform plumbers validate and govern, analytics teams request access by purpose, and exports leave through declared routes."
       },
       incoming: {
         heading: "Incoming pipes need ownership",
@@ -586,6 +599,26 @@
         heading: "Ask Isak about the platform pipe",
         kicker: "Where to start",
         copy: "If the question is about how the data platform itself fits together, start with Isak. The orange pipe marks the help route for platform patterns, boundaries, and next steps."
+      },
+      producers: {
+        heading: "Producer contract room",
+        kicker: "Data enters with ownership",
+        copy: "Producer configurations describe storage, paths, formats, ownership, service expectations, personal data markings, and whether access should be open or approval-based."
+      },
+      governance: {
+        heading: "Governance and validation room",
+        kicker: "The platform checks the plumbing",
+        copy: "This room turns configuration into dependable platform behavior: schema checks, naming rules, grants, ownership metadata, quality signals, and deployment safety."
+      },
+      analytics: {
+        heading: "Analytics project room",
+        kicker: "Access follows purpose",
+        copy: "Analytics teams declare the project, owner, technical lead, business purpose, dates, access group, and tables they need instead of asking for informal one-off permission."
+      },
+      exports: {
+        heading: "Declared export room",
+        kicker: "Outgoing data becomes a managed promise",
+        copy: "Exports are configured because downstream serving should be repeatable, observable, owned, and reviewable like the rest of the platform."
       }
     };
 
@@ -594,6 +627,11 @@
         speaker: "Guide",
         portrait: "#ff5b24",
         text: "Welcome to the data platform house. Pick a person or a pipe, and they will tell you what they are working on."
+      },
+      rooms: {
+        speaker: "House hallway",
+        portrait: "#1f7a5c",
+        text: "You stepped inside. Each room has a person who can explain their part of the platform operating model."
       },
       incoming: {
         speaker: "Incoming pipe",
@@ -639,27 +677,77 @@
         speaker: "Malo",
         portrait: "#111317",
         text: "I am sketching the house architecture. Every new pipe should have a reason, an owner, and a clean route through the platform."
+      },
+      producers: {
+        speaker: "Producer room",
+        portrait: "#3167d8",
+        text: "Source teams publish through contracts: storage location, file format, columns, ownership, sensitivity, and how fresh the data should be."
+      },
+      governance: {
+        speaker: "Governance room",
+        portrait: "#1f7a5c",
+        text: "The platform checks the contract, builds the durable table, applies grants, and keeps the recovery story visible."
+      },
+      analytics: {
+        speaker: "Analytics room",
+        portrait: "#6f55d9",
+        text: "Access starts with a purpose. A project group asks for the tables it needs, and the reason travels with the request."
+      },
+      exports: {
+        speaker: "Export room",
+        portrait: "#f0bd3e",
+        text: "Curated data leaves through declared exports, so downstream systems get a route that can be observed and owned."
+      },
+      producer_steward: {
+        speaker: "Producer steward",
+        portrait: "#3167d8",
+        text: "I brought the source contract. The platform should know where the files land, what the columns mean, and who answers when the pipe looks wrong."
+      },
+      platform_steward: {
+        speaker: "Platform steward",
+        portrait: "#1f7a5c",
+        text: "I validate the configuration and turn it into platform behavior: processing jobs, published tables, grants, checks, and alerts."
+      },
+      analytics_lead: {
+        speaker: "Analytics lead",
+        portrait: "#6f55d9",
+        text: "I am here with a project purpose, an access group, and the tables we need. That makes review much easier than private permission chains."
+      },
+      export_operator: {
+        speaker: "Export operator",
+        portrait: "#f0bd3e",
+        text: "I run the outgoing delivery room. A declared export says where data goes, who writes it, when it runs, and why it exists."
       }
     };
 
     const desktopViews = {
       overview: { position: new THREE.Vector3(9, 6, 11), target: new THREE.Vector3(0.6, 1.7, 0.1), highlight: "all" },
+      rooms: { position: new THREE.Vector3(3.9, 4.7, 6.1), target: new THREE.Vector3(0.15, 1.55, 0.55), highlight: "all" },
       incoming: { position: new THREE.Vector3(-10, 4.8, 6.2), target: new THREE.Vector3(-1.9, 1.6, 0.15), highlight: "incoming" },
       core: { position: new THREE.Vector3(4.5, 6.6, 7.7), target: new THREE.Vector3(0.25, 2.3, -0.2), highlight: "core" },
       models: { position: new THREE.Vector3(5.2, 4.4, 7.2), target: new THREE.Vector3(1.15, 1.85, 2.0), highlight: "models" },
       architect: { position: new THREE.Vector3(-4.7, 4.2, 7.4), target: new THREE.Vector3(-2.2, 1.55, 2.0), highlight: "architect" },
       outgoing: { position: new THREE.Vector3(10.6, 4.9, 4.2), target: new THREE.Vector3(2.4, 1.55, 0.1), highlight: "outgoing" },
-      isak: { position: new THREE.Vector3(6.4, 3.4, 5.8), target: new THREE.Vector3(4.2, 1.55, 1.55), highlight: "isak" }
+      isak: { position: new THREE.Vector3(6.4, 3.4, 5.8), target: new THREE.Vector3(4.2, 1.55, 1.55), highlight: "isak" },
+      producers: { position: new THREE.Vector3(-2.8, 2.55, 5.25), target: new THREE.Vector3(-1.32, 1.12, 1.02), highlight: "incoming" },
+      governance: { position: new THREE.Vector3(1.05, 3.45, 5.35), target: new THREE.Vector3(-0.15, 1.8, 0.15), highlight: "core" },
+      analytics: { position: new THREE.Vector3(3.35, 3.35, 4.85), target: new THREE.Vector3(1.34, 2.02, -0.74), highlight: "models" },
+      exports: { position: new THREE.Vector3(4.65, 2.65, 4.75), target: new THREE.Vector3(1.56, 1.16, 1.05), highlight: "outgoing" }
     };
 
     const mobileViews = {
       overview: { position: new THREE.Vector3(13.5, 8.2, 16.5), target: new THREE.Vector3(0.7, 1.6, 0.55), highlight: "all" },
+      rooms: { position: new THREE.Vector3(7.5, 6.8, 11.8), target: new THREE.Vector3(0.18, 1.62, 0.55), highlight: "all" },
       incoming: { position: new THREE.Vector3(-15, 7.2, 9.4), target: new THREE.Vector3(-2.1, 1.45, 0.35), highlight: "incoming" },
       core: { position: new THREE.Vector3(7.2, 8.8, 13.5), target: new THREE.Vector3(0.15, 2.2, -0.1), highlight: "core" },
       models: { position: new THREE.Vector3(9.3, 6.8, 11.8), target: new THREE.Vector3(1.12, 1.8, 2.05), highlight: "models" },
       architect: { position: new THREE.Vector3(-8.3, 6.1, 11.2), target: new THREE.Vector3(-2.2, 1.52, 2.0), highlight: "architect" },
       outgoing: { position: new THREE.Vector3(15, 7.1, 8.2), target: new THREE.Vector3(2.5, 1.5, 0.35), highlight: "outgoing" },
-      isak: { position: new THREE.Vector3(9.5, 5.8, 8.4), target: new THREE.Vector3(4.25, 1.55, 1.75), highlight: "isak" }
+      isak: { position: new THREE.Vector3(9.5, 5.8, 8.4), target: new THREE.Vector3(4.25, 1.55, 1.75), highlight: "isak" },
+      producers: { position: new THREE.Vector3(-5.8, 4.7, 9.1), target: new THREE.Vector3(-1.32, 1.1, 1.03), highlight: "incoming" },
+      governance: { position: new THREE.Vector3(3.2, 5.6, 9.8), target: new THREE.Vector3(-0.12, 1.82, 0.12), highlight: "core" },
+      analytics: { position: new THREE.Vector3(6.6, 5.4, 8.7), target: new THREE.Vector3(1.34, 2.0, -0.72), highlight: "models" },
+      exports: { position: new THREE.Vector3(8.2, 4.8, 8.4), target: new THREE.Vector3(1.58, 1.14, 1.04), highlight: "outgoing" }
     };
 
     let activeView = "overview";
@@ -744,6 +832,7 @@
     roof.add(roofRight);
     house.add(roof);
 
+    const windowPanes = [];
     function windowPane(x, y, z) {
       const mesh = new THREE.Mesh(
         new THREE.BoxGeometry(0.62, 0.54, 0.045),
@@ -752,6 +841,7 @@
       mesh.position.set(x, y, z);
       mesh.castShadow = true;
       house.add(mesh);
+      windowPanes.push(mesh);
       return mesh;
     }
 
@@ -941,6 +1031,96 @@
     addDecal(houseWalls, "lineage", [0.05, 2.32, 2.28], [0, 0, 0], [1.08, 0.42, 0.42], "#1f7a5c");
     addDecal(houseWalls, "catalog", [-1.22, 2.05, 2.28], [0, 0, 0], [1.02, 0.42, 0.42], "#f0bd3e");
 
+    const interiorPanelMaterial = new THREE.MeshStandardMaterial({
+      color: 0xd9ded8,
+      transparent: true,
+      opacity: 0,
+      roughness: 0.78,
+      metalness: 0.02
+    });
+
+    function addInteriorPanel(width, height, depth, position) {
+      const panel = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), interiorPanelMaterial.clone());
+      panel.position.set(...position);
+      panel.castShadow = false;
+      panel.receiveShadow = true;
+      panel.userData.interiorOpacity = 0.32;
+      panel.visible = false;
+      scene.add(panel);
+      interiorMeshes.push(panel);
+      return panel;
+    }
+
+    addInteriorPanel(0.06, 1.52, 3.72, [0, 1.38, 0.05]);
+    addInteriorPanel(4.55, 1.52, 0.06, [0, 1.38, 0.1]);
+    addInteriorPanel(0.06, 1.05, 3.72, [0.05, 2.36, 0.05]);
+    addInteriorPanel(4.55, 1.05, 0.06, [0, 2.36, 0.1]);
+
+    function createRoomZone({ id, label, color, position, size, labelPosition }) {
+      const material = new THREE.MeshStandardMaterial({
+        color,
+        transparent: true,
+        opacity: 0,
+        roughness: 0.7,
+        emissive: color,
+        emissiveIntensity: 0.08
+      });
+      const floor = new THREE.Mesh(new THREE.BoxGeometry(size[0], 0.05, size[2]), material);
+      floor.position.set(position[0], position[1], position[2]);
+      floor.receiveShadow = true;
+      floor.userData.interiorOpacity = 0.28;
+      floor.visible = false;
+      scene.add(floor);
+      interiorMeshes.push(floor);
+
+      const hit = new THREE.Mesh(
+        new THREE.BoxGeometry(size[0], size[1], size[2]),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+      );
+      hit.position.set(position[0], position[1] + size[1] * 0.5, position[2]);
+      hit.userData = { name: label, type: id, isInteractive: true, enabledViews: ["rooms"] };
+      scene.add(hit);
+      interactiveObjects.push(hit);
+
+      const labelSprite = addLabel(label, new THREE.Vector3(...labelPosition), `#${color.toString(16).padStart(6, "0")}`);
+      labelSprite.material.opacity = 0;
+      interiorLabelSprites.push({ id, sprite: labelSprite });
+      return { id, floor, hit, labelSprite };
+    }
+
+    createRoomZone({
+      id: "producers",
+      label: "Producer contracts",
+      color: palette.blue,
+      position: [-1.28, 0.72, 1.02],
+      size: [2.0, 1.35, 1.82],
+      labelPosition: [-1.38, 2.0, 1.82]
+    });
+    createRoomZone({
+      id: "governance",
+      label: "Governance checks",
+      color: palette.green,
+      position: [-1.28, 1.7, -0.92],
+      size: [2.0, 1.05, 1.64],
+      labelPosition: [-1.38, 2.95, -0.32]
+    });
+    createRoomZone({
+      id: "analytics",
+      label: "Analytics projects",
+      color: palette.purple,
+      position: [1.28, 1.7, -0.92],
+      size: [2.0, 1.05, 1.64],
+      labelPosition: [1.28, 2.95, -0.32]
+    });
+    createRoomZone({
+      id: "exports",
+      label: "Declared exports",
+      color: palette.gold,
+      position: [1.28, 0.72, 1.02],
+      size: [2.0, 1.35, 1.82],
+      labelPosition: [1.28, 2.0, 1.82]
+    });
+
     function makeValve(position, color) {
       const valve = new THREE.Group();
       const ring = new THREE.Mesh(
@@ -1011,7 +1191,9 @@
       skinColor = palette.skin,
       helmetColor = palette.steel,
       glasses = false,
-      blueprint = false
+      blueprint = false,
+      location = "outside",
+      focusView = null
     }) {
       const group = new THREE.Group();
       group.name = `${id}-avatar`;
@@ -1151,7 +1333,9 @@
         new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
       );
       hit.position.set(0, 0.88, 0);
+      const enabledViews = location === "inside" ? ["rooms", focusView].filter(Boolean) : null;
       hit.userData = { name, type: id, isInteractive: true };
+      if (enabledViews) hit.userData.enabledViews = enabledViews;
       group.add(hit);
       interactiveObjects.push(hit);
 
@@ -1176,7 +1360,7 @@
       work.setEffectiveWeight(blueprint ? 0.28 : 0.64);
       mixers.push(mixer);
 
-      const record = { id, group, mixer, actions: { idle, work }, activeAction: idle, label: nameSprite };
+      const record = { id, group, mixer, actions: { idle, work }, activeAction: idle, label: nameSprite, hit, location, focusView };
       characterRecords.push(record);
       return record;
     }
@@ -1218,6 +1402,35 @@
       dbtBench.add(block);
     });
 
+    function addInteriorProp(width, height, depth, color, position, rotationY = 0) {
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(width, height, depth),
+        new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 0, roughness: 0.62, metalness: 0.03 })
+      );
+      mesh.position.set(...position);
+      mesh.rotation.y = rotationY;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.userData.interiorOpacity = 1;
+      mesh.visible = false;
+      scene.add(mesh);
+      interiorMeshes.push(mesh);
+      return mesh;
+    }
+
+    addInteriorProp(0.88, 0.12, 0.44, 0x3e4651, [-1.42, 0.92, 1.12], 0.08);
+    addInteriorProp(0.28, 0.2, 0.22, palette.blue, [-1.7, 1.08, 1.08], 0.1);
+    addInteriorProp(0.3, 0.18, 0.22, palette.green, [-1.36, 1.08, 1.18], -0.08);
+    addInteriorProp(0.86, 0.12, 0.44, 0x2f3b35, [-1.15, 1.9, -0.9], -0.12);
+    addInteriorProp(0.22, 0.22, 0.22, palette.green, [-1.4, 2.08, -0.84], 0.2);
+    addInteriorProp(0.22, 0.22, 0.22, palette.gold, [-1.1, 2.08, -0.98], -0.2);
+    addInteriorProp(0.9, 0.12, 0.44, 0x433a68, [1.34, 1.9, -0.9], 0.18);
+    addInteriorProp(0.24, 0.18, 0.24, palette.purple, [1.12, 2.08, -0.82], 0.2);
+    addInteriorProp(0.24, 0.18, 0.24, palette.blue, [1.44, 2.08, -1.0], -0.1);
+    addInteriorProp(0.9, 0.12, 0.44, 0x5b4a2a, [1.42, 0.92, 1.12], -0.16);
+    addInteriorProp(0.3, 0.2, 0.22, palette.gold, [1.18, 1.08, 1.04], 0.16);
+    addInteriorProp(0.36, 0.16, 0.24, palette.vipps, [1.58, 1.08, 1.18], -0.1);
+
     const natalia = createTeamAvatar({
       id: "natalia",
       name: "Natalia",
@@ -1253,8 +1466,61 @@
       blueprint: true
     });
 
+    const producerSteward = createTeamAvatar({
+      id: "producer_steward",
+      name: "Producer",
+      role: "steward",
+      position: [-1.72, 0.74, 1.36],
+      rotationY: 0.28,
+      shirt: palette.blue,
+      hairColor: 0x4a3427,
+      helmetColor: 0xd9edff,
+      location: "inside",
+      focusView: "producers"
+    });
+
+    const platformSteward = createTeamAvatar({
+      id: "platform_steward",
+      name: "Platform",
+      role: "steward",
+      position: [-1.42, 1.72, -0.62],
+      rotationY: 0.08,
+      shirt: palette.green,
+      hairColor: 0x2f261f,
+      helmetColor: 0xe8f6ef,
+      location: "inside",
+      focusView: "governance"
+    });
+
+    const analyticsLead = createTeamAvatar({
+      id: "analytics_lead",
+      name: "Analytics",
+      role: "lead",
+      position: [1.18, 1.72, -0.62],
+      rotationY: -0.18,
+      shirt: palette.purple,
+      hairColor: 0x1f1c22,
+      helmetColor: 0xf3f0e5,
+      location: "inside",
+      focusView: "analytics"
+    });
+
+    const exportOperator = createTeamAvatar({
+      id: "export_operator",
+      name: "Export",
+      role: "operator",
+      position: [1.66, 0.74, 1.34],
+      rotationY: -0.34,
+      shirt: palette.gold,
+      hairColor: 0x573b26,
+      helmetColor: 0xfff5d7,
+      location: "inside",
+      focusView: "exports"
+    });
+
     fadeCharacter(natalia, "work");
     fadeCharacter(ajda, "work");
+    [producerSteward, platformSteward, analyticsLead, exportOperator].forEach((record) => fadeCharacter(record, "work"));
 
     const isak = new THREE.Group();
     isak.position.set(4.85, 0.3, 1.65);
@@ -1384,7 +1650,7 @@
       document.querySelector("#guide-heading").textContent = content.heading;
       document.querySelector("#guide-kicker").textContent = content.kicker;
       document.querySelector("#guide-copy").textContent = content.copy;
-      document.querySelectorAll("[data-view]").forEach((button) => {
+      document.querySelectorAll("button[data-view]").forEach((button) => {
         button.setAttribute("aria-pressed", button.dataset.view === view ? "true" : "false");
       });
     }
@@ -1412,11 +1678,22 @@
 
     function updateCharacterActions(view) {
       characterRecords.forEach((record) => {
+        const isInterior = record.location === "inside";
+        const showInteriorView = interiorViews.has(view);
+        const isVisible =
+          isInterior
+            ? view === "rooms" || view === record.focusView
+            : !showInteriorView;
+        record.group.visible = isVisible;
+        record.hit.visible = isVisible;
+        record.label.visible = isVisible;
+
         const shouldWork =
           (view === "models" && ["natalia", "ajda"].includes(record.id)) ||
-          (view === "architect" && record.id === "malo");
+          (view === "architect" && record.id === "malo") ||
+          (isInterior && (view === "rooms" || view === record.focusView));
         fadeCharacter(record, shouldWork ? "work" : "idle");
-        record.label.material.opacity = view === "overview" || shouldWork ? 1 : 0;
+        record.label.material.opacity = (view === "overview" && !isInterior) || shouldWork ? 1 : 0;
       });
     }
 
@@ -1431,12 +1708,23 @@
       updateCharacterActions(view);
     }
 
-    document.querySelectorAll("[data-view]").forEach((button) => {
+    document.querySelectorAll("button[data-view]").forEach((button) => {
       button.addEventListener("click", () => setView(button.dataset.view));
     });
 
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
+
+    function hitIsEnabled(hit) {
+      if (!hit.object.visible) return false;
+      let parent = hit.object.parent;
+      while (parent) {
+        if (!parent.visible) return false;
+        parent = parent.parent;
+      }
+      const enabledViews = hit.object.userData.enabledViews;
+      return !enabledViews || enabledViews.includes(activeView);
+    }
 
     function updatePointer(event) {
       const rect = renderer.domElement.getBoundingClientRect();
@@ -1447,21 +1735,29 @@
     renderer.domElement.addEventListener("pointermove", (event) => {
       updatePointer(event);
       raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObjects(interactiveObjects, false);
+      const hits = raycaster.intersectObjects(interactiveObjects, false).filter(hitIsEnabled);
       renderer.domElement.style.cursor = hits.length ? "pointer" : "grab";
     });
 
     renderer.domElement.addEventListener("click", (event) => {
       updatePointer(event);
       raycaster.setFromCamera(pointer, camera);
-      const hit = raycaster.intersectObjects(interactiveObjects, false)[0];
+      const hit = raycaster.intersectObjects(interactiveObjects, false).filter(hitIsEnabled)[0];
       if (!hit) return;
       const type = hit.object.userData.type;
       if (type && desktopViews[type]) {
         setView(type);
         return;
       }
-      const characterView = { natalia: "models", ajda: "models", malo: "architect" }[type];
+      const characterView = {
+        natalia: "models",
+        ajda: "models",
+        malo: "architect",
+        producer_steward: "producers",
+        platform_steward: "governance",
+        analytics_lead: "analytics",
+        export_operator: "exports"
+      }[type];
       if (characterView) {
         setView(characterView);
         showDialogue(type);
@@ -1470,6 +1766,7 @@
 
     document.body.dataset.view = activeView;
     showDialogue("overview");
+    updateCharacterActions(activeView);
 
     function resize() {
       const width = window.innerWidth;
@@ -1510,7 +1807,7 @@
         pipe.material.emissiveIntensity = THREE.MathUtils.lerp(pipe.material.emissiveIntensity, active ? 0.72 : 0.06, 0.08);
         pipe.material.opacity = THREE.MathUtils.lerp(pipe.material.opacity ?? 1, active ? 1 : 0.52, 0.08);
         pipe.material.transparent = !active;
-        const labelOpacity = activeView === "overview" || active ? 1 : 0;
+        const labelOpacity = interiorViews.has(activeView) ? 0 : (activeView === "overview" || active ? 1 : 0);
         pipe.labelSprite.material.opacity = THREE.MathUtils.lerp(pipe.labelSprite.material.opacity ?? 1, labelOpacity, 0.12);
       });
 
@@ -1518,7 +1815,41 @@
         const visible = activeView === "overview" || activeView === "core";
         label.material.opacity = THREE.MathUtils.lerp(label.material.opacity ?? 1, visible ? 1 : 0, 0.12);
       });
+      interiorLabelSprites.forEach(({ id, sprite }) => {
+        const visible = activeView === "rooms" || activeView === id;
+        sprite.material.opacity = THREE.MathUtils.lerp(sprite.material.opacity ?? 0, visible ? 1 : 0, 0.12);
+      });
       isakNameSprite.material.opacity = THREE.MathUtils.lerp(isakNameSprite.material.opacity ?? 1, activeView === "overview" ? 1 : 0, 0.12);
+
+      const showInterior = interiorViews.has(activeView);
+      isak.visible = !showInterior;
+      isakHit.visible = !showInterior;
+      dbtBench.visible = !showInterior;
+      door.visible = !showInterior;
+      windowPanes.forEach((pane) => {
+        pane.visible = !showInterior;
+      });
+
+      [
+        [houseWalls, showInterior ? 0.04 : 1],
+        [governanceFloor, showInterior ? 0.16 : 1],
+        [storageFloor, showInterior ? 0.16 : 1]
+      ].forEach(([mesh, targetOpacity]) => {
+        mesh.material.opacity = THREE.MathUtils.lerp(mesh.material.opacity ?? 1, targetOpacity, 0.08);
+        mesh.material.transparent = mesh.material.opacity < 0.98;
+        mesh.material.depthWrite = !showInterior;
+      });
+      roof.visible = !showInterior;
+      roof.children.forEach((mesh) => {
+        mesh.material.opacity = THREE.MathUtils.lerp(mesh.material.opacity ?? 1, showInterior ? 0.04 : 1, 0.08);
+        mesh.material.transparent = mesh.material.opacity < 0.98;
+        mesh.material.depthWrite = !showInterior;
+      });
+      interiorMeshes.forEach((mesh) => {
+        const targetOpacity = showInterior ? mesh.userData.interiorOpacity ?? 0.6 : 0;
+        mesh.visible = showInterior || (mesh.material.opacity ?? 0) > 0.03;
+        mesh.material.opacity = THREE.MathUtils.lerp(mesh.material.opacity ?? 0, targetOpacity, 0.12);
+      });
 
       const cameraEase = reducedMotion ? 1 : 0.045;
       camera.position.lerp(targetPosition, cameraEase);
