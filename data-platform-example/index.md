@@ -125,6 +125,10 @@ event version more convincing.
       <strong>Animate storage to database</strong>
       <span>Show data leaving storage, being checked, and becoming queryable.</span>
     </article>
+    <article class="data-platform-card">
+      <strong>Add repository conversations</strong>
+      <span>Let characters explain public GitHub repositories from Isak's account.</span>
+    </article>
   </section>
 
   <section class="data-platform-lane" aria-labelledby="backlog-later">
@@ -156,6 +160,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Public versus internal answers</strong>
       <span>Which questions can characters answer publicly, and which need restricted mode?</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Repository suggestions</strong>
+      <span>Which public GitHub repositories should become rooms, workbenches, or dialogue topics?</span>
     </article>
   </section>
 
@@ -219,6 +227,9 @@ Character direction:
   clear source of truth for what they know and explain.
 - Characters should eventually be connected to large language models so visitors
   can ask real-time questions, not only choose from fixed dialogue.
+- Characters can also talk about public GitHub repositories on Isak's account:
+  what they are, why they exist, which data platform concept they demonstrate,
+  and what a visitor should look at first.
 - The first characters should be Isak, Param, Kien, and Malo.
 - Isak is the most important first character and should be the main person to ask
   about the data platform.
@@ -297,6 +308,43 @@ Possible direction:
 
 None of this is locked in yet.
 
+## GitHub Repository Conversations
+
+Characters should also be able to talk about public GitHub repositories on
+Isak's account.
+
+The goal is not to make visitors read source code in the scene. The goal is to
+turn repositories into explainable artifacts:
+
+- A repository can become a blueprint on a wall, a workbench in a room, a book in
+  a library, a control panel, or a portal into a deeper explanation.
+- A character can explain what the repository demonstrates and why it matters.
+- A character can point to the files, examples, or ideas a visitor should inspect
+  first.
+- A repository can show how the same data platform concept appears in code,
+  documentation, automation, or a demo.
+- A repository can help connect the consulting showcase version with practical
+  proof that Isak can build the thing being explained.
+
+Repository conversations should answer:
+
+- What is this repository for?
+- Which data platform concept does it demonstrate?
+- What should a new visitor look at first?
+- What room, pipe, character, or signal journey should it influence?
+- Is it safe for the public version, or should it stay internal-only?
+- What could be improved next?
+
+Possible first treatment:
+
+1. Add a GitHub library or blueprint table inside the house.
+2. Let Isak explain a selected repository in plain language.
+3. Connect that repository to one platform concept, such as ingestion, analytics
+   projects, data export, or data products.
+4. Add a link out to the repository for visitors who want to go deeper.
+5. Let the automation notice new public repository work and suggest better
+   repository dialogue when it clarifies the experience.
+
 ## Written Explainer Direction
 
 The written page should still be useful, even though the first real deliverable
@@ -349,6 +397,9 @@ The house should:
 - Include characters grounded in real people and real work.
 - Let characters explain their room, the technology around them, the pipelines
   they own or have worked on, and how to build a great data platform.
+- Let characters explain relevant public GitHub repositories from Isak's
+  account when those repositories demonstrate the room, pipe, or platform idea
+  they are talking about.
 - Support real-time questions through a large language model layer, with one
   Markdown knowledge file per character.
 - Show concrete movement between platform components, such as data moving from
@@ -381,6 +432,8 @@ First prototype scope:
    scheduled batch, incremental processing, and export.
 7. Markdown knowledge files for the first characters, even before the live large
    language model integration is built.
+8. At least one public GitHub repository from Isak's account represented as a
+   blueprint, library item, or workbench artifact.
 
 ## Core Experience Goal
 
@@ -477,6 +530,9 @@ Possible character design principles:
 - Character answers should be genuinely educational: the person should explain
   the room they are in, the technology and pipelines around them, how the flow
   works, and how someone can build or use the platform well.
+- Character answers can include public GitHub repository context when it helps:
+  what the repository demonstrates, what to inspect first, and how it connects
+  to the current room or pipe.
 - Characters can guide visitors across rooms when a signal moves from one
   ownership area to another.
 - The scene should make collaboration visible. For example, two people working
@@ -507,6 +563,8 @@ Possible ways to ground characters in reality:
 - Use Git history to identify who has contributed most to a component.
 - Use documentation ownership and code ownership to connect people to rooms.
 - Use recent commits to surface what people have actually worked on lately.
+- Use public repositories on Isak's GitHub account to ground explanations in
+  concrete examples and demos.
 - Use manually approved notes from the team to avoid guessing.
 - Use explicitly approved reference images if recognizable likenesses are wanted.
 - Use one Markdown knowledge file per character so the dialogue has a
@@ -585,6 +643,7 @@ repositories as source material unless they are explicitly added later.
 
 Starting source candidates:
 
+- `https://github.com/isakrs`
 - `/Users/isakrathestoere/Code/isakrs/modern-data-platform-example`
 - `/Users/isakrathestoere/Code/vipps-isakrs`
 - `/Users/isakrathestoere/Code/isakrs-personal`
@@ -599,6 +658,17 @@ Possible ideas from that repository to consider:
   analytics teams.
 
 These should be treated as inspiration, not automatic requirements.
+
+Repository source rules:
+
+- Prefer public repositories from Isak's GitHub account for external-facing
+  dialogue.
+- Local personal repository checkouts can be used for richer context, but do not
+  publish private or sensitive details discovered locally.
+- When a repository becomes part of a character conversation, explain the idea it
+  demonstrates instead of dumping raw commit history.
+- Link to public repositories when that helps visitors continue learning outside
+  the house.
 
 ## Consulting And Showcase Value
 
@@ -624,6 +694,8 @@ without waiting for manual approval every time.
 Responsibilities:
 
 - Look at new Git contributions in Isak's personal repositories.
+- Look at public GitHub repositories on Isak's account when they can become
+  useful character dialogue, room artifacts, or consulting showcase examples.
 - Notice changes that reveal platform concepts, ownership, services, or new
   data flows.
 - Improve the written explainer when it can make the flow or process easier
@@ -635,6 +707,8 @@ Responsibilities:
   backfills, manual corrections, or exports.
 - Notice real team contributions that could become character dialogue or room
   ownership notes.
+- Notice personal GitHub repositories that could help characters explain data
+  platform ideas with practical examples.
 - Update this brief, a storyboard, or the eventual interactive page directly
   when there is a useful improvement.
 - Eventually extend the Three.js house with new rooms, pipes, characters,
@@ -730,14 +804,19 @@ Examples of "only more":
     fairly high polish before actively sharing, while still being acceptable if
     someone finds the address by digging.
 
+17. GitHub repository conversations:
+    characters can also talk about public GitHub repositories on Isak's account,
+    especially when a repository demonstrates a data platform concept, a room,
+    a pipe, or a consulting showcase idea.
+
 ## Remaining Clarifying Questions
 
 1. Which exact signal should become the first playable journey: application
    button click, payment event, temperature reading, scheduled export,
    storage-account-to-database movement, or another signal?
 
-2. Which personal repositories should be the first automation sources beyond
-   the current page and the modern data platform example?
+2. Which public GitHub repositories from Isak's account should be represented
+   first inside the house?
 
 3. Which real artifacts should ground Isak, Param, Kien, and Malo in the first
    version?

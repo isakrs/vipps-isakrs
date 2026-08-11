@@ -20,6 +20,7 @@ body:
         - Something confusing
         - Missing data platform concept
         - Character or dialogue input
+        - GitHub repository input
         - Event or presentation idea
         - Bug or broken page behavior
     validations:
@@ -48,7 +49,7 @@ body:
     attributes:
       label: Safe references or artifacts
       description: Add public-safe links, file paths, or notes that can help. Leave this empty if there are none.
-      placeholder: "Example: A public demo, a local personal repository path, or a high-level description."
+      placeholder: "Example: A public GitHub repository link, a public demo, a local personal repository path, or a high-level description."
 
   - type: checkboxes
     id: safety
