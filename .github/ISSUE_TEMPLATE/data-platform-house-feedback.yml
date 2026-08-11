@@ -1,11 +1,16 @@
 name: Data Platform House feedback
-description: Share an idea, question, confusion point, or improvement for the Data Platform House experience.
+description: Save an idea, question, confusion point, or improvement for the Data Platform House when it should outlive an agent conversation.
 title: "Data Platform House input: "
 body:
   - type: markdown
     attributes:
       value: |
         Thanks for helping shape the Data Platform House.
+
+        Most feedback can be given through an agent conversation first. Use this
+        form when the input should be saved, shared, or tracked outside the
+        conversation. Agents may also use it as the durable record for useful
+        public-safe feedback.
 
         This issue is public. Please do not include private images, secrets,
         personal data, or internal details that should not be visible outside

@@ -91,6 +91,19 @@ before the scene becomes too complex.
 
 [Enter the Three.js world](/data-platform-example/)
 
+## Feedback Loop
+
+Most feedback should happen through agent conversations. Tell an agent what
+confused you, what should become more playable, which character should know
+something, or which part of the data flow deserves a better scene. The agent can
+turn clear input into instruction changes, backlog changes, character knowledge,
+or implementation work.
+
+Use the GitHub feedback form when the input should be saved outside the
+conversation, shared with others, or tracked by the workday automation. A person
+can fill it in directly, and an agent can also use it as the durable public
+record when a conversation produces useful public-safe feedback.
+
 ## Development Backlog
 
 This board is the lightweight product tracker for the house. It should stay
@@ -99,10 +112,12 @@ journey clearer, the game more playable, the characters more useful, or the
 event version more convincing.
 
 <div class="data-platform-feedback">
-  <strong>Give input as a user:</strong>
-  <a href="https://github.com/isakrs/vipps-isakrs/issues/new?template=data-platform-house-feedback.yml">open a Data Platform House feedback issue</a>.
-  The issue form asks for what you tried, what confused you, and what would make
-  the experience more useful.
+  <strong>Give input:</strong>
+  Tell an agent what you noticed. If the input should be saved outside the
+  conversation, use
+  <a href="https://github.com/isakrs/vipps-isakrs/issues/new?template=data-platform-house-feedback.yml">the Data Platform House feedback form</a>.
+  The form keeps public-safe context available to agents and the workday
+  automation.
 </div>
 
 <div class="data-platform-kanban" aria-label="Data Platform House development backlog">
@@ -212,11 +227,17 @@ event version more convincing.
       <strong>First repository blueprints chosen</strong>
       <span>modern-data-platform-example and vipps-isakrs are the first public examples.</span>
     </article>
+    <article class="data-platform-card">
+      <strong>Agent-first feedback loop</strong>
+      <span>Feedback normally starts in agent conversations and is saved in GitHub only when it needs a durable public record.</span>
+    </article>
   </section>
 </div>
 
-The backlog is deliberately local to this page for now. GitHub issues are the
-input queue; this board is the curated product view.
+The backlog stays local to this page for now. Agent conversations are the
+primary input queue; saved GitHub feedback is the durable public record when
+something should outlive the conversation. This board is the curated product
+view.
 
 ## Confirmed Direction
 
