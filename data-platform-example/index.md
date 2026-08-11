@@ -96,6 +96,34 @@ This blog-like page should be valuable even before the Three.js version exists.
 The future interactive house can be built by turning each section into a room,
 pipe, character, or dialogue moment.
 
+## Eventual Interactive House
+
+The house should come eventually.
+
+The blog-like explainer is the foundation, not the final destination. Once the
+signal journey, pipe semantics, real people, and real work examples are clear,
+the page can grow into an interactive house experience.
+
+The eventual house should:
+
+- Let visitors follow one signal through the building.
+- Let visitors enter rooms to understand a stage in the process.
+- Show different pipe types through shape, rhythm, labels, and machinery.
+- Include characters grounded in real people and real work.
+- Let characters explain their part of the platform in short dialogue.
+- Keep the written explainer available, so the interactive version does not
+  become the only way to understand the process.
+
+The house should not be rushed before the story is clear. The best path is:
+
+1. Make the written explainer useful.
+2. Choose the first signal journey.
+3. Identify the first real people, artifacts, and flow modes.
+4. Turn the explainer into a storyboard.
+5. Build the first interactive house prototype.
+6. Let automation help refine the explainer, storyboard, and eventually the
+   house.
+
 ## Core Experience Goal
 
 The experience should answer this question:
@@ -286,6 +314,8 @@ Possible responsibilities:
   data flows.
 - Improve the blog-like explainer when it can make the flow or process easier
   to understand.
+- Preserve the eventual interactive house direction while keeping the written
+  explainer useful on its own.
 - Notice concrete signal journeys that could become example flows.
 - Notice whether flows are scheduled, continuous, incremental, full refreshes,
   backfills, manual corrections, or exports.
