@@ -47,7 +47,8 @@ Possible direction:
 - The house represents the data platform.
 - Pipes represent the signal moving in, through, and out of the platform.
 - Rooms represent checkpoints in the signal journey.
-- Characters inside rooms explain what they are doing when you talk to them.
+- Characters inside rooms represent real people or real roles from the team and
+  explain work they have actually done.
 - The visitor can follow the signal from room to room or jump directly into a
   stage to understand that part of the flow.
 - The interaction could feel like an old handheld role-playing game: walk up to
@@ -85,6 +86,52 @@ Each stage should let the visitor pause and ask:
 - What can go wrong?
 - Who should I ask for help?
 - What does the signal look like before and after this step?
+
+## Characters And Real Team Work
+
+The characters should be a major part of the experience.
+
+The goal is that a visitor can meet people in the house and understand both:
+
+- Who on the team has worked on this part of the platform.
+- What real platform work, data flow, model, dashboard, export, automation,
+  infrastructure, or support responsibility that person can explain.
+
+Characters should feel connected to real people, not generic mascots.
+
+Possible character design principles:
+
+- Each character has a name, room, responsibility, and short dialogue.
+- Each character is connected to one or more real artifacts, such as Git
+  commits, pull requests, documentation, dashboards, data products, jobs,
+  configuration files, or notebooks.
+- Character dialogue should explain real work in plain language.
+- The visitor should be able to ask a character what they are doing, what they
+  built, what they own, and who to talk to next.
+- Characters can guide visitors across rooms when a signal moves from one
+  ownership area to another.
+- The scene should make collaboration visible. For example, two people working
+  together on data models should appear together in the modeling room, connected
+  to the relevant model flow.
+
+Possible ways to ground characters in reality:
+
+- Use Git history to identify who has contributed most to a component.
+- Use documentation ownership and code ownership to connect people to rooms.
+- Use recent commits to surface what people have actually worked on lately.
+- Use manually approved notes from the team to avoid guessing.
+- Use explicitly approved reference images if recognizable likenesses are wanted.
+
+Privacy and consent boundaries:
+
+- Do not store, publish, or commit Slack profile photos or private source images
+  unless they have been explicitly approved for this page.
+- If approved images are not available, use stylized avatars with coarse,
+  respectful cues rather than recognizable likenesses.
+- Character dialogue should not expose private context, sensitive internal
+  details, or unsupported claims about what someone owns.
+- If the page becomes shareable beyond the immediate team, every real-person
+  character should have a clear approval path.
 
 ## Example Signal Journeys
 
@@ -162,6 +209,8 @@ Possible responsibilities:
 - Notice changes that reveal platform concepts, ownership, services, or new
   data flows.
 - Notice concrete signal journeys that could become example flows.
+- Notice real team contributions that could become character dialogue or room
+  ownership notes.
 - Propose updates to this brief, a storyboard, or the eventual interactive page.
 - Eventually extend the house with new rooms, pipes, characters, or dialogue.
 
@@ -186,48 +235,57 @@ it create draft suggestions for review first?
    only update this brief and ask for approval before changing the experience?
 
 6. How close should characters look to real team members? Should they be
-   abstract role characters, stylized team-inspired avatars, or recognizable
-   likenesses based only on explicitly approved images?
+   stylized team-inspired avatars, recognizable likenesses based only on
+   explicitly approved images, or something in between?
 
 7. Which people or roles must exist in the first version, if any?
 
-8. Which platform concepts are mandatory to explain first?
+8. Which real work should the first characters be attached to?
 
-9. Which signal should be the first complete journey: application click,
+9. What sources are acceptable for connecting people to work: Git history,
+   code ownership, documentation ownership, dashboards, team notes, or manual
+   approval only?
+
+10. Should character dialogue mention real names and concrete artifacts, or
+    should it use real inspiration but keep the wording role-based?
+
+11. Which platform concepts are mandatory to explain first?
+
+12. Which signal should be the first complete journey: application click,
    payment event, temperature reading, scheduled export, or something else?
 
-10. Should the first journey use real Vipps MobilePay terminology and systems,
+13. Should the first journey use real Vipps MobilePay terminology and systems,
     or should it stay fictional and safe?
 
-11. What should count as "used" at the end of the journey: dashboard, data
+14. What should count as "used" at the end of the journey: dashboard, data
     product, machine learning model, operational export, alert, decision, or
     application feature?
 
-12. How much technical depth should each step reveal before it becomes too much
+15. How much technical depth should each step reveal before it becomes too much
     for the intended audience?
 
-13. Should the house mirror the real Vipps MobilePay data platform architecture,
+16. Should the house mirror the real Vipps MobilePay data platform architecture,
    or should it stay metaphorical and easier to understand?
 
-14. What should a character explain when you talk to them: their current work,
+17. What should a character explain when you talk to them: their current work,
     the room they are in, the pipe they own, or how to get help?
 
-15. Should the visual style aim for realistic materials, playful low-poly
+18. Should the visual style aim for realistic materials, playful low-poly
     characters, pixel-game dialogue over a modern three-dimensional scene, or
     something else?
 
-16. Should the page remain unlisted and blocked from search indexing?
+19. Should the page remain unlisted and blocked from search indexing?
 
-17. What is the desired level of polish before sharing it with others?
+20. What is the desired level of polish before sharing it with others?
 
-18. Should the automation commit and push changes, create draft pull requests,
+21. Should the automation commit and push changes, create draft pull requests,
     or only leave local notes?
 
-19. How should we decide that the automation made the house better instead of
+22. How should we decide that the automation made the house better instead of
     just adding more things?
 
 ## Suggested Next Step
 
 Answer the questions that matter most right now, especially audience, first
-deliverable, first signal journey, automation behavior, source repositories, and
-privacy boundaries for characters.
+deliverable, first signal journey, which real people and real work to include,
+automation behavior, source repositories, and privacy boundaries for characters.
