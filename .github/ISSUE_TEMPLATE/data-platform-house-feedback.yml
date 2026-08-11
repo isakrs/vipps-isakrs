@@ -1,0 +1,59 @@
+name: Data Platform House feedback
+description: Share an idea, question, confusion point, or improvement for the Data Platform House experience.
+title: "Data Platform House input: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping shape the Data Platform House.
+
+        This issue is public. Please do not include private images, secrets,
+        personal data, or internal details that should not be visible outside
+        the intended audience.
+
+  - type: dropdown
+    id: feedback_kind
+    attributes:
+      label: What kind of input is this?
+      options:
+        - Idea for the game
+        - Something confusing
+        - Missing data platform concept
+        - Character or dialogue input
+        - Event or presentation idea
+        - Bug or broken page behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What did you try, notice, or imagine?
+      description: Describe the moment in the experience, the concept, or the scene you are reacting to.
+      placeholder: "Example: I wanted to follow a scheduled export, but I could not tell which pipe was scheduled."
+    validations:
+      required: true
+
+  - type: textarea
+    id: better_outcome
+    attributes:
+      label: What would make it better?
+      description: Explain what should be clearer, more fun, more accurate, or more useful.
+      placeholder: "Example: The scheduled pipe could pulse once per day and have a clock beside the valve."
+    validations:
+      required: true
+
+  - type: textarea
+    id: safe_references
+    attributes:
+      label: Safe references or artifacts
+      description: Add public-safe links, file paths, or notes that can help. Leave this empty if there are none.
+      placeholder: "Example: A public demo, a local personal repository path, or a high-level description."
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: This input does not include secrets, private images, or sensitive internal details.
+          required: true

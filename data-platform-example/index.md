@@ -4,6 +4,58 @@ title: Data Platform House Concept Brief
 
 # Data Platform House Concept Brief
 
+<style>
+  .data-platform-feedback {
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff7f2;
+    margin: 16px 0 24px;
+  }
+
+  .data-platform-feedback a {
+    font-weight: 700;
+  }
+
+  .data-platform-kanban {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 16px 0 28px;
+  }
+
+  .data-platform-lane {
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    background: #f6f8fa;
+    padding: 14px;
+  }
+
+  .data-platform-lane h3 {
+    margin-top: 0;
+  }
+
+  .data-platform-card {
+    border: 1px solid #d0d7de;
+    border-left: 4px solid #ff5b24;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 12px;
+    margin: 10px 0;
+  }
+
+  .data-platform-card strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .data-platform-card span {
+    color: #57606a;
+    display: block;
+    font-size: 0.92em;
+  }
+</style>
+
 ## What We Are Keeping
 
 The public address should stay:
@@ -27,6 +79,105 @@ purposes:
 The first real deliverable should be the Three.js experience. The written page
 should support it by making the story, flow, characters, and process clear
 before the scene becomes too complex.
+
+## Development Backlog
+
+This board is the lightweight product tracker for the house. It should stay
+small, visible, and opinionated: cards should move because they make the signal
+journey clearer, the game more playable, the characters more useful, or the
+event version more convincing.
+
+<div class="data-platform-feedback">
+  <strong>Give input as a user:</strong>
+  <a href="https://github.com/isakrs/vipps-isakrs/issues/new?template=data-platform-house-feedback.yml">open a Data Platform House feedback issue</a>.
+  The issue form asks for what you tried, what confused you, and what would make
+  the experience more useful.
+</div>
+
+<div class="data-platform-kanban" aria-label="Data Platform House development backlog">
+  <section class="data-platform-lane" aria-labelledby="backlog-now">
+    <h3 id="backlog-now">Now</h3>
+    <article class="data-platform-card">
+      <strong>Choose the first playable signal</strong>
+      <span>Pick one journey to build end to end before adding more paths.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Build the first house shell</strong>
+      <span>Create a playable Three.js scene with rooms, pipes, camera, and movement.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Create Isak knowledge file</strong>
+      <span>Make Isak the main data platform guide with reviewable Markdown knowledge.</span>
+    </article>
+  </section>
+
+  <section class="data-platform-lane" aria-labelledby="backlog-next">
+    <h3 id="backlog-next">Next</h3>
+    <article class="data-platform-card">
+      <strong>Design pipe language</strong>
+      <span>Make scheduled batch, incremental processing, and export flows visually distinct.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Add first team characters</strong>
+      <span>Ground Param, Kien, and Malo in safe real artifacts and useful rooms.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Animate storage to database</strong>
+      <span>Show data leaving storage, being checked, and becoming queryable.</span>
+    </article>
+  </section>
+
+  <section class="data-platform-lane" aria-labelledby="backlog-later">
+    <h3 id="backlog-later">Later</h3>
+    <article class="data-platform-card">
+      <strong>Large language model conversations</strong>
+      <span>Connect characters to their Markdown knowledge files for real-time questions.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Approved realistic avatars</strong>
+      <span>Use recognizable likeness only where each person has explicitly approved it.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Consulting showcase mode</strong>
+      <span>Make a customer-safe version that explains the same platform ideas.</span>
+    </article>
+  </section>
+
+  <section class="data-platform-lane" aria-labelledby="backlog-input">
+    <h3 id="backlog-input">Input Wanted</h3>
+    <article class="data-platform-card">
+      <strong>First journey</strong>
+      <span>Button click, payment event, temperature reading, scheduled export, or storage movement?</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Character approvals</strong>
+      <span>Who has approved likeness, speech style, and behavior style?</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Public versus internal answers</strong>
+      <span>Which questions can characters answer publicly, and which need restricted mode?</span>
+    </article>
+  </section>
+
+  <section class="data-platform-lane" aria-labelledby="backlog-done">
+    <h3 id="backlog-done">Done</h3>
+    <article class="data-platform-card">
+      <strong>Direction reset</strong>
+      <span>The old implementation was removed and this brief became the source of truth.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Noon automation</strong>
+      <span>A workday automation now improves, commits, and pushes useful changes.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Search discoverability</strong>
+      <span>The page is allowed to be discovered while still staying off the root page.</span>
+    </article>
+  </section>
+</div>
+
+The backlog is deliberately local to this page for now. GitHub issues are the
+input queue; this board is the curated product view.
 
 ## Confirmed Direction
 
