@@ -26,6 +26,7 @@
       --blue: #3167d8;
       --green: #1f7a5c;
       --gold: #f0bd3e;
+      --purple: #6f55d9;
       --shadow: 0 22px 80px rgba(21, 24, 29, 0.16);
     }
 
@@ -224,7 +225,7 @@
 
     .stepper {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 7px;
     }
 
@@ -290,6 +291,7 @@
     .swatch.blue { background: var(--blue); }
     .swatch.green { background: var(--green); }
     .swatch.gold { background: var(--gold); }
+    .swatch.purple { background: var(--purple); }
 
     .hint {
       position: fixed;
@@ -307,6 +309,59 @@
       opacity: 0.9;
     }
 
+    .dialogue {
+      position: fixed;
+      z-index: 6;
+      left: 50%;
+      bottom: clamp(18px, 4vw, 34px);
+      width: min(720px, calc(100vw - 32px));
+      min-height: 126px;
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 14px;
+      border: 4px solid #111317;
+      border-radius: 8px;
+      background: #fff9ec;
+      color: #111317;
+      padding: 14px;
+      box-shadow: 8px 8px 0 rgba(17, 19, 23, 0.22);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .portrait {
+      width: 70px;
+      height: 70px;
+      align-self: start;
+      border: 3px solid #111317;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 34%, #ffc79c 0 22%, transparent 23%),
+        linear-gradient(180deg, var(--vipps) 0 68%, #27354a 69%);
+    }
+
+    .dialogue strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #111317;
+      font-size: 0.86rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .dialogue p {
+      margin: 0;
+      color: #252a31;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.38;
+      font-weight: 800;
+    }
+
+    body[data-view="overview"] .dialogue {
+      display: none;
+    }
+
     @media (max-width: 900px) {
       body { overflow: auto; }
       #scene { position: sticky; top: 0; height: 68dvh; min-height: 460px; }
@@ -314,6 +369,7 @@
       .stage-copy,
       .guide-panel,
       .legend,
+      .dialogue,
       .hint {
         position: relative;
         inset: auto;
@@ -326,6 +382,22 @@
       }
       .stage-copy { pointer-events: auto; }
       .guide-panel { margin-bottom: 22px; }
+      .dialogue {
+        grid-template-columns: 58px 1fr;
+        width: min(100% - 28px, 620px);
+        min-height: 116px;
+        border-width: 3px;
+        box-shadow: 5px 5px 0 rgba(17, 19, 23, 0.18);
+        pointer-events: none;
+      }
+      .portrait {
+        width: 54px;
+        height: 54px;
+      }
+      body[data-view]:not([data-view="overview"]) .stage-copy,
+      body[data-view]:not([data-view="overview"]) .legend {
+        display: none;
+      }
       .hint { display: none; }
       h1 { max-width: 680px; font-size: clamp(2.55rem, 11vw, 4.1rem); }
       .lead { max-width: 620px; }
@@ -339,6 +411,10 @@
         opacity: 0;
         transform: translateY(-16px);
       }
+      body[data-view]:not([data-view="overview"]) .guide-panel {
+        top: 86px;
+        bottom: auto;
+      }
     }
 
     @media (max-width: 520px) {
@@ -348,7 +424,6 @@
       }
       .brand strong { max-width: calc(100vw - 90px); }
       .stepper { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .stepper button:last-child { grid-column: 1 / -1; }
       .legend { grid-template-columns: 1fr; }
     }
 
@@ -380,6 +455,7 @@
   <aside class="legend" aria-label="Pipe legend">
     <div class="legend-row"><span class="swatch blue"></span>Incoming data</div>
     <div class="legend-row"><span class="swatch green"></span>Curated platform layer</div>
+    <div class="legend-row"><span class="swatch purple"></span>dbt model plumbing</div>
     <div class="legend-row"><span class="swatch gold"></span>Data leaving the platform</div>
     <div class="legend-row"><span class="swatch"></span>Ask Isak about the platform pipe</div>
   </aside>
@@ -397,8 +473,18 @@
       <button type="button" data-view="overview" aria-pressed="true">House</button>
       <button type="button" data-view="incoming" aria-pressed="false">Incoming</button>
       <button type="button" data-view="core" aria-pressed="false">Core</button>
+      <button type="button" data-view="models" aria-pressed="false">Models</button>
+      <button type="button" data-view="architect" aria-pressed="false">Architect</button>
       <button type="button" data-view="outgoing" aria-pressed="false">Outgoing</button>
       <button type="button" data-view="isak" aria-pressed="false">Ask Isak</button>
+    </div>
+  </aside>
+
+  <aside class="dialogue" aria-live="polite">
+    <div class="portrait" id="dialogue-portrait" aria-hidden="true"></div>
+    <div>
+      <strong id="dialogue-speaker">Isak</strong>
+      <p id="dialogue-text">Press a character or a scene button to ask what they are doing.</p>
     </div>
   </aside>
 
@@ -415,6 +501,7 @@
   <script type="module">
     import * as THREE from "three";
     import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+    import { DecalGeometry } from "three/addons/geometries/DecalGeometry.js";
 
     const canvas = document.querySelector("#scene");
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -448,6 +535,7 @@
       blue: 0x3167d8,
       green: 0x1f7a5c,
       gold: 0xf0bd3e,
+      purple: 0x6f55d9,
       steel: 0x9aa3ad,
       glass: 0xaee2ff,
       soil: 0x536555,
@@ -458,6 +546,8 @@
     const interactiveObjects = [];
     const pipeRecords = [];
     const mixers = [];
+    const characterRecords = [];
+    const roomLabelSprites = [];
     const clock = new THREE.Clock();
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -477,6 +567,16 @@
         kicker: "Storage, governance, and transformation",
         copy: "Inside the house, storage, access control, lineage, quality checks, and transformation patterns turn raw material into something other teams can safely build on."
       },
+      models: {
+        heading: "Natalia and Ajda are working on dbt plumbing",
+        kicker: "Data models as house pipes",
+        copy: "The purple pipe is the dbt model layer. Natalia and Ajda are pairing on transformations, tests, and model handoffs so the house does not leak meaning between rooms."
+      },
+      architect: {
+        heading: "Malo is the architect",
+        kicker: "Blueprints before plumbing",
+        copy: "Malo keeps the house shape coherent: where rooms belong, which load-bearing boundaries matter, and how new pipes should connect without creating hidden shortcuts."
+      },
       outgoing: {
         heading: "Outgoing pipes are promises",
         kicker: "Curated data leaves the platform",
@@ -489,10 +589,65 @@
       }
     };
 
+    const dialogueText = {
+      overview: {
+        speaker: "Guide",
+        portrait: "#ff5b24",
+        text: "Welcome to the data platform house. Pick a person or a pipe, and they will tell you what they are working on."
+      },
+      incoming: {
+        speaker: "Incoming pipe",
+        portrait: "#3167d8",
+        text: "Raw events, files, and source tables enter here. The first job is to keep the producer story attached to the data."
+      },
+      core: {
+        speaker: "Platform rooms",
+        portrait: "#1f7a5c",
+        text: "This is where storage, access, lineage, and transformation rules turn loose data into something teams can trust."
+      },
+      models: {
+        speaker: "Natalia and Ajda",
+        portrait: "#6f55d9",
+        text: "We are tightening the dbt plumbing: clear models, tested joins, and readable lineage so the next room knows what came through the pipe."
+      },
+      architect: {
+        speaker: "Malo",
+        portrait: "#111317",
+        text: "I am checking the blueprint. A data platform house needs strong boundaries before we add more pipes."
+      },
+      outgoing: {
+        speaker: "Outgoing pipe",
+        portrait: "#f0bd3e",
+        text: "Dashboards, tables, exports, and partner deliveries leave here. These pipes are promises, so they need monitoring and owners."
+      },
+      isak: {
+        speaker: "Isak",
+        portrait: "#ff5b24",
+        text: "Ask me when you are unsure where a platform question belongs. I can point you toward the right room, pipe, or pattern."
+      },
+      natalia: {
+        speaker: "Natalia",
+        portrait: "#6f55d9",
+        text: "I am pairing on the dbt models. Right now we are making the transformation pipe easier to test and easier to explain."
+      },
+      ajda: {
+        speaker: "Ajda",
+        portrait: "#6f55d9",
+        text: "I am checking the model handoff with Natalia. If the pipe changes shape, the downstream rooms should still understand it."
+      },
+      malo: {
+        speaker: "Malo",
+        portrait: "#111317",
+        text: "I am sketching the house architecture. Every new pipe should have a reason, an owner, and a clean route through the platform."
+      }
+    };
+
     const desktopViews = {
       overview: { position: new THREE.Vector3(9, 6, 11), target: new THREE.Vector3(0.6, 1.7, 0.1), highlight: "all" },
       incoming: { position: new THREE.Vector3(-10, 4.8, 6.2), target: new THREE.Vector3(-1.9, 1.6, 0.15), highlight: "incoming" },
       core: { position: new THREE.Vector3(4.5, 6.6, 7.7), target: new THREE.Vector3(0.25, 2.3, -0.2), highlight: "core" },
+      models: { position: new THREE.Vector3(5.2, 4.4, 7.2), target: new THREE.Vector3(1.15, 1.85, 2.0), highlight: "models" },
+      architect: { position: new THREE.Vector3(-4.7, 4.2, 7.4), target: new THREE.Vector3(-2.2, 1.55, 2.0), highlight: "architect" },
       outgoing: { position: new THREE.Vector3(10.6, 4.9, 4.2), target: new THREE.Vector3(2.4, 1.55, 0.1), highlight: "outgoing" },
       isak: { position: new THREE.Vector3(6.4, 3.4, 5.8), target: new THREE.Vector3(4.2, 1.55, 1.55), highlight: "isak" }
     };
@@ -501,6 +656,8 @@
       overview: { position: new THREE.Vector3(13.5, 8.2, 16.5), target: new THREE.Vector3(0.7, 1.6, 0.55), highlight: "all" },
       incoming: { position: new THREE.Vector3(-15, 7.2, 9.4), target: new THREE.Vector3(-2.1, 1.45, 0.35), highlight: "incoming" },
       core: { position: new THREE.Vector3(7.2, 8.8, 13.5), target: new THREE.Vector3(0.15, 2.2, -0.1), highlight: "core" },
+      models: { position: new THREE.Vector3(9.3, 6.8, 11.8), target: new THREE.Vector3(1.12, 1.8, 2.05), highlight: "models" },
+      architect: { position: new THREE.Vector3(-8.3, 6.1, 11.2), target: new THREE.Vector3(-2.2, 1.52, 2.0), highlight: "architect" },
       outgoing: { position: new THREE.Vector3(15, 7.1, 8.2), target: new THREE.Vector3(2.5, 1.5, 0.35), highlight: "outgoing" },
       isak: { position: new THREE.Vector3(9.5, 5.8, 8.4), target: new THREE.Vector3(4.25, 1.55, 1.75), highlight: "isak" }
     };
@@ -566,10 +723,10 @@
       return mesh;
     }
 
-    makeBox(5.2, 0.5, 4.4, 0x303740, new THREE.Vector3(0, 0.35, 0), "foundation");
-    makeBox(5.2, 2.2, 4.4, palette.wall, new THREE.Vector3(0, 1.7, 0), "house-walls");
-    makeBox(5.35, 0.16, 4.55, 0xd0e5da, new THREE.Vector3(0, 2.15, 0), "governance-floor");
-    makeBox(5.35, 0.16, 4.55, 0xf3e1b7, new THREE.Vector3(0, 1.18, 0), "storage-floor");
+    const foundation = makeBox(5.2, 0.5, 4.4, 0x303740, new THREE.Vector3(0, 0.35, 0), "foundation");
+    const houseWalls = makeBox(5.2, 2.2, 4.4, palette.wall, new THREE.Vector3(0, 1.7, 0), "house-walls");
+    const governanceFloor = makeBox(5.35, 0.16, 4.55, 0xd0e5da, new THREE.Vector3(0, 2.15, 0), "governance-floor");
+    const storageFloor = makeBox(5.35, 0.16, 4.55, 0xf3e1b7, new THREE.Vector3(0, 1.18, 0), "storage-floor");
 
     const roof = new THREE.Group();
     const roofLeft = new THREE.Mesh(
@@ -659,6 +816,48 @@
       return sprite;
     }
 
+    function decalTexture(text, color = "#6f55d9") {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 128;
+      const context = canvas.getContext("2d");
+      context.clearRect(0, 0, 256, 128);
+      context.fillStyle = "rgba(255, 255, 255, 0.92)";
+      context.strokeStyle = color;
+      context.lineWidth = 10;
+      context.beginPath();
+      context.roundRect(16, 18, 224, 92, 18);
+      context.fill();
+      context.stroke();
+      context.fillStyle = "#111317";
+      context.font = "900 42px Inter, system-ui, sans-serif";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillText(text, 128, 64);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
+
+    function addDecal(target, text, position, rotation, scale, color) {
+      const material = new THREE.MeshStandardMaterial({
+        map: decalTexture(text, color),
+        transparent: true,
+        roughness: 0.44,
+        polygonOffset: true,
+        polygonOffsetFactor: -4,
+        depthWrite: false
+      });
+      const decal = new THREE.Mesh(
+        new DecalGeometry(target, new THREE.Vector3(...position), new THREE.Euler(...rotation), new THREE.Vector3(...scale)),
+        material
+      );
+      decal.castShadow = false;
+      decal.receiveShadow = true;
+      scene.add(decal);
+      return decal;
+    }
+
     function createPipe({ name, type, color, points, radius = 0.08, label, labelPosition }) {
       const curve = new THREE.CatmullRomCurve3(points.map((point) => new THREE.Vector3(...point)));
       const material = new THREE.MeshStandardMaterial({
@@ -699,6 +898,16 @@
     });
 
     createPipe({
+      name: "dbt model plumbing",
+      type: "models",
+      color: palette.purple,
+      points: [[-0.95, 1.34, 2.42], [-0.18, 1.52, 2.62], [0.82, 1.48, 2.6], [1.72, 1.33, 2.42], [2.55, 1.42, 2.24]],
+      radius: 0.07,
+      label: "dbt models",
+      labelPosition: [0.88, 2.28, 2.94]
+    });
+
+    createPipe({
       name: "Curated data to consumers",
       type: "outgoing",
       color: palette.gold,
@@ -723,7 +932,14 @@
       ["Transformation", 1.72, 2.58, 2.34, "#1f7a5c"],
       ["Serving layer", 0, 3.38, 1.08, "#f0bd3e"]
     ];
-    roomLabels.forEach(([text, x, y, z, color]) => addLabel(text, new THREE.Vector3(x, y, z), color));
+    roomLabels.forEach(([text, x, y, z, color]) => {
+      roomLabelSprites.push(addLabel(text, new THREE.Vector3(x, y, z), color));
+    });
+
+    addDecal(houseWalls, "dbt", [0.88, 1.45, 2.28], [0, 0, 0], [0.86, 0.42, 0.42], "#6f55d9");
+    addDecal(houseWalls, "tests", [1.85, 1.65, 2.28], [0, 0, 0], [0.94, 0.42, 0.42], "#6f55d9");
+    addDecal(houseWalls, "lineage", [0.05, 2.32, 2.28], [0, 0, 0], [1.08, 0.42, 0.42], "#1f7a5c");
+    addDecal(houseWalls, "catalog", [-1.22, 2.05, 2.28], [0, 0, 0], [1.02, 0.42, 0.42], "#f0bd3e");
 
     function makeValve(position, color) {
       const valve = new THREE.Group();
@@ -783,6 +999,262 @@
       mesh.receiveShadow = true;
       return mesh;
     }
+
+    function createTeamAvatar({
+      id,
+      name,
+      role,
+      position,
+      rotationY = 0,
+      shirt = palette.green,
+      hairColor = palette.hair,
+      skinColor = palette.skin,
+      helmetColor = palette.steel,
+      glasses = false,
+      blueprint = false
+    }) {
+      const group = new THREE.Group();
+      group.name = `${id}-avatar`;
+      group.position.set(...position);
+      group.rotation.y = rotationY;
+      group.userData = { type: id };
+      scene.add(group);
+
+      const body = new THREE.Mesh(
+        new THREE.CapsuleGeometry(0.31, 0.88, 8, 18),
+        new THREE.MeshStandardMaterial({ color: shirt, roughness: 0.74 })
+      );
+      body.position.y = 0.93;
+      body.castShadow = true;
+      group.add(body);
+
+      const head = new THREE.Mesh(
+        new THREE.SphereGeometry(0.25, 28, 18),
+        new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.62 })
+      );
+      head.name = "head";
+      head.position.y = 1.58;
+      head.castShadow = true;
+      group.add(head);
+
+      const hair = new THREE.Mesh(
+        new THREE.SphereGeometry(0.265, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.58),
+        new THREE.MeshStandardMaterial({ color: hairColor, roughness: 0.78 })
+      );
+      hair.position.set(0, 1.71, 0.02);
+      hair.rotation.x = -0.1;
+      group.add(hair);
+
+      const hardHat = new THREE.Mesh(
+        new THREE.SphereGeometry(0.29, 28, 12, 0, Math.PI * 2, 0, Math.PI * 0.44),
+        new THREE.MeshStandardMaterial({ color: helmetColor, roughness: 0.46, metalness: 0.05 })
+      );
+      hardHat.position.set(0, 1.76, 0.01);
+      group.add(hardHat);
+      const brim = new THREE.Mesh(
+        new THREE.BoxGeometry(0.64, 0.035, 0.2),
+        new THREE.MeshStandardMaterial({ color: helmetColor, roughness: 0.46 })
+      );
+      brim.position.set(0, 1.62, 0.18);
+      group.add(brim);
+
+      if (glasses) {
+        const glassMat = new THREE.MeshStandardMaterial({ color: palette.ink, roughness: 0.35, metalness: 0.2 });
+        [-0.09, 0.09].forEach((x) => {
+          const lens = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.008, 8, 18), glassMat);
+          lens.position.set(x, 1.58, 0.23);
+          group.add(lens);
+        });
+      } else {
+        const eyeMat = new THREE.MeshStandardMaterial({ color: palette.ink, roughness: 0.4 });
+        [-0.08, 0.08].forEach((x) => {
+          const eye = new THREE.Mesh(new THREE.SphereGeometry(0.018, 10, 8), eyeMat);
+          eye.position.set(x, 1.6, 0.235);
+          group.add(eye);
+        });
+      }
+
+      const smile = new THREE.Mesh(
+        new THREE.TorusGeometry(0.062, 0.006, 8, 20, Math.PI),
+        new THREE.MeshStandardMaterial({ color: 0x74301f, roughness: 0.5 })
+      );
+      smile.position.set(0, 1.49, 0.236);
+      smile.rotation.z = Math.PI;
+      group.add(smile);
+
+      function addArm(name, side, raised = false) {
+        const arm = new THREE.Group();
+        arm.name = name;
+        const end = raised ? new THREE.Vector3(side * 0.34, 0.24, 0.02) : new THREE.Vector3(side * 0.34, -0.34, 0.03);
+        const foreEnd = raised ? new THREE.Vector3(side * 0.58, 0.1, 0.04) : new THREE.Vector3(side * 0.55, -0.58, 0.05);
+        arm.add(cylinderBetween(new THREE.Vector3(0, 0, 0), end, 0.055, shirt));
+        arm.add(cylinderBetween(end, foreEnd, 0.047, shirt));
+        const hand = new THREE.Mesh(new THREE.SphereGeometry(0.065, 16, 12), new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.58 }));
+        hand.position.copy(foreEnd);
+        hand.castShadow = true;
+        arm.add(hand);
+        arm.position.set(side * 0.25, 1.18, 0.01);
+        group.add(arm);
+        return arm;
+      }
+
+      const leftArm = addArm("leftArm", -1, blueprint);
+      const rightArm = addArm("rightArm", 1, true);
+
+      const legMat = new THREE.MeshStandardMaterial({ color: 0x27354a, roughness: 0.7 });
+      [-0.11, 0.11].forEach((x) => {
+        const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.078, 0.42, 6, 12), legMat);
+        leg.position.set(x, 0.25, 0);
+        leg.castShadow = true;
+        group.add(leg);
+        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.06, 0.24), new THREE.MeshStandardMaterial({ color: palette.ink, roughness: 0.72 }));
+        shoe.position.set(x, 0.02, 0.08);
+        shoe.castShadow = true;
+        group.add(shoe);
+      });
+
+      if (blueprint) {
+        const blueprintTexture = decalTexture("plan", "#111317");
+        const board = new THREE.Mesh(
+          new THREE.BoxGeometry(0.78, 0.48, 0.025),
+          new THREE.MeshStandardMaterial({ color: 0xd9edff, map: blueprintTexture, roughness: 0.5, metalness: 0.02 })
+        );
+        board.position.set(-0.44, 1.24, 0.23);
+        board.rotation.set(-0.2, 0.12, -0.08);
+        board.castShadow = true;
+        group.add(board);
+      } else {
+        const wrench = new THREE.Group();
+        wrench.name = "tool";
+        const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.56, 10), new THREE.MeshStandardMaterial({ color: palette.steel, roughness: 0.36, metalness: 0.5 }));
+        handle.rotation.z = Math.PI * 0.5;
+        const jaw = new THREE.Mesh(new THREE.TorusGeometry(0.11, 0.018, 8, 18, Math.PI * 1.45), new THREE.MeshStandardMaterial({ color: palette.steel, roughness: 0.36, metalness: 0.5 }));
+        jaw.position.x = 0.31;
+        wrench.add(handle, jaw);
+        wrench.position.set(0.62, 1.34, 0.18);
+        wrench.rotation.set(0.15, 0.35, 0.2);
+        group.add(wrench);
+      }
+
+      const nameSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: labelCanvas(`${name} ${role}`, `#${shirt.toString(16).padStart(6, "0")}`),
+        transparent: true,
+        depthWrite: false,
+        depthTest: false
+      }));
+      nameSprite.position.set(position[0], position[1] + 2.16, position[2] + 0.25);
+      nameSprite.scale.set(1.74, 0.55, 1);
+      scene.add(nameSprite);
+
+      const hit = new THREE.Mesh(
+        new THREE.CapsuleGeometry(0.48, 1.35, 8, 12),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+      );
+      hit.position.set(0, 0.88, 0);
+      hit.userData = { name, type: id, isInteractive: true };
+      group.add(hit);
+      interactiveObjects.push(hit);
+
+      const mixer = new THREE.AnimationMixer(group);
+      const idleClip = new THREE.AnimationClip(`${id}-idle`, 2.2, [
+        new THREE.VectorKeyframeTrack(".position", [0, 1.1, 2.2], [
+          position[0], position[1], position[2],
+          position[0], position[1] + 0.05, position[2],
+          position[0], position[1], position[2]
+        ]),
+        new THREE.NumberKeyframeTrack("head.rotation[y]", [0, 1.1, 2.2], [-0.08, 0.08, -0.08])
+      ]);
+      const workClip = new THREE.AnimationClip(`${id}-work`, 1.4, [
+        new THREE.NumberKeyframeTrack("rightArm.rotation[z]", [0, 0.35, 0.7, 1.05, 1.4], [0.1, -0.42, 0.14, -0.28, 0.1]),
+        new THREE.NumberKeyframeTrack("leftArm.rotation[z]", [0, 0.7, 1.4], [-0.08, 0.2, -0.08]),
+        new THREE.NumberKeyframeTrack("head.rotation[x]", [0, 0.7, 1.4], [0.05, -0.12, 0.05])
+      ]);
+      const idle = mixer.clipAction(idleClip);
+      const work = mixer.clipAction(workClip);
+      idle.play();
+      work.play();
+      work.setEffectiveWeight(blueprint ? 0.28 : 0.64);
+      mixers.push(mixer);
+
+      const record = { id, group, mixer, actions: { idle, work }, activeAction: idle, label: nameSprite };
+      characterRecords.push(record);
+      return record;
+    }
+
+    function fadeCharacter(record, actionName) {
+      const next = record.actions[actionName];
+      if (!next || record.activeAction === next) return;
+      next.reset().play();
+      record.activeAction.crossFadeTo(next, 0.45, false);
+      record.activeAction = next;
+    }
+
+    const dbtBench = new THREE.Group();
+    dbtBench.position.set(1.34, 0.43, 2.94);
+    scene.add(dbtBench);
+    const benchTop = new THREE.Mesh(
+      new THREE.BoxGeometry(1.45, 0.09, 0.56),
+      new THREE.MeshStandardMaterial({ color: 0x3e4651, roughness: 0.65 })
+    );
+    benchTop.castShadow = true;
+    dbtBench.add(benchTop);
+    [-0.56, 0.56].forEach((x) => {
+      [-0.18, 0.18].forEach((z) => {
+        const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.55, 8), new THREE.MeshStandardMaterial({ color: palette.steel, roughness: 0.44, metalness: 0.35 }));
+        leg.position.set(x, -0.3, z);
+        leg.castShadow = true;
+        dbtBench.add(leg);
+      });
+    });
+    const modelBlocks = [
+      [-0.42, 0.12, -0.06, 0x6f55d9],
+      [0, 0.17, 0.06, 0x1f7a5c],
+      [0.42, 0.11, -0.02, 0xf0bd3e]
+    ];
+    modelBlocks.forEach(([x, y, z, color]) => {
+      const block = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.16, 0.22), new THREE.MeshStandardMaterial({ color, roughness: 0.58, emissive: color, emissiveIntensity: 0.08 }));
+      block.position.set(x, y, z);
+      block.castShadow = true;
+      dbtBench.add(block);
+    });
+
+    const natalia = createTeamAvatar({
+      id: "natalia",
+      name: "Natalia",
+      role: "data engineer",
+      position: [0.82, 0.3, 3.05],
+      rotationY: 0.05,
+      shirt: palette.purple,
+      hairColor: 0x3b2a24,
+      helmetColor: 0xf3f0e5
+    });
+
+    const ajda = createTeamAvatar({
+      id: "ajda",
+      name: "Ajda",
+      role: "data engineer",
+      position: [1.88, 0.3, 3.0],
+      rotationY: -0.2,
+      shirt: 0x4f46b8,
+      hairColor: 0x1f1c22,
+      helmetColor: 0xffe08a
+    });
+
+    const malo = createTeamAvatar({
+      id: "malo",
+      name: "Malo",
+      role: "architect",
+      position: [-2.42, 0.3, 2.72],
+      rotationY: 0.42,
+      shirt: palette.ink,
+      hairColor: 0x30251d,
+      helmetColor: 0xfff5e5,
+      glasses: true,
+      blueprint: true
+    });
+
+    fadeCharacter(natalia, "work");
+    fadeCharacter(ajda, "work");
 
     const isak = new THREE.Group();
     isak.position.set(4.85, 0.3, 1.65);
@@ -864,10 +1336,10 @@
     });
 
     const nameTexture = labelCanvas("Isak platform guide", "#ff5b24");
-    const nameSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: nameTexture, transparent: true, depthWrite: false, depthTest: false }));
-    nameSprite.position.set(4.86, 2.98, 1.75);
-    nameSprite.scale.set(2.15, 0.68, 1);
-    scene.add(nameSprite);
+    const isakNameSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: nameTexture, transparent: true, depthWrite: false, depthTest: false }));
+    isakNameSprite.position.set(4.86, 2.98, 1.75);
+    isakNameSprite.scale.set(1.86, 0.58, 1);
+    scene.add(isakNameSprite);
 
     const isakHit = new THREE.Mesh(
       new THREE.CapsuleGeometry(0.62, 1.9, 8, 16),
@@ -917,6 +1389,37 @@
       });
     }
 
+    let dialogueTimer = 0;
+    function showDialogue(key) {
+      const content = dialogueText[key] || dialogueText.overview;
+      window.clearInterval(dialogueTimer);
+      const portrait = document.querySelector("#dialogue-portrait");
+      portrait.style.background = `radial-gradient(circle at 50% 34%, #ffc79c 0 22%, transparent 23%), linear-gradient(180deg, ${content.portrait} 0 68%, #27354a 69%)`;
+      document.querySelector("#dialogue-speaker").textContent = content.speaker;
+      const target = document.querySelector("#dialogue-text");
+      target.textContent = "";
+      if (reducedMotion) {
+        target.textContent = content.text;
+        return;
+      }
+      let index = 0;
+      dialogueTimer = window.setInterval(() => {
+        index += 2;
+        target.textContent = content.text.slice(0, index);
+        if (index >= content.text.length) window.clearInterval(dialogueTimer);
+      }, 18);
+    }
+
+    function updateCharacterActions(view) {
+      characterRecords.forEach((record) => {
+        const shouldWork =
+          (view === "models" && ["natalia", "ajda"].includes(record.id)) ||
+          (view === "architect" && record.id === "malo");
+        fadeCharacter(record, shouldWork ? "work" : "idle");
+        record.label.material.opacity = view === "overview" || shouldWork ? 1 : 0;
+      });
+    }
+
     function setView(view) {
       activeView = view;
       document.body.dataset.view = view;
@@ -924,6 +1427,8 @@
       targetPosition = resolvedView.position.clone();
       targetLookAt = resolvedView.target.clone();
       setGuide(view);
+      showDialogue(view);
+      updateCharacterActions(view);
     }
 
     document.querySelectorAll("[data-view]").forEach((button) => {
@@ -952,8 +1457,19 @@
       const hit = raycaster.intersectObjects(interactiveObjects, false)[0];
       if (!hit) return;
       const type = hit.object.userData.type;
-      if (type && desktopViews[type]) setView(type);
+      if (type && desktopViews[type]) {
+        setView(type);
+        return;
+      }
+      const characterView = { natalia: "models", ajda: "models", malo: "architect" }[type];
+      if (characterView) {
+        setView(characterView);
+        showDialogue(type);
+      }
     });
+
+    document.body.dataset.view = activeView;
+    showDialogue("overview");
 
     function resize() {
       const width = window.innerWidth;
@@ -994,8 +1510,15 @@
         pipe.material.emissiveIntensity = THREE.MathUtils.lerp(pipe.material.emissiveIntensity, active ? 0.72 : 0.06, 0.08);
         pipe.material.opacity = THREE.MathUtils.lerp(pipe.material.opacity ?? 1, active ? 1 : 0.52, 0.08);
         pipe.material.transparent = !active;
-        pipe.labelSprite.material.opacity = THREE.MathUtils.lerp(pipe.labelSprite.material.opacity ?? 1, active ? 1 : 0.45, 0.08);
+        const labelOpacity = activeView === "overview" || active ? 1 : 0;
+        pipe.labelSprite.material.opacity = THREE.MathUtils.lerp(pipe.labelSprite.material.opacity ?? 1, labelOpacity, 0.12);
       });
+
+      roomLabelSprites.forEach((label) => {
+        const visible = activeView === "overview" || activeView === "core";
+        label.material.opacity = THREE.MathUtils.lerp(label.material.opacity ?? 1, visible ? 1 : 0, 0.12);
+      });
+      isakNameSprite.material.opacity = THREE.MathUtils.lerp(isakNameSprite.material.opacity ?? 1, activeView === "overview" ? 1 : 0, 0.12);
 
       const cameraEase = reducedMotion ? 1 : 0.045;
       camera.position.lerp(targetPosition, cameraEase);
