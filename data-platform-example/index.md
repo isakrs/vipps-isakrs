@@ -1,10 +1,10 @@
 ---
-title: Data Platform House Restart Brief
+title: Data Platform House Concept Brief
 ---
 
 <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
 
-# Data Platform House Restart Brief
+# Data Platform House Concept Brief
 
 ## What We Are Keeping
 
@@ -22,9 +22,40 @@ The previous implementation has been deleted.
 This file is now the only source artifact for the page. It should serve two
 purposes:
 
-- A useful blog-like explainer that helps people understand how data flows and
-  how the platform process works.
-- A planning brief and storyboard for a future interactive version.
+- A useful written explainer that helps people understand how data flows and how
+  the platform process works.
+- A planning brief and storyboard for the Three.js experience.
+
+The first real deliverable should be the Three.js experience. The written page
+should support it by making the story, flow, characters, and process clear
+before the scene becomes too complex.
+
+## Confirmed Direction
+
+Audience:
+
+- External people who do not already know the Vipps MobilePay data platform.
+- People inside Vipps MobilePay who need to understand how data flows and how
+  the platform process works.
+- A live company-event audience, for example North by North.
+
+First deliverable:
+
+- A playful, self-guided Three.js experience where people can explore by
+  themselves.
+- Something that can also run in the background during an event while the team
+  explains the data flow.
+- The written page remains useful as the explanatory backing and storyboard.
+
+Show-and-tell flavor:
+
+- The experience should support live role play.
+- Dino and Wraptor can be explained with the team's dinosaur costumes.
+- Smoke machines are part of the performance language. The Three.js version can
+  also use virtual smoke when data moves, when a transformation happens, or when
+  something exciting enters a new stage.
+- Data moving from a storage account to a database should be visible in the
+  three-dimensional scene, not only explained in text.
 
 ## Starting Vision
 
@@ -62,10 +93,10 @@ Possible direction:
 
 None of this is locked in yet.
 
-## Blog-Like Explainer Direction
+## Written Explainer Direction
 
-The first useful version can be a readable page rather than a full interactive
-scene.
+The written page should still be useful, even though the first real deliverable
+is the Three.js experience.
 
 The page should help someone understand:
 
@@ -77,9 +108,9 @@ The page should help someone understand:
 - Where it is used at the end.
 - Who to ask when they are confused or something breaks.
 
-The page should read like an approachable walkthrough, not like raw platform
-documentation. It can use the house metaphor, but the reader should come away
-with a real understanding of the data flow and process.
+The page should read like an approachable walkthrough and storyboard, not like
+raw platform documentation. It can use the house metaphor, but the reader should
+come away with a real understanding of the data flow and process.
 
 Possible page structure:
 
@@ -92,37 +123,42 @@ Possible page structure:
 6. End with how the signal is used and who owns keeping it healthy.
 7. Keep open questions and next-version ideas at the bottom.
 
-This blog-like page should be valuable even before the Three.js version exists.
-The future interactive house can be built by turning each section into a room,
-pipe, character, or dialogue moment.
+This written page should be valuable even before the Three.js version is fully
+polished. The interactive house can be built by turning each section into a
+room, pipe, character, or dialogue moment.
 
-## Eventual Interactive House
+## Interactive House Deliverable
 
-The house should come eventually.
+The house is the target experience.
 
-The blog-like explainer is the foundation, not the final destination. Once the
-signal journey, pipe semantics, real people, and real work examples are clear,
-the page can grow into an interactive house experience.
+The written explainer is the foundation, not the final destination. The Three.js
+house should grow from the signal journey, pipe semantics, real people, and real
+work examples.
 
-The eventual house should:
+The house should:
 
 - Let visitors follow one signal through the building.
 - Let visitors enter rooms to understand a stage in the process.
 - Show different pipe types through shape, rhythm, labels, and machinery.
 - Include characters grounded in real people and real work.
 - Let characters explain their part of the platform in short dialogue.
+- Show concrete movement between platform components, such as data moving from
+  a storage account to a database.
+- Support event-mode presentation, where it can run in the background while the
+  team explains the flow live.
+- Include playful effects such as virtual smoke, dinosaur-costume-inspired
+  characters for Dino and Wraptor, and visible machinery around pipes.
 - Keep the written explainer available, so the interactive version does not
   become the only way to understand the process.
 
-The house should not be rushed before the story is clear. The best path is:
+The house should still be built in small steps. The best path is:
 
-1. Make the written explainer useful.
+1. Make the written explainer and storyboard useful.
 2. Choose the first signal journey.
 3. Identify the first real people, artifacts, and flow modes.
-4. Turn the explainer into a storyboard.
-5. Build the first interactive house prototype.
-6. Let automation help refine the explainer, storyboard, and eventually the
-   house.
+4. Build the first interactive house prototype.
+5. Add event-mode visuals and role-play hooks.
+6. Let automation help refine the explainer, storyboard, and house.
 
 ## Core Experience Goal
 
@@ -260,6 +296,12 @@ A source system exports rows on a schedule. The platform receives the files,
 checks contracts, publishes tables, grants access, and serves the data to
 analytics projects or downstream systems.
 
+### Storage Account To Database
+
+Data lands in a storage account. The platform picks it up, validates the shape,
+applies the right processing pattern, and writes it into a database or table
+where it can be queried, modeled, exported, or used by another system.
+
 ## Stepping Into The Process
 
 The house should support two modes:
@@ -312,7 +354,7 @@ Possible responsibilities:
 - Look at new Git contributions in selected local repositories.
 - Notice changes that reveal platform concepts, ownership, services, or new
   data flows.
-- Improve the blog-like explainer when it can make the flow or process easier
+- Improve the written explainer when it can make the flow or process easier
   to understand.
 - Preserve the eventual interactive house direction while keeping the written
   explainer useful on its own.
@@ -322,90 +364,102 @@ Possible responsibilities:
 - Notice real team contributions that could become character dialogue or room
   ownership notes.
 - Propose updates to this brief, a storyboard, or the eventual interactive page.
-- Eventually extend the house with new rooms, pipes, characters, or dialogue.
+- Eventually extend the Three.js house with new rooms, pipes, characters,
+  effects, or dialogue.
 
 Open question: should the automation directly change the public page, or should
 it create draft suggestions for review first?
 
-## Clarifying Questions
+## Answered So Far
 
-1. Who is the main audience for this experience: the Data Insights team, new
-   data platform users, leadership, external visitors, or someone else?
+1. Main audience:
+   external people and people inside Vipps MobilePay. A concrete target use case
+   is showing it at a company event such as North by North.
 
-2. Should the first real deliverable be this blog-like explainer page, a
-   storyboard, a static presentation, or a small interactive Three.js prototype?
+2. First real deliverable:
+   a playful Three.js experience that people can explore by themselves and that
+   can also run in the background while the team explains the data flow live.
 
-3. Should the experience be more like a guided presentation, a small game where
+3. Performance style:
+   the experience should support role play, Dino and Wraptor dinosaur costumes,
+   smoke-machine energy, and a playful live explanation style.
+
+4. Concrete movement to show:
+   when data moves from a storage account to a database, that movement should be
+   visible in the three-dimensional scene.
+
+## Remaining Clarifying Questions
+
+1. Should the experience be more like a guided presentation, a small game where
    you move around, or a hybrid where buttons move the camera between rooms?
 
-4. Which repositories should the automation inspect for inspiration and Git
+2. Which repositories should the automation inspect for inspiration and Git
    contributions?
 
-5. Should the automation update the public page automatically, or should it
+3. Should the automation update the public page automatically, or should it
    only update this brief and ask for approval before changing the experience?
 
-6. How close should characters look to real team members? Should they be
+4. How close should characters look to real team members? Should they be
    stylized team-inspired avatars, recognizable likenesses based only on
    explicitly approved images, or something in between?
 
-7. Which people or roles must exist in the first version, if any?
+5. Which people or roles must exist in the first version, if any?
 
-8. Which real work should the first characters be attached to?
+6. Which real work should the first characters be attached to?
 
-9. What sources are acceptable for connecting people to work: Git history,
+7. What sources are acceptable for connecting people to work: Git history,
    code ownership, documentation ownership, dashboards, team notes, or manual
    approval only?
 
-10. Should character dialogue mention real names and concrete artifacts, or
+8. Should character dialogue mention real names and concrete artifacts, or
     should it use real inspiration but keep the wording role-based?
 
-11. Which platform concepts are mandatory to explain first?
+9. Which platform concepts are mandatory to explain first?
 
-12. What should the first blog-like explainer page teach in one sitting?
+10. What should the first written explainer page teach in one sitting?
 
-13. Which signal should be the first complete journey: application click,
+11. Which signal should be the first complete journey: application click,
    payment event, temperature reading, scheduled export, or something else?
 
-14. Which flow modes must be visible in the first version: scheduled batch,
+12. Which flow modes must be visible in the first version: scheduled batch,
     continuous streaming, incremental processing, full refresh, backfill, manual
     correction, data quality gate, export, or something else?
 
-15. How should the visitor learn the difference between flow modes: pipe shape,
+13. How should the visitor learn the difference between flow modes: pipe shape,
     animation rhythm, labels, character dialogue, room machinery, or a legend?
 
-16. Should the first journey use real Vipps MobilePay terminology and systems,
+14. Should the first journey use real Vipps MobilePay terminology and systems,
     or should it stay fictional and safe?
 
-17. What should count as "used" at the end of the journey: dashboard, data
+15. What should count as "used" at the end of the journey: dashboard, data
     product, machine learning model, operational export, alert, decision, or
     application feature?
 
-18. How much technical depth should each step reveal before it becomes too much
+16. How much technical depth should each step reveal before it becomes too much
     for the intended audience?
 
-19. Should the house mirror the real Vipps MobilePay data platform architecture,
+17. Should the house mirror the real Vipps MobilePay data platform architecture,
    or should it stay metaphorical and easier to understand?
 
-20. What should a character explain when you talk to them: their current work,
+18. What should a character explain when you talk to them: their current work,
     the room they are in, the pipe they own, or how to get help?
 
-21. Should the visual style aim for realistic materials, playful low-poly
+19. Should the visual style aim for realistic materials, playful low-poly
     characters, pixel-game dialogue over a modern three-dimensional scene, or
     something else?
 
-22. Should the page remain unlisted and blocked from search indexing?
+20. Should the page remain unlisted and blocked from search indexing?
 
-23. What is the desired level of polish before sharing it with others?
+21. What is the desired level of polish before sharing it with others?
 
-24. Should the automation commit and push changes, create draft pull requests,
+22. Should the automation commit and push changes, create draft pull requests,
     or only leave local notes?
 
-25. How should we decide that the automation made the house better instead of
+23. How should we decide that the automation made the house better instead of
     just adding more things?
 
 ## Suggested Next Step
 
-Answer the questions that matter most right now, especially audience, first
-blog-like explainer topic, first signal journey, which real people and real work
-to include, automation behavior, source repositories, and privacy boundaries for
-characters.
+Answer the questions that matter most next, especially interaction style, first
+signal journey, first characters, real work artifacts, source repositories,
+automation behavior, and privacy boundaries for character likenesses.
