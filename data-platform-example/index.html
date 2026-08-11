@@ -1,0 +1,928 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Data Platform House</title>
+    <meta
+      name="description"
+      content="Explore a Three.js data platform house where signals move through rooms, pipes, and character conversations."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --vipps: #ff5b24;
+        --ink: #18222d;
+        --muted: #5b6776;
+        --panel: rgba(255, 255, 255, 0.9);
+        --line: rgba(24, 34, 45, 0.16);
+        --green: #2f9e73;
+        --blue: #2c7be5;
+        --yellow: #f2bd2a;
+        --violet: #7c5cff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: #eef2f6;
+        color: var(--ink);
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        overflow: hidden;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      #world {
+        display: block;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      .topbar {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        left: 16px;
+        pointer-events: none;
+        position: fixed;
+        right: 16px;
+        top: 14px;
+        z-index: 10;
+      }
+
+      .brand,
+      .nav,
+      .panel,
+      .dialogue {
+        backdrop-filter: blur(18px);
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: 0 20px 60px rgba(24, 34, 45, 0.16);
+      }
+
+      .brand {
+        border-radius: 8px;
+        max-width: min(520px, calc(100vw - 32px));
+        padding: 12px 14px;
+        pointer-events: auto;
+      }
+
+      .brand strong {
+        display: block;
+        font-size: clamp(1rem, 1.8vw, 1.28rem);
+        letter-spacing: 0;
+      }
+
+      .brand span {
+        color: var(--muted);
+        display: block;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-top: 2px;
+      }
+
+      .nav {
+        align-items: center;
+        border-radius: 999px;
+        display: flex;
+        gap: 6px;
+        padding: 6px;
+        pointer-events: auto;
+      }
+
+      .nav a,
+      .focus-button,
+      .close-button {
+        border: 0;
+        border-radius: 999px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.88rem;
+        font-weight: 700;
+        line-height: 1;
+        padding: 10px 12px;
+        text-decoration: none;
+      }
+
+      .nav a {
+        background: transparent;
+      }
+
+      .nav a:first-child {
+        background: var(--ink);
+        color: #ffffff;
+      }
+
+      .panel {
+        border-radius: 8px;
+        bottom: 18px;
+        left: 16px;
+        max-width: min(360px, calc(100vw - 32px));
+        padding: 14px;
+        position: fixed;
+        z-index: 10;
+      }
+
+      .panel h2,
+      .dialogue h2 {
+        font-size: 0.95rem;
+        letter-spacing: 0;
+        margin: 0 0 8px;
+      }
+
+      .panel p,
+      .dialogue p {
+        color: var(--muted);
+        font-size: 0.88rem;
+        line-height: 1.45;
+        margin: 0;
+      }
+
+      .focus-grid {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 12px;
+      }
+
+      .focus-button {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        min-height: 38px;
+      }
+
+      .focus-button:hover,
+      .focus-button:focus-visible,
+      .nav a:hover,
+      .nav a:focus-visible {
+        outline: 2px solid rgba(255, 91, 36, 0.35);
+        outline-offset: 2px;
+      }
+
+      .dialogue {
+        border-radius: 8px;
+        bottom: 18px;
+        max-width: min(520px, calc(100vw - 32px));
+        padding: 16px 18px;
+        position: fixed;
+        right: 16px;
+        transform: translateY(0);
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+        z-index: 11;
+      }
+
+      .dialogue[hidden] {
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(12px);
+      }
+
+      .dialogue h2 {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .close-button {
+        background: rgba(24, 34, 45, 0.08);
+        color: var(--ink);
+        padding: 8px 10px;
+      }
+
+      .loading {
+        align-items: center;
+        background: #eef2f6;
+        color: var(--ink);
+        display: grid;
+        font-weight: 700;
+        inset: 0;
+        place-items: center;
+        position: fixed;
+        z-index: 30;
+      }
+
+      .loading.is-hidden {
+        display: none;
+      }
+
+      .noscript {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        left: 50%;
+        max-width: 520px;
+        padding: 18px;
+        position: fixed;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 40;
+      }
+
+      @media (max-width: 760px) {
+        .topbar {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .nav {
+          border-radius: 8px;
+          justify-content: stretch;
+        }
+
+        .nav a {
+          flex: 1;
+          text-align: center;
+        }
+
+        .panel {
+          bottom: 12px;
+          left: 12px;
+          right: 12px;
+          max-width: none;
+        }
+
+        .dialogue {
+          bottom: 12px;
+          left: 12px;
+          right: 12px;
+          max-width: none;
+        }
+
+        .focus-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .focus-button {
+          font-size: 0.78rem;
+          padding: 9px 8px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="world" aria-label="Three-dimensional data platform house"></canvas>
+
+    <header class="topbar">
+      <div class="brand">
+        <strong>Data Platform House</strong>
+        <span id="scene-summary">Follow a signal through rooms, pipes, people, and repositories.</span>
+      </div>
+      <nav class="nav" aria-label="Data Platform House links">
+        <a href="/data-platform-example/instructions/">Instructions</a>
+        <a href="https://github.com/isakrs/vipps-isakrs/issues/new?template=data-platform-house-feedback.yml">Feedback</a>
+        <a href="https://github.com/isakrs">GitHub</a>
+      </nav>
+    </header>
+
+    <section class="panel" aria-label="Current room">
+      <h2 id="current-room">Signal Hall</h2>
+      <p id="current-copy">
+        Data starts outside the house, enters ingestion, becomes trusted enough
+        for analytics, and leaves as products, exports, or decisions.
+      </p>
+      <div class="focus-grid" aria-label="Focus rooms">
+        <button class="focus-button" type="button" data-focus="ingestion">Ingestion</button>
+        <button class="focus-button" type="button" data-focus="analytics">Analytics</button>
+        <button class="focus-button" type="button" data-focus="export">Export</button>
+        <button class="focus-button" type="button" data-focus="product">Product</button>
+        <button class="focus-button" type="button" data-focus="github">GitHub</button>
+        <button class="focus-button" type="button" data-focus="house">House</button>
+      </div>
+    </section>
+
+    <section class="dialogue" id="dialogue" hidden aria-live="polite">
+      <h2>
+        <span id="speaker-name">Isak</span>
+        <button class="close-button" id="close-dialogue" type="button" aria-label="Close dialogue">Close</button>
+      </h2>
+      <p id="speaker-copy"></p>
+    </section>
+
+    <div class="loading" id="loading">Loading the house</div>
+
+    <noscript>
+      <div class="noscript">
+        This page needs JavaScript to render the Three.js world. The planning
+        brief is available at <a href="/data-platform-example/instructions/">the
+        instructions page</a>.
+      </div>
+    </noscript>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+
+      const canvas = document.querySelector("#world");
+      const loading = document.querySelector("#loading");
+      const currentRoom = document.querySelector("#current-room");
+      const currentCopy = document.querySelector("#current-copy");
+      const dialogue = document.querySelector("#dialogue");
+      const speakerName = document.querySelector("#speaker-name");
+      const speakerCopy = document.querySelector("#speaker-copy");
+      const closeDialogue = document.querySelector("#close-dialogue");
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xeef2f6);
+      scene.fog = new THREE.Fog(0xeef2f6, 24, 72);
+
+      const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 120);
+      camera.position.set(0, 10, 15);
+
+      const renderer = new THREE.WebGLRenderer({
+        alpha: false,
+        antialias: true,
+        canvas
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      const clock = new THREE.Clock();
+      const raycaster = new THREE.Raycaster();
+      const pointer = new THREE.Vector2();
+      const mouse = { down: false, x: 0, y: 0 };
+      const keys = new Set();
+      const clickable = [];
+      const packets = [];
+      const smoke = [];
+
+      const cameraTarget = new THREE.Vector3(0, 0.3, 0);
+      const desiredTarget = new THREE.Vector3(0, 0.3, 0);
+      const desiredOffset = new THREE.Vector3(0, 10, 15);
+      const cameraOffset = desiredOffset.clone();
+
+      const roomDetails = {
+        house: {
+          title: "Signal Hall",
+          copy: "The house shows one signal becoming useful through ingestion, analytics work, export, and data product serving."
+        },
+        ingestion: {
+          title: "Ingestion Room",
+          copy: "Files and events enter here. The first pipe makes landing, validation, and freshness visible."
+        },
+        analytics: {
+          title: "Analytics Project Room",
+          copy: "This room turns trusted platform data into models and reusable project work."
+        },
+        export: {
+          title: "Data Export Room",
+          copy: "Exports leave the house with a declared destination, schedule, and owner."
+        },
+        product: {
+          title: "Data Product Room",
+          copy: "The signal becomes something people can use: a governed table, insight, dashboard, alert, or downstream feature."
+        },
+        github: {
+          title: "GitHub Library",
+          copy: "Public repositories from Isak's account become blueprints and examples that characters can explain."
+        }
+      };
+
+      const roomTargets = {
+        house: { target: [0, 0.2, 0], offset: [0, 10, 15] },
+        ingestion: { target: [-7.5, 0.3, -3.8], offset: [1.8, 7.5, 9] },
+        analytics: { target: [-1.8, 0.3, -3.8], offset: [2, 7.3, 8.7] },
+        export: { target: [4.6, 0.3, -3.6], offset: [2, 7.4, 8.6] },
+        product: { target: [5.6, 0.3, 3.3], offset: [1.2, 7.6, 8.9] },
+        github: { target: [-5.6, 0.3, 3.4], offset: [1.4, 7.2, 8.4] }
+      };
+
+      const rooms = [
+        { id: "ingestion", name: "Ingestion", x: -7.5, z: -3.8, color: 0xff7a45 },
+        { id: "analytics", name: "Analytics", x: -1.7, z: -3.8, color: 0x2f9e73 },
+        { id: "export", name: "Export", x: 4.3, z: -3.8, color: 0x2c7be5 },
+        { id: "github", name: "GitHub Library", x: -5.5, z: 3.4, color: 0xf2bd2a },
+        { id: "product", name: "Data Product", x: 4.8, z: 3.4, color: 0x7c5cff }
+      ];
+
+      const roomById = new Map(rooms.map((room) => [room.id, room]));
+
+      addLights();
+      addHouse();
+      addRooms();
+      addPipes();
+      addCharacters();
+      addRepositoryTable();
+      addSmokePuffs();
+
+      document.querySelectorAll("[data-focus]").forEach((button) => {
+        button.addEventListener("click", () => focusRoom(button.dataset.focus));
+      });
+
+      closeDialogue.addEventListener("click", () => {
+        dialogue.hidden = true;
+      });
+
+      window.addEventListener("keydown", (event) => {
+        keys.add(event.key.toLowerCase());
+      });
+
+      window.addEventListener("keyup", (event) => {
+        keys.delete(event.key.toLowerCase());
+      });
+
+      window.addEventListener("pointerdown", (event) => {
+        if (event.target !== canvas) {
+          mouse.down = false;
+          return;
+        }
+        mouse.down = true;
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
+      });
+
+      window.addEventListener("pointerup", (event) => {
+        if (mouse.down && Math.abs(event.clientX - mouse.x) < 8 && Math.abs(event.clientY - mouse.y) < 8) {
+          pickCharacter(event);
+        }
+        mouse.down = false;
+      });
+
+      window.addEventListener("pointermove", (event) => {
+        if (!mouse.down || event.pointerType === "mouse" && event.buttons !== 1) {
+          return;
+        }
+        const dx = event.clientX - mouse.x;
+        const dy = event.clientY - mouse.y;
+        desiredTarget.x -= dx * 0.018;
+        desiredTarget.z -= dy * 0.018;
+        clampTarget();
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
+      });
+
+      window.addEventListener("resize", resize);
+
+      focusRoom("house");
+      loading.classList.add("is-hidden");
+      animate();
+
+      function addLights() {
+        const ambient = new THREE.HemisphereLight(0xffffff, 0xc9d7e6, 2.4);
+        scene.add(ambient);
+
+        const sun = new THREE.DirectionalLight(0xffffff, 3.2);
+        sun.position.set(-8, 16, 10);
+        sun.castShadow = true;
+        sun.shadow.mapSize.set(2048, 2048);
+        sun.shadow.camera.near = 1;
+        sun.shadow.camera.far = 40;
+        sun.shadow.camera.left = -18;
+        sun.shadow.camera.right = 18;
+        sun.shadow.camera.top = 18;
+        sun.shadow.camera.bottom = -18;
+        scene.add(sun);
+
+        const warm = new THREE.PointLight(0xffb199, 1.2, 26);
+        warm.position.set(-5, 5, 1);
+        scene.add(warm);
+
+        const cool = new THREE.PointLight(0x7bdff2, 0.9, 24);
+        cool.position.set(5, 4, -2);
+        scene.add(cool);
+      }
+
+      function addHouse() {
+        const floor = new THREE.Mesh(
+          new THREE.BoxGeometry(16, 0.28, 11),
+          new THREE.MeshStandardMaterial({ color: 0xfaf8f3, roughness: 0.72 })
+        );
+        floor.position.y = -0.14;
+        floor.receiveShadow = true;
+        scene.add(floor);
+
+        const roof = new THREE.Mesh(
+          new THREE.ConeGeometry(9.6, 2.6, 4),
+          new THREE.MeshBasicMaterial({
+            color: 0x27384d,
+            opacity: 0.58,
+            transparent: true,
+            wireframe: true
+          })
+        );
+        roof.rotation.y = Math.PI / 4;
+        roof.position.set(0, 4.65, 0);
+        roof.scale.z = 0.72;
+        roof.castShadow = true;
+        scene.add(roof);
+
+        const wallMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.56,
+          roughness: 0.6
+        });
+
+        [
+          [0, 1.3, -5.55, 16.2, 2.8, 0.18],
+          [0, 1.3, 5.55, 16.2, 2.8, 0.18],
+          [-8.1, 1.3, 0, 0.18, 2.8, 11.1],
+          [8.1, 1.3, 0, 0.18, 2.8, 11.1],
+          [-4.2, 1.05, -0.15, 0.16, 2.1, 10.6],
+          [1.8, 1.05, -0.15, 0.16, 2.1, 10.6],
+          [-1.2, 1.05, 0.25, 5.8, 2.1, 0.16]
+        ].forEach(([x, y, z, w, h, d]) => {
+          const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMaterial);
+          wall.position.set(x, y, z);
+          wall.castShadow = true;
+          wall.receiveShadow = true;
+          scene.add(wall);
+        });
+
+        const path = new THREE.Mesh(
+          new THREE.PlaneGeometry(22, 18),
+          new THREE.MeshStandardMaterial({ color: 0xdbe8df, roughness: 0.9 })
+        );
+        path.rotation.x = -Math.PI / 2;
+        path.position.y = -0.22;
+        path.receiveShadow = true;
+        scene.add(path);
+      }
+
+      function addRooms() {
+        rooms.forEach((room) => {
+          const base = new THREE.Mesh(
+            new THREE.BoxGeometry(2.9, 0.1, 2.5),
+            new THREE.MeshStandardMaterial({
+              color: room.color,
+              transparent: true,
+              opacity: 0.22,
+              roughness: 0.65
+            })
+          );
+          base.position.set(room.x, 0.02, room.z);
+          base.receiveShadow = true;
+          scene.add(base);
+
+          const machine = new THREE.Mesh(
+            new THREE.BoxGeometry(1.05, 0.9, 0.8),
+            new THREE.MeshStandardMaterial({ color: room.color, roughness: 0.5, metalness: 0.14 })
+          );
+          machine.position.set(room.x - 0.45, 0.5, room.z + 0.05);
+          machine.castShadow = true;
+          machine.userData.roomId = room.id;
+          scene.add(machine);
+
+          const light = new THREE.PointLight(room.color, 0.75, 7);
+          light.position.set(room.x, 2.2, room.z);
+          scene.add(light);
+
+          scene.add(makeLabel(room.name, new THREE.Vector3(room.x, 2.3, room.z - 1.15), room.color));
+        });
+      }
+
+      function addPipes() {
+        makePipe("Storage", [-10.7, 0.75, -3.8], [-7.5, 0.75, -3.8], 0xff5b24, "batch", 3);
+        makePipe("Incremental", [-6.1, 0.85, -3.8], [-3.1, 0.85, -3.8], 0x2f9e73, "incremental", 5);
+        makePipe("Model", [-0.4, 0.85, -3.8], [3.1, 0.85, -3.8], 0x2c7be5, "incremental", 4);
+        makePipe("Export", [4.7, 0.8, -2.4], [4.9, 0.8, 1.85], 0x7c5cff, "export", 4);
+        makePipe("Repository", [-4.8, 0.75, 2.1], [-2.1, 0.75, -2.4], 0xf2bd2a, "reference", 3);
+      }
+
+      function makePipe(name, from, to, color, type, count) {
+        const start = new THREE.Vector3(...from);
+        const end = new THREE.Vector3(...to);
+        const middle = start.clone().lerp(end, 0.5);
+        middle.y += type === "export" ? 1.05 : 0.42;
+        const curve = new THREE.CatmullRomCurve3([start, middle, end]);
+        const pipe = new THREE.Mesh(
+          new THREE.TubeGeometry(curve, 80, 0.095, 16, false),
+          new THREE.MeshStandardMaterial({
+            color,
+            emissive: color,
+            emissiveIntensity: 0.14,
+            metalness: 0.18,
+            roughness: 0.38
+          })
+        );
+        pipe.castShadow = true;
+        pipe.userData = { name, type };
+        scene.add(pipe);
+
+        scene.add(makeLabel(name, middle.clone().add(new THREE.Vector3(0, 0.56, 0)), color));
+
+        for (let index = 0; index < count; index += 1) {
+          const packet = new THREE.Mesh(
+            new THREE.SphereGeometry(type === "batch" && index === 0 ? 0.2 : 0.14, 18, 18),
+            new THREE.MeshStandardMaterial({
+              color: 0xffffff,
+              emissive: color,
+              emissiveIntensity: 0.75,
+              roughness: 0.2
+            })
+          );
+          packet.castShadow = true;
+          packet.userData = {
+            curve,
+            offset: index / count,
+            speed: type === "batch" ? 0.14 : type === "export" ? 0.22 : 0.18,
+            type
+          };
+          packets.push(packet);
+          scene.add(packet);
+        }
+      }
+
+      function addCharacters() {
+        makePerson({
+          name: "Isak",
+          role: "Data platform guide",
+          position: [-6.35, 0, -2.6],
+          colors: [0xff5b24, 0x243447, 0xf1c7a8],
+          dialogue:
+            "I am watching the ingestion pipe and the storage-to-database movement. Ask me why the signal lands, how it gets validated, and which repository blueprint explains the platform idea."
+        });
+
+        makePerson({
+          name: "Param",
+          role: "Analytics builder",
+          position: [-1.35, 0, -2.35],
+          colors: [0x2f9e73, 0x27384d, 0xd8a17d],
+          dialogue:
+            "I am in the analytics project room. This is where trustworthy platform data becomes models that people can reuse instead of rebuilding the same logic."
+        });
+
+        makePerson({
+          name: "Kien",
+          role: "Model collaborator",
+          position: [-0.35, 0, -4.75],
+          colors: [0x2c7be5, 0x1f2a44, 0xe0b08f],
+          dialogue:
+            "I am pairing on the model bench. The important thing here is lineage: what entered, what changed, and how someone can trust the output."
+        });
+
+        makePerson({
+          name: "Malo",
+          role: "Architect",
+          position: [-4.9, 0, 4.35],
+          colors: [0xf2bd2a, 0x27384d, 0xc98f6f],
+          dialogue:
+            "I am at the blueprint table. The house should show architecture choices, not only happy data paths: ownership, gates, exports, and where the design bends."
+        });
+      }
+
+      function makePerson({ name, role, position, colors, dialogue: text }) {
+        const group = new THREE.Group();
+        group.position.set(...position);
+        group.userData = { name, role, dialogue: text };
+
+        const body = new THREE.Mesh(
+          new THREE.CapsuleGeometry(0.28, 0.68, 8, 16),
+          new THREE.MeshStandardMaterial({ color: colors[0], roughness: 0.55 })
+        );
+        body.position.y = 0.78;
+        body.castShadow = true;
+        group.add(body);
+
+        const head = new THREE.Mesh(
+          new THREE.SphereGeometry(0.26, 24, 24),
+          new THREE.MeshStandardMaterial({ color: colors[2], roughness: 0.5 })
+        );
+        head.position.y = 1.38;
+        head.castShadow = true;
+        group.add(head);
+
+        const hair = new THREE.Mesh(
+          new THREE.SphereGeometry(0.27, 20, 12),
+          new THREE.MeshStandardMaterial({ color: colors[1], roughness: 0.62 })
+        );
+        hair.scale.set(1, 0.45, 0.9);
+        hair.position.set(0, 1.54, -0.02);
+        hair.castShadow = true;
+        group.add(hair);
+
+        const leftArm = makeArm(colors[0], -0.34);
+        const rightArm = makeArm(colors[0], 0.34);
+        group.add(leftArm, rightArm);
+
+        group.add(makeLabel(name, new THREE.Vector3(0, 1.9, 0), colors[0], 0.72));
+        clickable.push(group);
+        scene.add(group);
+      }
+
+      function makeArm(color, x) {
+        const arm = new THREE.Mesh(
+          new THREE.CapsuleGeometry(0.07, 0.42, 6, 10),
+          new THREE.MeshStandardMaterial({ color, roughness: 0.58 })
+        );
+        arm.position.set(x, 0.76, 0);
+        arm.rotation.z = x < 0 ? 0.38 : -0.38;
+        arm.castShadow = true;
+        return arm;
+      }
+
+      function addRepositoryTable() {
+        const table = new THREE.Group();
+        table.position.set(-5.6, 0, 3.35);
+
+        const top = new THREE.Mesh(
+          new THREE.BoxGeometry(1.9, 0.12, 0.9),
+          new THREE.MeshStandardMaterial({ color: 0x3b4658, roughness: 0.44, metalness: 0.18 })
+        );
+        top.position.y = 0.62;
+        top.castShadow = true;
+        table.add(top);
+
+        const blueprint = new THREE.Mesh(
+          new THREE.BoxGeometry(1.35, 0.03, 0.58),
+          new THREE.MeshStandardMaterial({ color: 0x7bdff2, emissive: 0x2c7be5, emissiveIntensity: 0.18 })
+        );
+        blueprint.position.set(0, 0.71, 0);
+        table.add(blueprint);
+
+        for (const x of [-0.75, 0.75]) {
+          for (const z of [-0.32, 0.32]) {
+            const leg = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.05, 0.05, 0.62, 10),
+              new THREE.MeshStandardMaterial({ color: 0x27384d, roughness: 0.5 })
+            );
+            leg.position.set(x, 0.31, z);
+            leg.castShadow = true;
+            table.add(leg);
+          }
+        }
+
+        scene.add(table);
+        scene.add(makeLabel("repository blueprints", new THREE.Vector3(-5.6, 1.45, 3.35), 0xf2bd2a, 0.62));
+      }
+
+      function addSmokePuffs() {
+        for (let index = 0; index < 26; index += 1) {
+          const puff = new THREE.Mesh(
+            new THREE.SphereGeometry(0.16 + Math.random() * 0.2, 12, 12),
+            new THREE.MeshStandardMaterial({
+              color: 0xffffff,
+              transparent: true,
+              opacity: 0.24,
+              roughness: 1
+            })
+          );
+          puff.position.set(-8.9 + Math.random() * 1.7, 0.65 + Math.random() * 1.1, -3.9 + Math.random() * 0.7);
+          puff.userData = {
+            baseY: puff.position.y,
+            phase: Math.random() * Math.PI * 2,
+            drift: 0.2 + Math.random() * 0.45
+          };
+          smoke.push(puff);
+          scene.add(puff);
+        }
+      }
+
+      function makeLabel(text, position, color, scale = 0.86) {
+        const labelCanvas = document.createElement("canvas");
+        labelCanvas.width = 512;
+        labelCanvas.height = 160;
+        const context = labelCanvas.getContext("2d");
+        context.fillStyle = "rgba(255,255,255,0.88)";
+        roundRect(context, 16, 30, 480, 92, 28);
+        context.fill();
+        context.strokeStyle = `#${color.toString(16).padStart(6, "0")}`;
+        context.lineWidth = 8;
+        context.stroke();
+        context.fillStyle = "#18222d";
+        context.font = "700 42px Inter, system-ui, sans-serif";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(text, 256, 78, 430);
+
+        const texture = new THREE.CanvasTexture(labelCanvas);
+        const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
+        const sprite = new THREE.Sprite(material);
+        sprite.position.copy(position);
+        sprite.scale.set(2.5 * scale, 0.78 * scale, 1);
+        return sprite;
+      }
+
+      function roundRect(context, x, y, width, height, radius) {
+        context.beginPath();
+        context.moveTo(x + radius, y);
+        context.arcTo(x + width, y, x + width, y + height, radius);
+        context.arcTo(x + width, y + height, x, y + height, radius);
+        context.arcTo(x, y + height, x, y, radius);
+        context.arcTo(x, y, x + width, y, radius);
+        context.closePath();
+      }
+
+      function focusRoom(id) {
+        const room = roomTargets[id] ?? roomTargets.house;
+        desiredTarget.set(...room.target);
+        desiredOffset.set(...room.offset);
+        const details = roomDetails[id] ?? roomDetails.house;
+        currentRoom.textContent = details.title;
+        currentCopy.textContent = details.copy;
+      }
+
+      function pickCharacter(event) {
+        pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+        pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(pointer, camera);
+        const hits = raycaster.intersectObjects(clickable, true);
+        if (!hits.length) {
+          return;
+        }
+        let selected = hits[0].object;
+        while (selected.parent && !selected.userData.dialogue) {
+          selected = selected.parent;
+        }
+        if (!selected.userData.dialogue) {
+          return;
+        }
+        speakerName.textContent = `${selected.userData.name} - ${selected.userData.role}`;
+        speakerCopy.textContent = selected.userData.dialogue;
+        dialogue.hidden = false;
+      }
+
+      function resize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function updateCamera(delta) {
+        const speed = 5.6 * delta;
+        if (keys.has("arrowup") || keys.has("w")) desiredTarget.z -= speed;
+        if (keys.has("arrowdown") || keys.has("s")) desiredTarget.z += speed;
+        if (keys.has("arrowleft") || keys.has("a")) desiredTarget.x -= speed;
+        if (keys.has("arrowright") || keys.has("d")) desiredTarget.x += speed;
+        clampTarget();
+
+        cameraTarget.lerp(desiredTarget, 0.08);
+        cameraOffset.lerp(desiredOffset, 0.08);
+        camera.position.copy(cameraTarget).add(cameraOffset);
+        camera.lookAt(cameraTarget);
+      }
+
+      function clampTarget() {
+        desiredTarget.x = THREE.MathUtils.clamp(desiredTarget.x, -9.2, 9.2);
+        desiredTarget.z = THREE.MathUtils.clamp(desiredTarget.z, -6.8, 6.8);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const delta = Math.min(clock.getDelta(), 0.033);
+        const elapsed = clock.elapsedTime;
+
+        updateCamera(delta);
+
+        packets.forEach((packet, index) => {
+          const userData = packet.userData;
+          const flow = (elapsed * userData.speed + userData.offset) % 1;
+          const pulse = userData.type === "batch" ? Math.pow(Math.sin(flow * Math.PI), 4) : 0;
+          packet.position.copy(userData.curve.getPointAt(flow));
+          packet.scale.setScalar(1 + pulse * 0.9);
+          packet.visible = userData.type !== "batch" || flow < 0.48 || index % 2 === 0;
+        });
+
+        smoke.forEach((puff) => {
+          const userData = puff.userData;
+          puff.position.y = userData.baseY + Math.sin(elapsed * userData.drift + userData.phase) * 0.18;
+          puff.position.x += Math.sin(elapsed * 0.3 + userData.phase) * 0.0008;
+          puff.material.opacity = 0.17 + Math.sin(elapsed * 0.8 + userData.phase) * 0.06;
+        });
+
+        clickable.forEach((person, index) => {
+          person.rotation.y = Math.sin(elapsed * 0.7 + index) * 0.16;
+          person.position.y = Math.sin(elapsed * 1.4 + index) * 0.025;
+        });
+
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>

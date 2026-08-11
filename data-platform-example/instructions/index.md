@@ -1,8 +1,8 @@
 ---
-title: Data Platform House Concept Brief
+title: Data Platform House Instructions And Backlog
 ---
 
-# Data Platform House Concept Brief
+# Data Platform House Instructions And Backlog
 
 <style>
   .data-platform-feedback {
@@ -56,21 +56,30 @@ title: Data Platform House Concept Brief
   }
 </style>
 
-## What We Are Keeping
+## Routes
 
-The public address should stay:
+The main experience address stays:
 
 https://vipps.isakrs.com/data-platform-example/
+
+That route should open the Three.js world first.
+
+The instructions, backlog, and concept brief live here:
+
+https://vipps.isakrs.com/data-platform-example/instructions/
 
 We also want some form of automation that helps the project improve over time.
 Everything else is open again.
 
 ## Current State
 
-The previous implementation has been deleted.
+The previous implementation has been deleted and replaced with a clearer split:
 
-This file is now the only source artifact for the page. It should serve two
-purposes:
+- `/data-platform-example/` is the entrance to the Three.js world.
+- `/data-platform-example/instructions/` is the planning brief, development
+  backlog, and instruction source.
+
+This file should serve two purposes:
 
 - A useful written explainer that helps people understand how data flows and how
   the platform process works.
@@ -79,6 +88,8 @@ purposes:
 The first real deliverable should be the Three.js experience. The written page
 should support it by making the story, flow, characters, and process clear
 before the scene becomes too complex.
+
+[Enter the Three.js world](/data-platform-example/)
 
 ## Development Backlog
 
@@ -102,12 +113,12 @@ event version more convincing.
       <span>Pick one journey to build end to end before adding more paths.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Build the first house shell</strong>
-      <span>Create a playable Three.js scene with rooms, pipes, camera, and movement.</span>
-    </article>
-    <article class="data-platform-card">
       <strong>Create Isak knowledge file</strong>
       <span>Make Isak the main data platform guide with reviewable Markdown knowledge.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Improve world interaction</strong>
+      <span>Make walking, tapping people, and following pipes feel natural on desktop and mobile.</span>
     </article>
   </section>
 
@@ -180,6 +191,14 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Search discoverability</strong>
       <span>The page is allowed to be discovered while still staying off the root page.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Experience route split</strong>
+      <span>The main route now opens the Three.js world and this subpage keeps the instructions.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>First house shell</strong>
+      <span>The first scene has rooms, animated data pipes, avatars, and repository blueprints.</span>
     </article>
   </section>
 </div>
