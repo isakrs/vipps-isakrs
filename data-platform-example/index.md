@@ -2,8 +2,6 @@
 title: Data Platform House Concept Brief
 ---
 
-<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
-
 # Data Platform House Concept Brief
 
 ## What We Are Keeping
@@ -38,13 +36,18 @@ Audience:
 - People inside Vipps MobilePay who need to understand how data flows and how
   the platform process works.
 - A live company-event audience, for example North by North.
+- A future consulting or portfolio audience where the experience can show both
+  data platform thinking and interactive Three.js craft.
 
 First deliverable:
 
-- A playful, self-guided Three.js experience where people can explore by
-  themselves.
+- A polished Three.js experience, not just a written presentation.
+- A small game where visitors can walk around, inspect rooms and pipes, and talk
+  to people.
 - Something that can also run in the background during an event while the team
   explains the data flow.
+- Something that can later be used as a memorable selling point when explaining
+  data platform work to new customers or collaborators.
 - The written page remains useful as the explanatory backing and storyboard.
 
 Show-and-tell flavor:
@@ -56,6 +59,52 @@ Show-and-tell flavor:
   something exciting enters a new stage.
 - Data moving from a storage account to a database should be visible in the
   three-dimensional scene, not only explained in text.
+
+Character direction:
+
+- Characters should resemble real teammates in look, speech, knowledge, and
+  behavior when that is explicitly approved and safe to publish.
+- Characters should be backed by Markdown knowledge files, so each person has a
+  clear source of truth for what they know and explain.
+- Characters should eventually be connected to large language models so visitors
+  can ask real-time questions, not only choose from fixed dialogue.
+- The first characters should be Isak, Param, Kien, and Malo.
+- Isak is the most important first character and should be the main person to ask
+  about the data platform.
+- Malo should appear as an architect.
+- After the first set, the experience should grow toward the whole Data Insights
+  team and then key collaborators around Vipps MobilePay.
+
+First concepts to explain:
+
+- Ingestion processes.
+- Analytics projects.
+- Data export.
+- Data products.
+
+Architecture direction:
+
+- The house should mirror the real Vipps MobilePay data platform to some extent,
+  but it can stay metaphorical where that makes the story easier to understand
+  or safer to share.
+- It should also work as a reusable example for a customer-style setting, such
+  as a Bama-like scenario, where the same platform ideas are explained without
+  needing Vipps MobilePay-specific details.
+
+Publishing direction:
+
+- The page can be discoverable by search engines.
+- It does not need to be promoted from the root page yet. It is acceptable if
+  someone finds the address by digging.
+- The desired polish is fairly high before actively sharing it with others.
+
+Automation direction:
+
+- The automation should inspect Isak's personal repositories for inspiration and
+  Git contributions.
+- The automation may update the public page automatically.
+- The automation must commit and push changes so every automatic change can be
+  rolled back through Git history.
 
 ## Starting Vision
 
@@ -86,8 +135,12 @@ Possible direction:
   explain work they have actually done.
 - The visitor can follow the signal from room to room or jump directly into a
   stage to understand that part of the flow.
-- The interaction could feel like an old handheld role-playing game: walk up to
-  a person, press a button, and get a short dialogue box.
+- The interaction should feel like a small exploratory game: walk around, enter
+  rooms, inspect machinery, follow pipes, and talk to humans.
+- Dialogue can borrow the feeling of an old handheld role-playing game, but the
+  characters should be smarter than fixed dialogue trees. Each character should
+  have a Markdown knowledge file and eventually a large language model-backed
+  conversation layer.
 - The visual ambition could eventually be a polished Three.js scene with
   animated characters, camera movement, cutaway rooms, and richer materials.
 
@@ -139,9 +192,14 @@ The house should:
 
 - Let visitors follow one signal through the building.
 - Let visitors enter rooms to understand a stage in the process.
+- Let visitors move around like a small game rather than only clicking through a
+  fixed slide deck.
 - Show different pipe types through shape, rhythm, labels, and machinery.
 - Include characters grounded in real people and real work.
-- Let characters explain their part of the platform in short dialogue.
+- Let characters explain their room, the technology around them, the pipelines
+  they own or have worked on, and how to build a great data platform.
+- Support real-time questions through a large language model layer, with one
+  Markdown knowledge file per character.
 - Show concrete movement between platform components, such as data moving from
   a storage account to a database.
 - Support event-mode presentation, where it can run in the background while the
@@ -159,6 +217,19 @@ The house should still be built in small steps. The best path is:
 4. Build the first interactive house prototype.
 5. Add event-mode visuals and role-play hooks.
 6. Let automation help refine the explainer, storyboard, and house.
+
+First prototype scope:
+
+1. A playable Three.js house shell with a few connected rooms.
+2. One clear signal journey through ingestion, analytics project work, data
+   export, and data product use.
+3. Isak as the main data platform guide.
+4. Param, Kien, and Malo as the next visible characters.
+5. At least one visible storage-account-to-database pipe.
+6. At least three pipe modes with distinct motion, shape, or machinery:
+   scheduled batch, incremental processing, and export.
+7. Markdown knowledge files for the first characters, even before the live large
+   language model integration is built.
 
 ## Core Experience Goal
 
@@ -237,22 +308,48 @@ The goal is that a visitor can meet people in the house and understand both:
 - What real platform work, data flow, model, dashboard, export, automation,
   infrastructure, or support responsibility that person can explain.
 
-Characters should feel connected to real people, not generic mascots.
+Characters should feel connected to real people, not generic mascots. The
+ambition is that they resemble teammates in look, speech, knowledge, and
+behavior, while staying respectful and approved for the way the page may be
+shared.
 
 Possible character design principles:
 
-- Each character has a name, room, responsibility, and short dialogue.
+- Each character has a name, room, responsibility, Markdown knowledge file, and
+  dialogue style.
 - Each character is connected to one or more real artifacts, such as Git
   commits, pull requests, documentation, dashboards, data products, jobs,
   configuration files, or notebooks.
 - Character dialogue should explain real work in plain language.
 - The visitor should be able to ask a character what they are doing, what they
   built, what they own, and who to talk to next.
+- Character answers should be genuinely educational: the person should explain
+  the room they are in, the technology and pipelines around them, how the flow
+  works, and how someone can build or use the platform well.
 - Characters can guide visitors across rooms when a signal moves from one
   ownership area to another.
 - The scene should make collaboration visible. For example, two people working
   together on data models should appear together in the modeling room, connected
   to the relevant model flow.
+
+First characters:
+
+- Isak: main data platform guide and the primary person visitors should ask
+  about data platform questions.
+- Malo: architect character, helping explain platform shape, operating model,
+  and design tradeoffs.
+- Param: early team character, to be grounded in real artifacts before the
+  exact room and dialogue are finalized.
+- Kien: early team character, to be grounded in real artifacts before the exact
+  room and dialogue are finalized.
+
+Later character expansion:
+
+- Add the rest of Data Insights.
+- Add key collaborators around Vipps MobilePay where they have worked with Data
+  Insights or the data platform.
+- Prefer adding people when there is a real artifact, process, or platform
+  responsibility they can explain.
 
 Possible ways to ground characters in reality:
 
@@ -261,13 +358,17 @@ Possible ways to ground characters in reality:
 - Use recent commits to surface what people have actually worked on lately.
 - Use manually approved notes from the team to avoid guessing.
 - Use explicitly approved reference images if recognizable likenesses are wanted.
+- Use one Markdown knowledge file per character so the dialogue has a
+  reviewable source of truth.
 
 Privacy and consent boundaries:
 
 - Do not store, publish, or commit Slack profile photos or private source images
   unless they have been explicitly approved for this page.
-- If approved images are not available, use stylized avatars with coarse,
-  respectful cues rather than recognizable likenesses.
+- Do not publish recognizable likenesses, speech imitation, or behavior
+  imitation for a teammate without that person's approval.
+- If approved images and approval for likeness are not available, use stylized
+  avatars with coarse, respectful cues rather than recognizable likenesses.
 - Character dialogue should not expose private context, sensitive internal
   details, or unsupported claims about what someone owns.
 - If the page becomes shareable beyond the immediate team, every real-person
@@ -327,12 +428,15 @@ Potential rooms:
 
 ## Possible Source Inspiration
 
-We may want to draw inspiration from existing local repositories, especially
-ones that already explain a data platform or data platform operating model.
+The automation should prefer Isak's personal repositories for inspiration and
+Git contribution signals. It should avoid treating internal production
+repositories as source material unless they are explicitly added later.
 
-Candidate source:
+Starting source candidates:
 
 - `/Users/isakrathestoere/Code/isakrs/modern-data-platform-example`
+- `/Users/isakrathestoere/Code/vipps-isakrs`
+- `/Users/isakrathestoere/Code/isakrs-personal`
 
 Possible ideas from that repository to consider:
 
@@ -345,13 +449,30 @@ Possible ideas from that repository to consider:
 
 These should be treated as inspiration, not automatic requirements.
 
+## Consulting And Showcase Value
+
+The experience should eventually work in three situations:
+
+1. A North by North-style company event where the team can role play the data
+   flow live while the Three.js house runs in the background.
+2. A self-guided internal or external explanation where someone can explore the
+   house and understand the core concepts without a presenter.
+3. A future consulting or portfolio setting where the experience shows platform
+   thinking, storytelling, technical depth, and interactive craft.
+
+For a consulting-style version, the exact company details can become fictional
+or customer-specific while the core pattern remains the same: signals enter the
+platform, become trustworthy, become useful, and are owned by real people and
+processes.
+
 ## Automation Idea
 
-We want an automation that runs on workdays around noon.
+We want an automation that runs on workdays around noon and improves this work
+without waiting for manual approval every time.
 
-Possible responsibilities:
+Responsibilities:
 
-- Look at new Git contributions in selected local repositories.
+- Look at new Git contributions in Isak's personal repositories.
 - Notice changes that reveal platform concepts, ownership, services, or new
   data flows.
 - Improve the written explainer when it can make the flow or process easier
@@ -363,22 +484,46 @@ Possible responsibilities:
   backfills, manual corrections, or exports.
 - Notice real team contributions that could become character dialogue or room
   ownership notes.
-- Propose updates to this brief, a storyboard, or the eventual interactive page.
+- Update this brief, a storyboard, or the eventual interactive page directly
+  when there is a useful improvement.
 - Eventually extend the Three.js house with new rooms, pipes, characters,
   effects, or dialogue.
+- Commit and push every automatic change so the project can be rolled back
+  through Git history.
+- Avoid publishing private details, private images, or unsupported real-person
+  claims.
 
-Open question: should the automation directly change the public page, or should
-it create draft suggestions for review first?
+The automation should not only add more material. It should make the experience
+better in at least one visible way.
+
+Examples of "better":
+
+- A visitor can follow the signal journey more clearly than before.
+- A pipe type becomes easier to distinguish from other pipe types.
+- A character gains a better grounded explanation with a reviewable artifact.
+- A room explains one mandatory concept more clearly.
+- The experience moves closer to being playable, visually polished, or useful
+  during a live event.
+- The page becomes easier to understand without exposing sensitive details.
+
+Examples of "only more":
+
+- Adding another room that does not clarify the journey.
+- Adding another character without a real reason for that character to exist.
+- Adding decorative objects that do not support the data flow story.
+- Copying raw contribution history without turning it into useful explanation.
 
 ## Answered So Far
 
 1. Main audience:
    external people and people inside Vipps MobilePay. A concrete target use case
-   is showing it at a company event such as North by North.
+   is showing it at a company event such as North by North. A later consulting
+   or portfolio audience is also valuable.
 
 2. First real deliverable:
-   a playful Three.js experience that people can explore by themselves and that
-   can also run in the background while the team explains the data flow live.
+   a polished, playful Three.js experience that people can explore by
+   themselves and that can also run in the background while the team explains
+   the data flow live.
 
 3. Performance style:
    the experience should support role play, Dino and Wraptor dinosaur costumes,
@@ -388,78 +533,79 @@ it create draft suggestions for review first?
    when data moves from a storage account to a database, that movement should be
    visible in the three-dimensional scene.
 
+5. Interaction model:
+   a small game where people move around, inspect things, enter rooms, and talk
+   to humans.
+
+6. Character conversations:
+   characters should have Markdown knowledge files and eventually be backed by
+   large language models so visitors can ask real-time questions.
+
+7. Automation source material:
+   the automation should use Isak's personal repositories for inspiration and
+   Git contribution signals.
+
+8. Automation behavior:
+   the automation should update automatically, commit, and push so every change
+   can be rolled back.
+
+9. Character resemblance:
+   characters should resemble real teammates in look, speech, knowledge, and
+   behavior, subject to explicit approval and privacy boundaries.
+
+10. First characters:
+    Isak, Param, Kien, and Malo, with Isak as the most important character and
+    Malo as an architect.
+
+11. First platform concepts:
+    ingestion processes, analytics projects, data export, and data products.
+
+12. Architecture style:
+    partly real Vipps MobilePay platform, partly metaphorical, and reusable for
+    customer-style examples when useful.
+
+13. Character teaching scope:
+    characters should explain the room, the technology, the pipelines they own
+    or have worked on, and how to build a great data platform.
+
+14. Visual style:
+    realistic house, realistic materials, realistic team-inspired characters
+    where approved, visible pipes, virtual smoke, and event-ready polish.
+
+15. Search indexing:
+    the page can be discoverable by search engines.
+
+16. Sharing polish:
+    fairly high polish before actively sharing, while still being acceptable if
+    someone finds the address by digging.
+
 ## Remaining Clarifying Questions
 
-1. Should the experience be more like a guided presentation, a small game where
-   you move around, or a hybrid where buttons move the camera between rooms?
+1. Which exact signal should become the first playable journey: application
+   button click, payment event, temperature reading, scheduled export,
+   storage-account-to-database movement, or another signal?
 
-2. Which repositories should the automation inspect for inspiration and Git
-   contributions?
+2. Which personal repositories should be the first automation sources beyond
+   the current page and the modern data platform example?
 
-3. Should the automation update the public page automatically, or should it
-   only update this brief and ask for approval before changing the experience?
+3. Which real artifacts should ground Isak, Param, Kien, and Malo in the first
+   version?
 
-4. How close should characters look to real team members? Should they be
-   stylized team-inspired avatars, recognizable likenesses based only on
-   explicitly approved images, or something in between?
+4. Who has approved being represented with recognizable likeness, speech style,
+   or behavior style?
 
-5. Which people or roles must exist in the first version, if any?
+5. What should the first large language model integration be allowed to answer:
+   only public-safe conceptual questions, internal Vipps MobilePay questions for
+   logged-in users, or both with separate modes?
 
-6. Which real work should the first characters be attached to?
+6. Which technologies should be named directly in the public version, and which
+   should stay metaphorical or customer-specific?
 
-7. What sources are acceptable for connecting people to work: Git history,
-   code ownership, documentation ownership, dashboards, team notes, or manual
-   approval only?
-
-8. Should character dialogue mention real names and concrete artifacts, or
-    should it use real inspiration but keep the wording role-based?
-
-9. Which platform concepts are mandatory to explain first?
-
-10. What should the first written explainer page teach in one sitting?
-
-11. Which signal should be the first complete journey: application click,
-   payment event, temperature reading, scheduled export, or something else?
-
-12. Which flow modes must be visible in the first version: scheduled batch,
-    continuous streaming, incremental processing, full refresh, backfill, manual
-    correction, data quality gate, export, or something else?
-
-13. How should the visitor learn the difference between flow modes: pipe shape,
-    animation rhythm, labels, character dialogue, room machinery, or a legend?
-
-14. Should the first journey use real Vipps MobilePay terminology and systems,
-    or should it stay fictional and safe?
-
-15. What should count as "used" at the end of the journey: dashboard, data
-    product, machine learning model, operational export, alert, decision, or
-    application feature?
-
-16. How much technical depth should each step reveal before it becomes too much
-    for the intended audience?
-
-17. Should the house mirror the real Vipps MobilePay data platform architecture,
-   or should it stay metaphorical and easier to understand?
-
-18. What should a character explain when you talk to them: their current work,
-    the room they are in, the pipe they own, or how to get help?
-
-19. Should the visual style aim for realistic materials, playful low-poly
-    characters, pixel-game dialogue over a modern three-dimensional scene, or
-    something else?
-
-20. Should the page remain unlisted and blocked from search indexing?
-
-21. What is the desired level of polish before sharing it with others?
-
-22. Should the automation commit and push changes, create draft pull requests,
-    or only leave local notes?
-
-23. How should we decide that the automation made the house better instead of
-    just adding more things?
+7. What is the minimum playable scope before this should move from Markdown
+   brief into the first Three.js implementation?
 
 ## Suggested Next Step
 
-Answer the questions that matter most next, especially interaction style, first
-signal journey, first characters, real work artifacts, source repositories,
-automation behavior, and privacy boundaries for character likenesses.
+Choose the first playable signal journey and the first artifacts for Isak,
+Param, Kien, and Malo. After that, build the first Three.js room-and-pipe
+prototype instead of expanding the brief much further.
