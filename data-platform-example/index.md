@@ -19,8 +19,12 @@ Everything else is open again.
 
 The previous implementation has been deleted.
 
-This file is now the only source artifact for the page. It is a planning brief,
-not the final experience.
+This file is now the only source artifact for the page. It should serve two
+purposes:
+
+- A useful blog-like explainer that helps people understand how data flows and
+  how the platform process works.
+- A planning brief and storyboard for a future interactive version.
 
 ## Starting Vision
 
@@ -57,6 +61,40 @@ Possible direction:
   animated characters, camera movement, cutaway rooms, and richer materials.
 
 None of this is locked in yet.
+
+## Blog-Like Explainer Direction
+
+The first useful version can be a readable page rather than a full interactive
+scene.
+
+The page should help someone understand:
+
+- Where data starts.
+- How it enters the platform.
+- What process and ownership expectations exist around it.
+- How different flow modes work.
+- How the data becomes trustworthy enough to use.
+- Where it is used at the end.
+- Who to ask when they are confused or something breaks.
+
+The page should read like an approachable walkthrough, not like raw platform
+documentation. It can use the house metaphor, but the reader should come away
+with a real understanding of the data flow and process.
+
+Possible page structure:
+
+1. Start with one concrete signal.
+2. Show the whole journey in a simple flow overview.
+3. Walk stage by stage through the process.
+4. Use small sidebars for characters and real team work.
+5. Use pipe labels to show whether each flow is scheduled, streaming,
+   incremental, a backfill, or an export.
+6. End with how the signal is used and who owns keeping it healthy.
+7. Keep open questions and next-version ideas at the bottom.
+
+This blog-like page should be valuable even before the Three.js version exists.
+The future interactive house can be built by turning each section into a room,
+pipe, character, or dialogue moment.
 
 ## Core Experience Goal
 
@@ -246,6 +284,8 @@ Possible responsibilities:
 - Look at new Git contributions in selected local repositories.
 - Notice changes that reveal platform concepts, ownership, services, or new
   data flows.
+- Improve the blog-like explainer when it can make the flow or process easier
+  to understand.
 - Notice concrete signal journeys that could become example flows.
 - Notice whether flows are scheduled, continuous, incremental, full refreshes,
   backfills, manual corrections, or exports.
@@ -262,8 +302,8 @@ it create draft suggestions for review first?
 1. Who is the main audience for this experience: the Data Insights team, new
    data platform users, leadership, external visitors, or someone else?
 
-2. What should the first real deliverable be: a written concept, a storyboard,
-   a static presentation, or a small interactive Three.js prototype?
+2. Should the first real deliverable be this blog-like explainer page, a
+   storyboard, a static presentation, or a small interactive Three.js prototype?
 
 3. Should the experience be more like a guided presentation, a small game where
    you move around, or a hybrid where buttons move the camera between rooms?
@@ -291,48 +331,51 @@ it create draft suggestions for review first?
 
 11. Which platform concepts are mandatory to explain first?
 
-12. Which signal should be the first complete journey: application click,
+12. What should the first blog-like explainer page teach in one sitting?
+
+13. Which signal should be the first complete journey: application click,
    payment event, temperature reading, scheduled export, or something else?
 
-13. Which flow modes must be visible in the first version: scheduled batch,
+14. Which flow modes must be visible in the first version: scheduled batch,
     continuous streaming, incremental processing, full refresh, backfill, manual
     correction, data quality gate, export, or something else?
 
-14. How should the visitor learn the difference between flow modes: pipe shape,
+15. How should the visitor learn the difference between flow modes: pipe shape,
     animation rhythm, labels, character dialogue, room machinery, or a legend?
 
-15. Should the first journey use real Vipps MobilePay terminology and systems,
+16. Should the first journey use real Vipps MobilePay terminology and systems,
     or should it stay fictional and safe?
 
-16. What should count as "used" at the end of the journey: dashboard, data
+17. What should count as "used" at the end of the journey: dashboard, data
     product, machine learning model, operational export, alert, decision, or
     application feature?
 
-17. How much technical depth should each step reveal before it becomes too much
+18. How much technical depth should each step reveal before it becomes too much
     for the intended audience?
 
-18. Should the house mirror the real Vipps MobilePay data platform architecture,
+19. Should the house mirror the real Vipps MobilePay data platform architecture,
    or should it stay metaphorical and easier to understand?
 
-19. What should a character explain when you talk to them: their current work,
+20. What should a character explain when you talk to them: their current work,
     the room they are in, the pipe they own, or how to get help?
 
-20. Should the visual style aim for realistic materials, playful low-poly
+21. Should the visual style aim for realistic materials, playful low-poly
     characters, pixel-game dialogue over a modern three-dimensional scene, or
     something else?
 
-21. Should the page remain unlisted and blocked from search indexing?
+22. Should the page remain unlisted and blocked from search indexing?
 
-22. What is the desired level of polish before sharing it with others?
+23. What is the desired level of polish before sharing it with others?
 
-23. Should the automation commit and push changes, create draft pull requests,
+24. Should the automation commit and push changes, create draft pull requests,
     or only leave local notes?
 
-24. How should we decide that the automation made the house better instead of
+25. How should we decide that the automation made the house better instead of
     just adding more things?
 
 ## Suggested Next Step
 
 Answer the questions that matter most right now, especially audience, first
-deliverable, first signal journey, which real people and real work to include,
-automation behavior, source repositories, and privacy boundaries for characters.
+blog-like explainer topic, first signal journey, which real people and real work
+to include, automation behavior, source repositories, and privacy boundaries for
+characters.
