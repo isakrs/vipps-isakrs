@@ -87,6 +87,44 @@ Each stage should let the visitor pause and ask:
 - Who should I ask for help?
 - What does the signal look like before and after this step?
 
+## Pipe Semantics And Flow Modes
+
+Not all pipes should look or behave the same.
+
+The visual language should make it clear how data moves. A visitor should be
+able to tell whether a pipe represents a scheduled job, a continuous stream, an
+incremental load, a backfill, a manual correction, or a downstream export.
+
+Possible pipe types:
+
+- Continuous streaming pipe: steady motion, small frequent packets, no visible
+  gaps, used when signals arrive as they happen.
+- Incremental processing pipe: packets move in ordered chunks, with visible
+  watermarks or checkpoints showing what has already been processed.
+- Scheduled batch pipe: data moves in larger bursts, with a clock, calendar,
+  or pulse that makes the schedule visible.
+- Full refresh pipe: a larger wave replaces or rebuilds the previous state.
+- Backfill or replay pipe: a repair crew sends historical packets through a
+  marked maintenance route.
+- Manual correction pipe: slower, guarded, clearly marked as human-reviewed.
+- Data quality gate: a valve, filter, or inspection station where bad packets
+  can be stopped, flagged, or routed for follow-up.
+- Serving or export pipe: a pipe leaving the house with an explicit destination
+  and ownership marker.
+
+Each pipe should answer:
+
+- What starts this flow?
+- Does it run continuously, incrementally, or on a schedule?
+- How fresh is the data expected to be?
+- What tells us that the flow is healthy?
+- What happens when it fails?
+- Who owns the flow and who uses the output?
+
+The same signal journey may pass through several pipe types. For example, an
+application click may start as a continuous event stream, become an incremental
+modeled table, and later feed a scheduled dashboard or export.
+
 ## Characters And Real Team Work
 
 The characters should be a major part of the experience.
@@ -209,6 +247,8 @@ Possible responsibilities:
 - Notice changes that reveal platform concepts, ownership, services, or new
   data flows.
 - Notice concrete signal journeys that could become example flows.
+- Notice whether flows are scheduled, continuous, incremental, full refreshes,
+  backfills, manual corrections, or exports.
 - Notice real team contributions that could become character dialogue or room
   ownership notes.
 - Propose updates to this brief, a storyboard, or the eventual interactive page.
@@ -254,34 +294,41 @@ it create draft suggestions for review first?
 12. Which signal should be the first complete journey: application click,
    payment event, temperature reading, scheduled export, or something else?
 
-13. Should the first journey use real Vipps MobilePay terminology and systems,
+13. Which flow modes must be visible in the first version: scheduled batch,
+    continuous streaming, incremental processing, full refresh, backfill, manual
+    correction, data quality gate, export, or something else?
+
+14. How should the visitor learn the difference between flow modes: pipe shape,
+    animation rhythm, labels, character dialogue, room machinery, or a legend?
+
+15. Should the first journey use real Vipps MobilePay terminology and systems,
     or should it stay fictional and safe?
 
-14. What should count as "used" at the end of the journey: dashboard, data
+16. What should count as "used" at the end of the journey: dashboard, data
     product, machine learning model, operational export, alert, decision, or
     application feature?
 
-15. How much technical depth should each step reveal before it becomes too much
+17. How much technical depth should each step reveal before it becomes too much
     for the intended audience?
 
-16. Should the house mirror the real Vipps MobilePay data platform architecture,
+18. Should the house mirror the real Vipps MobilePay data platform architecture,
    or should it stay metaphorical and easier to understand?
 
-17. What should a character explain when you talk to them: their current work,
+19. What should a character explain when you talk to them: their current work,
     the room they are in, the pipe they own, or how to get help?
 
-18. Should the visual style aim for realistic materials, playful low-poly
+20. Should the visual style aim for realistic materials, playful low-poly
     characters, pixel-game dialogue over a modern three-dimensional scene, or
     something else?
 
-19. Should the page remain unlisted and blocked from search indexing?
+21. Should the page remain unlisted and blocked from search indexing?
 
-20. What is the desired level of polish before sharing it with others?
+22. What is the desired level of polish before sharing it with others?
 
-21. Should the automation commit and push changes, create draft pull requests,
+23. Should the automation commit and push changes, create draft pull requests,
     or only leave local notes?
 
-22. How should we decide that the automation made the house better instead of
+24. How should we decide that the automation made the house better instead of
     just adding more things?
 
 ## Suggested Next Step
