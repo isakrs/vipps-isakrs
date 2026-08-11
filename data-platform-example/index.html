@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+  <meta name="theme-color" content="#ff5b24" />
+  <meta name="description" content="An interactive Three.js presentation explaining the data platform as a house with data pipes and an Isak guide." />
+  <title>Data Platform House</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;650;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --vipps: #ff5b24;
+      --ink: #111317;
+      --muted: #656a73;
+      --paper: #f7f8f3;
+      --panel: rgba(255, 255, 255, 0.86);
+      --panel-strong: #ffffff;
+      --line: rgba(17, 19, 23, 0.14);
+      --blue: #3167d8;
+      --green: #1f7a5c;
+      --gold: #f0bd3e;
+      --shadow: 0 22px 80px rgba(21, 24, 29, 0.16);
+    }
+
+    html {
+      min-width: 320px;
+      background: var(--paper);
+    }
+
+    body {
+      min-height: 100dvh;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 24% 18%, rgba(255, 91, 36, 0.16), transparent 28%),
+        linear-gradient(180deg, #fff9f1 0%, #ecf3f6 48%, #dfe8dc 100%);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, a {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 5;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .brand,
+    .scene-chip {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--ink);
+      text-decoration: none;
+      box-shadow: 0 10px 34px rgba(18, 22, 25, 0.08);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand {
+      padding: 7px 11px 7px 7px;
+    }
+
+    .brand img {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+    }
+
+    .brand strong {
+      display: block;
+      max-width: 44vw;
+      font-size: 0.94rem;
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .scene-chip {
+      padding: 0 12px;
+      color: var(--vipps);
+      font-size: 0.8rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .stage-copy {
+      position: fixed;
+      z-index: 4;
+      left: clamp(16px, 4vw, 46px);
+      top: clamp(96px, 15vh, 136px);
+      width: min(430px, calc(100vw - 32px));
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #ffffff;
+      padding: 8px 11px;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 360px;
+      font-size: clamp(2.25rem, 4vw, 3.85rem);
+      line-height: 0.9;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 390px;
+      margin: 18px 0 0;
+      color: #3f454d;
+      font-size: clamp(1rem, 2.1vw, 1.28rem);
+      line-height: 1.45;
+      font-weight: 650;
+    }
+
+    .guide-panel {
+      position: fixed;
+      z-index: 5;
+      right: clamp(14px, 3vw, 34px);
+      bottom: clamp(14px, 3vw, 30px);
+      width: min(390px, calc(100vw - 28px));
+      display: grid;
+      gap: 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 15px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .guide-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .guide-title strong {
+      display: block;
+      font-size: 0.96rem;
+      font-weight: 900;
+    }
+
+    .guide-title span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--vipps);
+      box-shadow: 0 0 0 6px rgba(255, 91, 36, 0.14);
+      flex: 0 0 auto;
+    }
+
+    .guide-copy {
+      min-height: 72px;
+      margin: 0;
+      color: #303640;
+      font-size: 0.95rem;
+      line-height: 1.42;
+      font-weight: 650;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .stepper button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-strong);
+      color: #2f3339;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      transition: border-color 160ms ease, color 160ms ease, transform 160ms ease, background 160ms ease;
+    }
+
+    .stepper button:hover,
+    .stepper button:focus-visible {
+      border-color: rgba(255, 91, 36, 0.66);
+      color: var(--vipps);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .stepper button[aria-pressed="true"] {
+      border-color: var(--vipps);
+      background: #fff0ea;
+      color: #bf360a;
+    }
+
+    .legend {
+      position: fixed;
+      z-index: 4;
+      left: clamp(14px, 3vw, 34px);
+      bottom: clamp(14px, 3vw, 30px);
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+      padding: 12px;
+      color: #373d45;
+      box-shadow: 0 14px 46px rgba(18, 22, 25, 0.09);
+      backdrop-filter: blur(16px);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      background: var(--vipps);
+    }
+
+    .swatch.blue { background: var(--blue); }
+    .swatch.green { background: var(--green); }
+    .swatch.gold { background: var(--gold); }
+
+    .hint {
+      position: fixed;
+      z-index: 4;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(17, 19, 23, 0.8);
+      color: #ffffff;
+      padding: 9px 12px;
+      font-size: 0.78rem;
+      font-weight: 850;
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 900px) {
+      body { overflow: auto; }
+      #scene { position: sticky; top: 0; height: 68dvh; min-height: 460px; }
+      .topbar { position: absolute; }
+      .stage-copy,
+      .guide-panel,
+      .legend,
+      .hint {
+        position: relative;
+        inset: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        transform: none;
+        width: min(100% - 28px, 620px);
+        margin: 14px auto;
+      }
+      .stage-copy { pointer-events: auto; }
+      .guide-panel { margin-bottom: 22px; }
+      .hint { display: none; }
+      h1 { max-width: 680px; font-size: clamp(2.55rem, 11vw, 4.1rem); }
+      .lead { max-width: 620px; }
+    }
+
+    @media (min-width: 901px) {
+      .stage-copy {
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      body[data-view]:not([data-view="overview"]) .stage-copy {
+        opacity: 0;
+        transform: translateY(-16px);
+      }
+    }
+
+    @media (max-width: 520px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .brand strong { max-width: calc(100vw - 90px); }
+      .stepper { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stepper button:last-child { grid-column: 1 / -1; }
+      .legend { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .stepper button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene" aria-label="Three dimensional data platform house with animated data pipes"></canvas>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Back to Vipps pages">
+      <img src="/favicon.svg" alt="" />
+      <span>
+        <strong>Data Platform House</strong>
+        <span>Interactive presentation</span>
+      </span>
+    </a>
+    <div class="scene-chip">Three.js keyframe-inspired tour</div>
+  </header>
+
+  <section class="stage-copy" aria-label="Presentation introduction">
+    <span class="eyebrow">Vipps MobilePay data platform</span>
+    <h1>Think of the platform as a house for data.</h1>
+    <p class="lead">Pipes bring raw data in, rooms make it useful, and people help you understand which pipe to use.</p>
+  </section>
+
+  <aside class="legend" aria-label="Pipe legend">
+    <div class="legend-row"><span class="swatch blue"></span>Incoming data</div>
+    <div class="legend-row"><span class="swatch green"></span>Curated platform layer</div>
+    <div class="legend-row"><span class="swatch gold"></span>Data leaving the platform</div>
+    <div class="legend-row"><span class="swatch"></span>Ask Isak about the platform pipe</div>
+  </aside>
+
+  <aside class="guide-panel" aria-live="polite">
+    <div class="guide-title">
+      <span>
+        <strong id="guide-heading">Meet Isak by the platform pipe</strong>
+        <span id="guide-kicker">Data platform guide</span>
+      </span>
+      <span class="status-dot" aria-hidden="true"></span>
+    </div>
+    <p class="guide-copy" id="guide-copy">Start with the whole house. Data arrives from teams and systems, moves through governed platform rooms, and leaves as tables, dashboards, exports, and partner deliveries.</p>
+    <div class="stepper" aria-label="Presentation scenes">
+      <button type="button" data-view="overview" aria-pressed="true">House</button>
+      <button type="button" data-view="incoming" aria-pressed="false">Incoming</button>
+      <button type="button" data-view="core" aria-pressed="false">Core</button>
+      <button type="button" data-view="outgoing" aria-pressed="false">Outgoing</button>
+      <button type="button" data-view="isak" aria-pressed="false">Ask Isak</button>
+    </div>
+  </aside>
+
+  <div class="hint">Drag to orbit. Click a pipe or Isak.</div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE from "three";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    const canvas = document.querySelector("#scene");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xf3f2e7, 20, 58);
+
+    const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(9, 6, 11);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.minDistance = 6;
+    controls.maxDistance = 28;
+    controls.maxPolarAngle = Math.PI * 0.48;
+    controls.target.set(0.6, 1.7, 0.1);
+    controls.update();
+
+    const palette = {
+      ink: 0x111317,
+      vipps: 0xff5b24,
+      cream: 0xfff5e5,
+      wall: 0xfffbf1,
+      roof: 0x26242a,
+      blue: 0x3167d8,
+      green: 0x1f7a5c,
+      gold: 0xf0bd3e,
+      steel: 0x9aa3ad,
+      glass: 0xaee2ff,
+      soil: 0x536555,
+      skin: 0xffc79c,
+      hair: 0x8a5a2d
+    };
+
+    const interactiveObjects = [];
+    const pipeRecords = [];
+    const mixers = [];
+    const clock = new THREE.Clock();
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const guideText = {
+      overview: {
+        heading: "Meet Isak by the platform pipe",
+        kicker: "Data platform guide",
+        copy: "Start with the whole house. Data arrives from teams and systems, moves through governed platform rooms, and leaves as tables, dashboards, exports, and partner deliveries."
+      },
+      incoming: {
+        heading: "Incoming pipes need ownership",
+        kicker: "Raw data enters the house",
+        copy: "Incoming pipes represent captures, integrations, files, and source systems. The platform works best when producers explain what the data means and how it behaves."
+      },
+      core: {
+        heading: "The core rooms make data dependable",
+        kicker: "Storage, governance, and transformation",
+        copy: "Inside the house, storage, access control, lineage, quality checks, and transformation patterns turn raw material into something other teams can safely build on."
+      },
+      outgoing: {
+        heading: "Outgoing pipes are promises",
+        kicker: "Curated data leaves the platform",
+        copy: "Tables, dashboards, exports, and partner deliveries are the pipes people notice. When they are production dependencies, they need ownership, monitoring, and clear support routes."
+      },
+      isak: {
+        heading: "Ask Isak about the platform pipe",
+        kicker: "Where to start",
+        copy: "If the question is about how the data platform itself fits together, start with Isak. The orange pipe marks the help route for platform patterns, boundaries, and next steps."
+      }
+    };
+
+    const desktopViews = {
+      overview: { position: new THREE.Vector3(9, 6, 11), target: new THREE.Vector3(0.6, 1.7, 0.1), highlight: "all" },
+      incoming: { position: new THREE.Vector3(-10, 4.8, 6.2), target: new THREE.Vector3(-1.9, 1.6, 0.15), highlight: "incoming" },
+      core: { position: new THREE.Vector3(4.5, 6.6, 7.7), target: new THREE.Vector3(0.25, 2.3, -0.2), highlight: "core" },
+      outgoing: { position: new THREE.Vector3(10.6, 4.9, 4.2), target: new THREE.Vector3(2.4, 1.55, 0.1), highlight: "outgoing" },
+      isak: { position: new THREE.Vector3(6.4, 3.4, 5.8), target: new THREE.Vector3(4.2, 1.55, 1.55), highlight: "isak" }
+    };
+
+    const mobileViews = {
+      overview: { position: new THREE.Vector3(13.5, 8.2, 16.5), target: new THREE.Vector3(0.7, 1.6, 0.55), highlight: "all" },
+      incoming: { position: new THREE.Vector3(-15, 7.2, 9.4), target: new THREE.Vector3(-2.1, 1.45, 0.35), highlight: "incoming" },
+      core: { position: new THREE.Vector3(7.2, 8.8, 13.5), target: new THREE.Vector3(0.15, 2.2, -0.1), highlight: "core" },
+      outgoing: { position: new THREE.Vector3(15, 7.1, 8.2), target: new THREE.Vector3(2.5, 1.5, 0.35), highlight: "outgoing" },
+      isak: { position: new THREE.Vector3(9.5, 5.8, 8.4), target: new THREE.Vector3(4.25, 1.55, 1.75), highlight: "isak" }
+    };
+
+    let activeView = "overview";
+    function viewFor(view) {
+      return window.innerWidth < 700 ? mobileViews[view] : desktopViews[view];
+    }
+    let targetPosition = viewFor("overview").position.clone();
+    let targetLookAt = viewFor("overview").target.clone();
+
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xd8cdb6, 2.3));
+
+    const sun = new THREE.DirectionalLight(0xffffff, 2.4);
+    sun.position.set(8, 11, 6);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.camera.near = 0.1;
+    sun.shadow.camera.far = 40;
+    sun.shadow.camera.left = -14;
+    sun.shadow.camera.right = 14;
+    sun.shadow.camera.top = 12;
+    sun.shadow.camera.bottom = -12;
+    scene.add(sun);
+
+    const fill = new THREE.DirectionalLight(0xffded0, 0.6);
+    fill.position.set(-8, 4, -7);
+    scene.add(fill);
+
+    const ground = new THREE.Mesh(
+      new THREE.CylinderGeometry(10.5, 11.4, 0.42, 96),
+      new THREE.MeshStandardMaterial({ color: palette.soil, roughness: 0.82 })
+    );
+    ground.position.y = -0.24;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    const pathMat = new THREE.MeshStandardMaterial({ color: 0xd9caa9, roughness: 0.9 });
+    const path = new THREE.Mesh(new THREE.BoxGeometry(9.2, 0.05, 1.2), pathMat);
+    path.position.set(3.7, 0.04, 2.4);
+    path.rotation.y = -0.12;
+    path.receiveShadow = true;
+    scene.add(path);
+
+    const house = new THREE.Group();
+    scene.add(house);
+
+    function makeBox(width, height, depth, color, position, name) {
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(width, height, depth),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.72, metalness: 0.02 })
+      );
+      mesh.position.copy(position);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.name = name;
+      house.add(mesh);
+      const edges = new THREE.LineSegments(
+        new THREE.EdgesGeometry(mesh.geometry),
+        new THREE.LineBasicMaterial({ color: 0x1c1d20, transparent: true, opacity: 0.18 })
+      );
+      mesh.add(edges);
+      return mesh;
+    }
+
+    makeBox(5.2, 0.5, 4.4, 0x303740, new THREE.Vector3(0, 0.35, 0), "foundation");
+    makeBox(5.2, 2.2, 4.4, palette.wall, new THREE.Vector3(0, 1.7, 0), "house-walls");
+    makeBox(5.35, 0.16, 4.55, 0xd0e5da, new THREE.Vector3(0, 2.15, 0), "governance-floor");
+    makeBox(5.35, 0.16, 4.55, 0xf3e1b7, new THREE.Vector3(0, 1.18, 0), "storage-floor");
+
+    const roof = new THREE.Group();
+    const roofLeft = new THREE.Mesh(
+      new THREE.BoxGeometry(5.95, 0.32, 2.88),
+      new THREE.MeshStandardMaterial({ color: palette.roof, roughness: 0.64 })
+    );
+    roofLeft.position.set(0, 3.0, -0.98);
+    roofLeft.rotation.x = 0.62;
+    roofLeft.castShadow = true;
+    roofLeft.receiveShadow = true;
+    roof.add(roofLeft);
+    const roofRight = roofLeft.clone();
+    roofRight.position.z = 0.98;
+    roofRight.rotation.x = -0.62;
+    roof.add(roofRight);
+    house.add(roof);
+
+    function windowPane(x, y, z) {
+      const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(0.62, 0.54, 0.045),
+        new THREE.MeshStandardMaterial({ color: palette.glass, roughness: 0.22, metalness: 0.05, emissive: 0x79bdff, emissiveIntensity: 0.08 })
+      );
+      mesh.position.set(x, y, z);
+      mesh.castShadow = true;
+      house.add(mesh);
+      return mesh;
+    }
+
+    [-1.65, 0, 1.65].forEach((x) => {
+      windowPane(x, 1.62, 2.23);
+      windowPane(x, 2.36, 2.23);
+    });
+
+    const door = new THREE.Mesh(
+      new THREE.BoxGeometry(0.88, 1.32, 0.06),
+      new THREE.MeshStandardMaterial({ color: 0x3b2922, roughness: 0.7 })
+    );
+    door.position.set(-2.15, 0.9, 2.25);
+    house.add(door);
+
+    function labelCanvas(text, accent = "#111317") {
+      const canvas = document.createElement("canvas");
+      canvas.width = 512;
+      canvas.height = 160;
+      const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = "rgba(255, 255, 255, 0.92)";
+      context.strokeStyle = "rgba(17, 19, 23, 0.18)";
+      context.lineWidth = 6;
+      context.beginPath();
+      context.roundRect(12, 12, 488, 136, 24);
+      context.fill();
+      context.stroke();
+      context.fillStyle = accent;
+      context.fillRect(36, 42, 12, 76);
+      context.fillStyle = "#111317";
+      context.font = "900 34px Inter, system-ui, sans-serif";
+      const words = text.split(" ");
+      let line = "";
+      const lines = [];
+      for (const word of words) {
+        const test = line ? `${line} ${word}` : word;
+        if (context.measureText(test).width > 378 && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      }
+      lines.push(line);
+      lines.slice(0, 2).forEach((row, index) => context.fillText(row, 70, 69 + index * 42));
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
+
+    function addLabel(text, position, accent) {
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: labelCanvas(text, accent),
+        transparent: true,
+        depthWrite: false,
+        depthTest: false
+      }));
+      sprite.position.copy(position);
+      sprite.scale.set(1.82, 0.57, 1);
+      scene.add(sprite);
+      return sprite;
+    }
+
+    function createPipe({ name, type, color, points, radius = 0.08, label, labelPosition }) {
+      const curve = new THREE.CatmullRomCurve3(points.map((point) => new THREE.Vector3(...point)));
+      const material = new THREE.MeshStandardMaterial({
+        color,
+        roughness: 0.34,
+        metalness: 0.35,
+        emissive: color,
+        emissiveIntensity: 0.16
+      });
+      const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve, 88, radius, 18, false), material);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.userData = { name, type, isInteractive: true };
+      scene.add(mesh);
+      interactiveObjects.push(mesh);
+      const record = { name, type, color, curve, mesh, material, labelSprite: addLabel(label, new THREE.Vector3(...labelPosition), `#${color.toString(16).padStart(6, "0")}`) };
+      pipeRecords.push(record);
+      return record;
+    }
+
+    createPipe({
+      name: "Incoming events and files",
+      type: "incoming",
+      color: palette.blue,
+      points: [[-8.6, 0.66, 1.1], [-6.6, 0.8, 1.1], [-4.2, 0.82, 1.0], [-2.68, 1.12, 0.92]],
+      label: "Incoming data",
+      labelPosition: [-6.3, 1.65, 1.34]
+    });
+
+    createPipe({
+      name: "Governed platform core",
+      type: "core",
+      color: palette.green,
+      points: [[-2.6, 1.15, -1.5], [-1.2, 1.4, -1.56], [0.4, 2.18, -1.58], [2.45, 2.38, -1.48]],
+      radius: 0.075,
+      label: "Platform rooms",
+      labelPosition: [-0.2, 3.3, -1.82]
+    });
+
+    createPipe({
+      name: "Curated data to consumers",
+      type: "outgoing",
+      color: palette.gold,
+      points: [[2.55, 1.64, 0.72], [4.25, 1.55, 0.72], [6.6, 1.35, 0.8], [8.7, 1.02, 0.86]],
+      label: "Data out",
+      labelPosition: [6.5, 2.25, 1.15]
+    });
+
+    createPipe({
+      name: "Ask Isak",
+      type: "isak",
+      color: palette.vipps,
+      points: [[2.25, 0.94, 2.38], [3.25, 1.03, 2.62], [4.25, 1.06, 2.52], [4.95, 1.18, 2.03]],
+      radius: 0.065,
+      label: "Ask Isak",
+      labelPosition: [4.25, 2.05, 2.9]
+    });
+
+    const roomLabels = [
+      ["Storage", -1.65, 1.18, 2.34, "#1f7a5c"],
+      ["Access control", 0.12, 2.16, 2.34, "#1f7a5c"],
+      ["Transformation", 1.72, 2.58, 2.34, "#1f7a5c"],
+      ["Serving layer", 0, 3.38, 1.08, "#f0bd3e"]
+    ];
+    roomLabels.forEach(([text, x, y, z, color]) => addLabel(text, new THREE.Vector3(x, y, z), color));
+
+    function makeValve(position, color) {
+      const valve = new THREE.Group();
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(0.28, 0.035, 10, 28),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.4, metalness: 0.55, emissive: color, emissiveIntensity: 0.1 })
+      );
+      ring.rotation.x = Math.PI * 0.5;
+      const bar = new THREE.Mesh(
+        new THREE.BoxGeometry(0.7, 0.055, 0.055),
+        new THREE.MeshStandardMaterial({ color: palette.ink, roughness: 0.5 })
+      );
+      valve.add(ring, bar);
+      valve.position.copy(position);
+      valve.castShadow = true;
+      scene.add(valve);
+      return valve;
+    }
+
+    pipeRecords.forEach((pipe) => makeValve(pipe.curve.getPoint(0.55), pipe.color));
+
+    const dataPackets = [];
+    function addPacket(pipe, index, count) {
+      const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.095, 18, 18),
+        new THREE.MeshStandardMaterial({
+          color: pipe.color,
+          emissive: pipe.color,
+          emissiveIntensity: 1.55,
+          roughness: 0.22
+        })
+      );
+      mesh.castShadow = true;
+      scene.add(mesh);
+      dataPackets.push({
+        mesh,
+        pipe,
+        offset: index / count,
+        speed: pipe.type === "isak" ? 0.23 : 0.17 + index * 0.012
+      });
+    }
+    pipeRecords.forEach((pipe) => {
+      const count = pipe.type === "core" ? 7 : 6;
+      for (let i = 0; i < count; i += 1) addPacket(pipe, i, count);
+    });
+
+    function cylinderBetween(start, end, radius, color) {
+      const direction = new THREE.Vector3().subVectors(end, start);
+      const length = direction.length();
+      const mesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius, radius, length, 18),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.52 })
+      );
+      mesh.position.copy(start).add(direction.multiplyScalar(0.5));
+      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3().subVectors(end, start).normalize());
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    const isak = new THREE.Group();
+    isak.position.set(4.85, 0.3, 1.65);
+    isak.rotation.y = 0.35;
+    scene.add(isak);
+
+    const body = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.42, 1.12, 8, 22),
+      new THREE.MeshStandardMaterial({ color: palette.vipps, roughness: 0.78 })
+    );
+    body.position.y = 1.05;
+    body.castShadow = true;
+    isak.add(body);
+
+    const head = new THREE.Mesh(
+      new THREE.SphereGeometry(0.34, 32, 22),
+      new THREE.MeshStandardMaterial({ color: palette.skin, roughness: 0.64 })
+    );
+    head.position.y = 1.9;
+    head.castShadow = true;
+    isak.add(head);
+
+    const hair = new THREE.Mesh(
+      new THREE.SphereGeometry(0.355, 32, 16, 0, Math.PI * 2, 0, Math.PI * 0.55),
+      new THREE.MeshStandardMaterial({ color: palette.hair, roughness: 0.72 })
+    );
+    hair.position.set(0, 2.02, 0.02);
+    hair.rotation.x = -0.16;
+    isak.add(hair);
+
+    const glasses = new THREE.Group();
+    const glassMat = new THREE.MeshStandardMaterial({ color: palette.ink, roughness: 0.38, metalness: 0.25 });
+    [-0.13, 0.13].forEach((x) => {
+      const lens = new THREE.Mesh(new THREE.TorusGeometry(0.085, 0.011, 8, 22), glassMat);
+      lens.position.set(x, 1.92, 0.315);
+      glasses.add(lens);
+    });
+    const bridge = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.018, 0.018), glassMat);
+    bridge.position.set(0, 1.92, 0.315);
+    glasses.add(bridge);
+    isak.add(glasses);
+
+    const smile = new THREE.Mesh(
+      new THREE.TorusGeometry(0.09, 0.008, 8, 24, Math.PI),
+      new THREE.MeshStandardMaterial({ color: 0x7b3121, roughness: 0.5 })
+    );
+    smile.position.set(0, 1.79, 0.322);
+    smile.rotation.z = Math.PI;
+    isak.add(smile);
+
+    const leftArm = new THREE.Group();
+    leftArm.name = "leftArm";
+    const leftUpper = cylinderBetween(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-0.38, -0.45, 0.03), 0.075, palette.vipps);
+    leftArm.add(leftUpper);
+    leftArm.position.set(-0.32, 1.42, 0.02);
+    isak.add(leftArm);
+
+    const waveArm = new THREE.Group();
+    waveArm.name = "waveArm";
+    const upper = cylinderBetween(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.42, 0.28, 0.03), 0.075, palette.vipps);
+    const forearm = cylinderBetween(new THREE.Vector3(0.42, 0.28, 0.03), new THREE.Vector3(0.68, 0.72, 0.02), 0.065, palette.vipps);
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.09, 18, 16), new THREE.MeshStandardMaterial({ color: palette.skin, roughness: 0.58 }));
+    hand.position.set(0.69, 0.75, 0.02);
+    hand.castShadow = true;
+    waveArm.add(upper, forearm, hand);
+    waveArm.position.set(0.32, 1.48, 0.02);
+    isak.add(waveArm);
+
+    const legMat = new THREE.MeshStandardMaterial({ color: 0x27354a, roughness: 0.7 });
+    [-0.16, 0.16].forEach((x) => {
+      const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.105, 0.58, 6, 14), legMat);
+      leg.position.set(x, 0.34, 0);
+      leg.castShadow = true;
+      isak.add(leg);
+      const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, 0.34), new THREE.MeshStandardMaterial({ color: palette.ink, roughness: 0.72 }));
+      shoe.position.set(x, 0.02, 0.08);
+      shoe.castShadow = true;
+      isak.add(shoe);
+    });
+
+    const nameTexture = labelCanvas("Isak platform guide", "#ff5b24");
+    const nameSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: nameTexture, transparent: true, depthWrite: false, depthTest: false }));
+    nameSprite.position.set(4.86, 2.98, 1.75);
+    nameSprite.scale.set(2.15, 0.68, 1);
+    scene.add(nameSprite);
+
+    const isakHit = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.62, 1.9, 8, 16),
+      new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+    );
+    isakHit.position.set(4.85, 1.16, 1.65);
+    isakHit.userData = { name: "Isak", type: "isak", isInteractive: true };
+    scene.add(isakHit);
+    interactiveObjects.push(isakHit);
+
+    if (!reducedMotion) {
+      const mixer = new THREE.AnimationMixer(isak);
+      const waveTrack = new THREE.NumberKeyframeTrack(
+        "waveArm.rotation[z]",
+        [0, 0.45, 0.9, 1.35, 1.8],
+        [-0.1, 0.35, -0.22, 0.28, -0.1]
+      );
+      const bounceTrack = new THREE.VectorKeyframeTrack(
+        ".position",
+        [0, 0.9, 1.8],
+        [4.85, 0.3, 1.65, 4.85, 0.38, 1.65, 4.85, 0.3, 1.65]
+      );
+      const clip = new THREE.AnimationClip("wave", 1.8, [waveTrack, bounceTrack]);
+      const action = mixer.clipAction(clip);
+      action.play();
+      mixers.push(mixer);
+    }
+
+    const plantMat = new THREE.MeshStandardMaterial({ color: 0x2d7a4a, roughness: 0.85 });
+    for (let i = 0; i < 34; i += 1) {
+      const angle = i * 0.62;
+      const radius = 7.8 + Math.sin(i) * 1.4;
+      const tuft = new THREE.Mesh(new THREE.ConeGeometry(0.08 + (i % 3) * 0.015, 0.34, 6), plantMat);
+      tuft.position.set(Math.cos(angle) * radius, 0.13, Math.sin(angle) * radius);
+      tuft.rotation.y = angle;
+      tuft.castShadow = true;
+      scene.add(tuft);
+    }
+
+    function setGuide(view) {
+      const content = guideText[view];
+      document.querySelector("#guide-heading").textContent = content.heading;
+      document.querySelector("#guide-kicker").textContent = content.kicker;
+      document.querySelector("#guide-copy").textContent = content.copy;
+      document.querySelectorAll("[data-view]").forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.view === view ? "true" : "false");
+      });
+    }
+
+    function setView(view) {
+      activeView = view;
+      document.body.dataset.view = view;
+      const resolvedView = viewFor(view);
+      targetPosition = resolvedView.position.clone();
+      targetLookAt = resolvedView.target.clone();
+      setGuide(view);
+    }
+
+    document.querySelectorAll("[data-view]").forEach((button) => {
+      button.addEventListener("click", () => setView(button.dataset.view));
+    });
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    function updatePointer(event) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    }
+
+    renderer.domElement.addEventListener("pointermove", (event) => {
+      updatePointer(event);
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObjects(interactiveObjects, false);
+      renderer.domElement.style.cursor = hits.length ? "pointer" : "grab";
+    });
+
+    renderer.domElement.addEventListener("click", (event) => {
+      updatePointer(event);
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObjects(interactiveObjects, false)[0];
+      if (!hit) return;
+      const type = hit.object.userData.type;
+      if (type && desktopViews[type]) setView(type);
+    });
+
+    function resize() {
+      const width = window.innerWidth;
+      const height = Math.max(document.querySelector("#scene").clientHeight, 320);
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.fov = width < 700 ? 58 : 44;
+      camera.updateProjectionMatrix();
+      controls.minDistance = width < 700 ? 8 : 6;
+      const resolvedView = viewFor(activeView);
+      targetPosition = resolvedView.position.clone();
+      targetLookAt = resolvedView.target.clone();
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const tempTarget = new THREE.Vector3();
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.05);
+      const elapsed = clock.elapsedTime;
+
+      if (!reducedMotion) {
+        mixers.forEach((mixer) => mixer.update(delta));
+        dataPackets.forEach((packet) => {
+          const t = (packet.offset + elapsed * packet.speed) % 1;
+          packet.mesh.position.copy(packet.pipe.curve.getPoint(t));
+          const pulse = 0.8 + Math.sin((t + elapsed) * Math.PI * 8) * 0.18;
+          packet.mesh.scale.setScalar(packet.pipe.type === activeView || activeView === "overview" ? pulse * 1.35 : pulse * 0.82);
+        });
+      } else {
+        dataPackets.forEach((packet) => packet.mesh.position.copy(packet.pipe.curve.getPoint(packet.offset)));
+      }
+
+      const highlight = viewFor(activeView).highlight;
+      pipeRecords.forEach((pipe) => {
+        const active = highlight === "all" || highlight === pipe.type;
+        pipe.material.emissiveIntensity = THREE.MathUtils.lerp(pipe.material.emissiveIntensity, active ? 0.72 : 0.06, 0.08);
+        pipe.material.opacity = THREE.MathUtils.lerp(pipe.material.opacity ?? 1, active ? 1 : 0.52, 0.08);
+        pipe.material.transparent = !active;
+        pipe.labelSprite.material.opacity = THREE.MathUtils.lerp(pipe.labelSprite.material.opacity ?? 1, active ? 1 : 0.45, 0.08);
+      });
+
+      const cameraEase = reducedMotion ? 1 : 0.045;
+      camera.position.lerp(targetPosition, cameraEase);
+      tempTarget.copy(controls.target).lerp(targetLookAt, cameraEase);
+      controls.target.copy(tempTarget);
+      controls.update();
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
