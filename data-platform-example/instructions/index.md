@@ -68,6 +68,12 @@ The instructions, backlog, and concept brief live here:
 
 https://vipps.isakrs.com/data-platform-example/instructions/
 
+The experience should stay public by direct link, but not available through
+Google or other search engines yet. Keep `noindex` metadata on the Three.js
+world, the instructions page, and the character knowledge pages until Isak
+explicitly decides the experience is polished and approved enough for search
+indexing.
+
 We also want some form of automation that helps the project improve over time.
 Everything else is open again.
 
@@ -204,8 +210,8 @@ event version more convincing.
       <span>A workday automation now improves, commits, and pushes useful changes.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Search discoverability</strong>
-      <span>The page is allowed to be discovered while still staying off the root page.</span>
+      <strong>Link-only discoverability</strong>
+      <span>The page is public by direct link, but should stay out of search engines until it is more polished.</span>
     </article>
     <article class="data-platform-card">
       <strong>Experience route split</strong>
@@ -336,9 +342,10 @@ Architecture direction:
 
 Publishing direction:
 
-- The page can be discoverable by search engines.
-- It does not need to be promoted from the root page yet. It is acceptable if
-  someone finds the address by digging.
+- The page should stay public by direct link, but should not be available
+  through Google or other search engines yet.
+- It does not need to be promoted broadly yet. It is acceptable if someone finds
+  the address through a direct link.
 - The desired polish is fairly high before actively sharing it with others.
 
 Automation direction:
@@ -963,7 +970,8 @@ Examples of "only more":
     where approved, visible pipes, virtual smoke, and event-ready polish.
 
 15. Search indexing:
-    the page can be discoverable by search engines.
+    the page should stay public by direct link, but should not be available
+    through Google or other search engines yet.
 
 16. Sharing polish:
     fairly high polish before actively sharing, while still being acceptable if
