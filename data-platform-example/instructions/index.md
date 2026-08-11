@@ -146,8 +146,8 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
     <article class="data-platform-card">
-      <strong>Design pipe language</strong>
-      <span>Make scheduled batch, incremental processing, and export flows visually distinct.</span>
+      <strong>Deepen pipe language</strong>
+      <span>Build on the visible legend, checkpoints, and quality gate with batch, backfill, and manual correction scenes.</span>
     </article>
     <article class="data-platform-card">
       <strong>Add first team characters</strong>
@@ -220,6 +220,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>First house shell</strong>
       <span>The first scene has rooms, animated data pipes, avatars, and repository blueprints.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Pipe modes made visible</strong>
+      <span>The world now shows a public-safe flow legend, incremental checkpoints, a quality gate, and a serving flow.</span>
     </article>
     <article class="data-platform-card">
       <strong>First playable signal chosen</strong>
@@ -518,6 +522,20 @@ The page should help someone understand:
 - How it enters the platform.
 - What process and ownership expectations exist around it.
 - How different flow modes work.
+
+Current visible flow modes in the world:
+
+- Streaming: the payment signal arrives live from the conceptual tap or send.
+- Incremental processing: checkpoint rings show that some movement happens in
+  controlled chunks rather than as one full refresh.
+- Quality gate: a distinct gate marks the point where validation and trust
+  checks must pass before modeled outputs continue.
+- Declared export: a dedicated branch shows governed outbound delivery rather
+  than raw copying.
+- Serving flow: a separate path shows trusted outputs heading toward a data
+  product, dashboard, or downstream use.
+- Repository reference: the GitHub Actions path acts as an implementation
+  blueprint rather than production data movement.
 - How the data becomes trustworthy enough to use.
 - Where it is used at the end.
 - Who to ask when they are confused or something breaks.

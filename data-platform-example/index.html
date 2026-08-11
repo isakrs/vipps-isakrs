@@ -211,6 +211,48 @@
         outline-offset: 2px;
       }
 
+      .flow-legend {
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .flow-legend h3 {
+        font-size: 0.76rem;
+        letter-spacing: 0.05em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .legend-grid {
+        display: grid;
+        gap: 6px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .legend-item {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        display: flex;
+        font-size: 0.72rem;
+        font-weight: 700;
+        gap: 8px;
+        min-height: 32px;
+        padding: 6px 10px;
+      }
+
+      .legend-dot {
+        border-radius: 999px;
+        display: inline-block;
+        flex: 0 0 auto;
+        height: 10px;
+        width: 10px;
+      }
+
       .focus-button:hover,
       .focus-button:focus-visible,
       .nav a:hover,
@@ -315,6 +357,10 @@
           grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
+        .legend-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
         .focus-button {
           font-size: 0.78rem;
           padding: 9px 8px;
@@ -355,6 +401,17 @@
         <a href="https://github.com/isakrs/modern-data-platform-example">modern-data-platform-example <span>Blueprint</span></a>
         <a href="https://github.com/isakrs/vipps-isakrs">vipps-isakrs <span>This world</span></a>
         <a href="https://github.com/isakrs/opcua-influxdb-grafana-dummy">opcua-influxdb-grafana-dummy <span>Later</span></a>
+      </div>
+      <div class="flow-legend" aria-label="Flow mode legend">
+        <h3>Pipe modes</h3>
+        <div class="legend-grid">
+          <div class="legend-item"><span class="legend-dot" style="background:#ff5b24"></span>Streaming</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#2f9e73"></span>Incremental</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#2c7be5"></span>Quality gate</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#7c5cff"></span>Declared export</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#1f7a8c"></span>Serving flow</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#f2bd2a"></span>Repository reference</div>
+        </div>
       </div>
     </section>
 
@@ -430,15 +487,15 @@
       const roomDetails = {
         house: {
           title: "Payment Signal Hall",
-          copy: "The first journey follows a payment event, such as tapping to pay or sending money, without exposing real payment data."
+          copy: "The first journey follows a payment event, such as tapping to pay or sending money, with streaming, incremental, governed, and serving flow modes visible in the scene."
         },
         ingestion: {
           title: "Payment Ingestion Room",
-          copy: "The event is captured, checked, and landed in a storage account such as Azure Storage Account or S3."
+          copy: "The event arrives as a live stream, lands in a storage account such as Azure Storage Account or S3, and moves forward through incremental checkpoints."
         },
         analytics: {
           title: "dbt Modeling Room",
-          copy: "Databricks, Spark, and dbt-style transformations turn the safe payment signal into reusable analytical meaning."
+          copy: "Databricks, Spark, and dbt-style transformations apply quality gates before a trusted modeled signal becomes reusable analytical meaning."
         },
         export: {
           title: "Data Export Room",
@@ -446,7 +503,7 @@
         },
         product: {
           title: "Data Product Room",
-          copy: "The payment signal becomes a governed table, insight, dashboard, alert, or downstream data product."
+          copy: "The payment signal becomes a governed table, insight, dashboard, alert, or downstream data product through a serving flow rather than a raw copy."
         },
         github: {
           title: "GitHub Library",
@@ -649,9 +706,11 @@
 
       function addPipes() {
         makePipe("Tap or send", [-10.7, 0.75, -3.8], [-7.5, 0.75, -3.8], 0xff5b24, "stream", 5);
-        makePipe("Storage account", [-6.1, 0.85, -3.8], [-3.1, 0.85, -3.8], 0x2f9e73, "incremental", 5);
-        makePipe("Spark + dbt", [-0.4, 0.85, -3.8], [3.1, 0.85, -3.8], 0x2c7be5, "incremental", 4);
+        makePipe("Storage landing", [-6.1, 0.85, -3.8], [-3.4, 0.85, -3.8], 0x2f9e73, "incremental", 5);
+        makePipe("Quality gate", [-3.2, 0.85, -3.8], [-0.6, 0.85, -3.8], 0x2c7be5, "quality", 4);
+        makePipe("Spark + dbt", [-0.4, 0.85, -3.8], [3.1, 0.85, -3.8], 0x2f9e73, "incremental", 4);
         makePipe("Declared export", [4.7, 0.8, -2.4], [4.9, 0.8, 1.85], 0x7c5cff, "export", 4);
+        makePipe("Serving flow", [6.1, 0.86, 3.4], [9.3, 0.86, 3.4], 0x1f7a8c, "serving", 4);
         makePipe("GitHub Actions", [-4.8, 0.75, 2.1], [-2.1, 0.75, -2.4], 0xf2bd2a, "reference", 3);
       }
 
@@ -676,10 +735,11 @@
         scene.add(pipe);
 
         scene.add(makeLabel(name, middle.clone().add(new THREE.Vector3(0, 0.56, 0)), color));
+        addPipeDecorations(curve, middle, color, type);
 
         for (let index = 0; index < count; index += 1) {
           const packet = new THREE.Mesh(
-            new THREE.SphereGeometry(type === "batch" && index === 0 ? 0.2 : 0.14, 18, 18),
+            new THREE.SphereGeometry(type === "serving" && index === 0 ? 0.18 : 0.14, 18, 18),
             new THREE.MeshStandardMaterial({
               color: 0xffffff,
               emissive: color,
@@ -691,11 +751,76 @@
           packet.userData = {
             curve,
             offset: index / count,
-            speed: type === "batch" ? 0.14 : type === "stream" ? 0.3 : type === "export" ? 0.22 : 0.18,
+            speed:
+              type === "stream"
+                ? 0.3
+                : type === "quality"
+                  ? 0.16
+                  : type === "serving"
+                    ? 0.24
+                    : type === "export"
+                      ? 0.22
+                      : 0.18,
             type
           };
           packets.push(packet);
           scene.add(packet);
+        }
+      }
+
+      function addPipeDecorations(curve, middle, color, type) {
+        if (type === "incremental") {
+          [0.24, 0.5, 0.76].forEach((positionOnCurve) => {
+            const ring = new THREE.Mesh(
+              new THREE.TorusGeometry(0.18, 0.035, 12, 24),
+              new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                emissive: color,
+                emissiveIntensity: 0.34,
+                roughness: 0.28
+              })
+            );
+            const point = curve.getPointAt(positionOnCurve);
+            ring.position.copy(point);
+            ring.rotation.x = Math.PI / 2;
+            scene.add(ring);
+          });
+        }
+
+        if (type === "quality") {
+          const gate = new THREE.Group();
+          gate.position.copy(middle);
+
+          const material = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: color,
+            emissiveIntensity: 0.3,
+            roughness: 0.36
+          });
+
+          const left = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.72, 0.08), material);
+          left.position.set(-0.18, 0.26, 0);
+          const right = left.clone();
+          right.position.x = 0.18;
+          const top = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.08, 0.08), material);
+          top.position.set(0, 0.58, 0);
+          gate.add(left, right, top);
+          scene.add(gate);
+        }
+
+        if (type === "serving") {
+          const fan = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.13, 0.22, 0.52, 3),
+            new THREE.MeshStandardMaterial({
+              color: 0xffffff,
+              emissive: color,
+              emissiveIntensity: 0.25,
+              roughness: 0.32
+            })
+          );
+          fan.rotation.z = -Math.PI / 2;
+          fan.position.copy(curve.getPointAt(0.86));
+          scene.add(fan);
         }
       }
 
@@ -706,7 +831,7 @@
           position: [-6.35, 0, -2.6],
           colors: [0xff5b24, 0x243447, 0xf1c7a8],
           dialogue:
-            "I am watching a payment event enter the house. The important trick is to explain the tap or send journey without exposing real payment data or real user data."
+            "I am watching a payment event enter the house. The important trick is to explain the tap or send journey without exposing real payment data or real user data, while still showing which pipes are streaming, incremental, or serving."
         });
 
         makePerson({
@@ -715,7 +840,7 @@
           position: [-1.35, 0, -2.35],
           colors: [0x2f9e73, 0x27384d, 0xd8a17d],
           dialogue:
-            "I am in the dbt modeling room. Databricks and Spark shape the payment signal, then dbt-style models make the result understandable for analytics projects."
+            "I am in the dbt modeling room. Databricks and Spark shape the payment signal, then dbt-style models make the result understandable for analytics projects after the quality gate says it is safe to trust."
         });
 
         makePerson({
@@ -724,7 +849,7 @@
           position: [-0.35, 0, -4.75],
           colors: [0x2c7be5, 0x1f2a44, 0xe0b08f],
           dialogue:
-            "I am pairing on lineage and data quality. For a payment event, we need to know what entered, what changed, and why the modeled output can be trusted."
+            "I am pairing on lineage and data quality. For a payment event, we need to know what entered, what changed, which checkpoint already ran, and why the modeled output can be trusted."
         });
 
         makePerson({
@@ -733,7 +858,7 @@
           position: [-4.9, 0, 4.35],
           colors: [0xf2bd2a, 0x27384d, 0xc98f6f],
           dialogue:
-            "I am at the blueprint table. modern-data-platform-example explains the operating model, and vipps-isakrs shows how this world is built and automated."
+            "I am at the blueprint table. modern-data-platform-example explains the operating model, and vipps-isakrs shows how this world is built and automated. The pipe language should teach design choices, not only path direction."
         });
       }
 
@@ -954,10 +1079,10 @@
         packets.forEach((packet, index) => {
           const userData = packet.userData;
           const flow = (elapsed * userData.speed + userData.offset) % 1;
-          const pulse = userData.type === "batch" ? Math.pow(Math.sin(flow * Math.PI), 4) : 0;
+          const pulse = userData.type === "quality" ? Math.pow(Math.sin(flow * Math.PI), 6) * 0.8 : 0;
           packet.position.copy(userData.curve.getPointAt(flow));
           packet.scale.setScalar(1 + pulse * 0.9);
-          packet.visible = userData.type !== "batch" || flow < 0.48 || index % 2 === 0;
+          packet.visible = userData.type !== "quality" || flow < 0.52 || index % 2 === 0;
         });
 
         smoke.forEach((puff) => {

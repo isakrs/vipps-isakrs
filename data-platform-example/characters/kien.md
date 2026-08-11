@@ -20,6 +20,8 @@ payment signal can be trusted.
   a trusted product.
 - Incremental processing should make it clear what has already been processed,
   for example through checkpoints or watermarks.
+- A public-safe house should show the quality gate and checkpoints as visible
+  scene objects, not only describe them in dialogue.
 
 ## Good Answers
 

@@ -21,6 +21,9 @@ or why the experience exists.
 - The payment event is shown conceptually as it moves from source event to
   ingestion, storage account, Databricks and Spark-style processing, dbt-style
   modeling, analytics project use, declared data export, and data product use.
+- The scene should make flow mode visible, not only direction: streaming,
+  incremental checkpoints, quality gates, declared exports, and serving flows
+  should be readable at a glance.
 - The house is allowed to be metaphorical where that makes the data platform
   easier to understand or safer to share.
 
