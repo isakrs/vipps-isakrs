@@ -226,15 +226,15 @@ sensitive implementation details.
 <div class="data-platform-source-grid" aria-label="Configuration repository service offerings">
   <article class="data-platform-source">
     <strong>Analytics Projects</strong>
-    <span>Consumer access for governed use of published datasets with accountability, purpose, and access needs.</span>
+    <span>Governed access for product teams and analysts who need trusted published datasets back from the platform for decisions, analysis, and follow-up.</span>
   </article>
   <article class="data-platform-source">
     <strong>Data Export</strong>
-    <span>Consumer egress from Databricks to approved destinations with an owner, trigger path, and destination.</span>
+    <span>Approved delivery back to product teams or other consumers from Databricks with a clear owner, trigger path, and destination.</span>
   </article>
   <article class="data-platform-source">
     <strong>Data Products</strong>
-    <span>Product egress for curated data products with storage, schema, identities, and sharing paths.</span>
+    <span>Curated outputs delivered back to product teams through governed data products with storage, schema, identities, and sharing paths.</span>
   </article>
   <article class="data-platform-source">
     <strong>Dino</strong>
@@ -281,6 +281,8 @@ guide future runs toward the services that matter most for the story:
 - Configuration services are the main focus area.
 - Dataverse should be a clear destination that people can move to or inspect.
 - Datafront should be a clear destination that people can move to or inspect.
+- It should be obvious that product teams both send data into the platform and
+  receive governed outputs back from the platform.
 - The visitor should understand when to approach or click a service to learn
   what it does, when to use it, and what kind of output or responsibility it
   represents.
@@ -327,6 +329,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
       <span>Make a tap or send payment event readable from source to data product.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Show the product-team loop</strong>
+      <span>Make it visually clear that product teams feed the platform and later receive governed datasets, exports, and data products back.</span>
     </article>
     <article class="data-platform-card">
       <strong>Turn service offerings into doors</strong>
@@ -487,6 +493,9 @@ First deliverable:
 - The written page remains useful as the explanatory backing and storyboard.
 - The first visual priority is correct service description and clear service
   identity, not decoration density.
+- The story should clearly show a two-way relationship with product teams:
+  product teams provide signals to the platform and receive governed outputs
+  back from it.
 
 Show-and-tell flavor:
 
@@ -522,6 +531,7 @@ Character direction:
 First concepts to explain:
 
 - Configuration services.
+- The producer-consumer loop between product teams and the data platform.
 - Ingestion processes.
 - Analytics projects.
 - Data export.
@@ -543,6 +553,10 @@ First signal journey:
   storage account, moving through Databricks and Spark-style processing, being
   modeled with dbt-style transformations, and then becoming useful as a data
   product, analytics project, or declared data export.
+- The same path should make it obvious that the signal originates in a product
+  team context and that trusted outputs are later delivered back to product
+  teams through services such as Dataverse, Datafront, analytics projects,
+  exports, or data products.
 
 Technologies that can be named:
 
@@ -614,6 +628,8 @@ understand what is happening there.
 Possible direction:
 
 - The house represents the data platform.
+- Product-team spaces sit outside and around the house: they send signals in and
+  receive governed outputs back.
 - Pipes represent the signal moving in, through, and out of the platform.
 - Rooms represent checkpoints in the signal journey.
 - Service zones represent the configuration services people can approach to
@@ -645,14 +661,19 @@ send action, without seeing real payment data or real user data.
 Suggested journey:
 
 1. A person taps or sends a payment.
-2. The application emits a conceptual payment event.
+2. A product team application emits a conceptual payment event into the
+   platform.
 3. The event is captured by the ingestion process.
 4. The event lands in a storage account, such as Azure Storage Account or S3.
 5. Databricks and Spark-style processing validate and shape the data.
 6. dbt-style models turn the signal into reusable analytical meaning.
-7. An analytics project consumes the modeled data.
-8. A declared data export sends an approved output to a destination.
-9. A data product presents governed, useful data with ownership and support.
+7. The platform publishes trusted outputs that product teams can discover and
+   use through analytics projects, Dataverse, Datafront, data products, or
+   approved exports.
+8. A product team receives a governed output back from the platform for product
+   understanding, operational follow-up, or downstream use.
+9. Ownership and support stay visible on both sides: who produced the signal,
+   who shaped it in the platform, and who consumes the result.
 
 The experience should show both the happy path and the platform thinking around
 it: ownership, contracts, quality gates, lineage, privacy, and safe use.
@@ -805,6 +826,8 @@ work examples.
 The house should:
 
 - Let visitors follow one signal through the building.
+- Let visitors understand that the signal starts in a product team context and
+  that trusted outputs return to product teams after platform processing.
 - Let visitors enter rooms to understand a stage in the process.
 - Let visitors move around like a small game, including movement in depth rather
   than only sliding across a flat camera plane.
@@ -846,6 +869,8 @@ First prototype scope:
 1. A playable Three.js house shell with a few connected rooms.
 2. One clear signal journey through ingestion, analytics project work, data
    export, and data product use.
+   That journey should explicitly show product teams on both the source side and
+   the receiving side.
 3. Isak as the main data platform guide.
 4. Param, Kien, and Malo as the next visible characters.
 5. At least one visible storage-account-to-database pipe.
@@ -866,19 +891,24 @@ The experience should answer this question:
 
 > What happens to a signal after it is created, and how does it become useful?
 
+It should also answer this related question:
+
+> How do product teams give signals to the platform and get trusted outputs back?
+
 The experience should make the invisible journey visible:
 
-1. A signal emerges in a source system.
+1. A signal emerges in a product team source system.
 2. The signal is captured or exported.
-3. The producer describes what the signal means.
+3. The producing team describes what the signal means.
 4. The platform validates, lands, and processes it.
 5. The signal becomes part of governed platform data.
 6. Transformations, models, or enrichment make it more useful.
 7. Access rules decide who can use it and why.
-8. The signal becomes an insight, dashboard, data product, export, alert, or
-   downstream feature.
-9. Ownership, monitoring, lineage, and support paths explain who keeps it
-   trustworthy.
+8. The platform delivers trusted outputs back to product teams and other
+   consumers as insights, dashboards, data products, exports, alerts, or
+   downstream features.
+9. Ownership, monitoring, lineage, and support paths explain who keeps the loop
+   trustworthy from producer to platform to consumer.
 
 Each stage should let the visitor pause and ask:
 
