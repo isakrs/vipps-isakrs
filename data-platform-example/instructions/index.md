@@ -196,6 +196,66 @@ The first preferred sources are:
   </article>
 </div>
 
+## Configuration Repository Offerings
+
+The Three.js world should show every documented service offering from the
+configuration repository as public-safe service names, categories, and conceptual
+descriptions. The world should not expose raw configuration payloads, access
+groups, personal contact details, internal endpoints, private table names, or
+sensitive implementation details.
+
+<div class="data-platform-source-grid" aria-label="Configuration repository service offerings">
+  <article class="data-platform-source">
+    <strong>Analytics Projects</strong>
+    <span>Consumer access for governed use of published datasets with accountability, purpose, and access needs.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Data Export</strong>
+    <span>Consumer egress from Databricks to approved destinations with an owner, trigger path, and destination.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Data Products</strong>
+    <span>Product egress for curated data products with storage, schema, identities, and sharing paths.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Dino</strong>
+    <span>Capture events directly from Feed application programming interface endpoints into object storage.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Object Storage Connection</strong>
+    <span>Connect producer-owned object storage to the data platform in a governed way.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Direct Publish</strong>
+    <span>Publish Databricks tables directly from files that already live in storage.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Wraptor</strong>
+    <span>Publish streaming event data from file sources captured by Dino.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Cacheloader</strong>
+    <span>Stream and transform event data from object storage into useful published datasets.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Skippy</strong>
+    <span>Copy small slow-changing tables from SQL databases on a nightly schedule.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Query Publish</strong>
+    <span>Create SQL views on top of existing tables when the right output is a curated view.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong>Custom Integrations</strong>
+    <span>Represent special integration jobs when the standard service paths do not fit.</span>
+  </article>
+</div>
+
+In the Three.js world, these offerings should become visible doors, kiosks,
+pipe junctions, or room signs. The current service directory is the first pass:
+it names every offering and connects the catalog back to the house with its own
+pipe.
+
 ## Development Backlog
 
 This board is the lightweight product tracker for the house. It should stay
@@ -230,6 +290,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
       <span>Make a tap or send payment event readable from source to data product.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Turn service offerings into doors</strong>
+      <span>Make each configuration repository service become a door, kiosk, or pipe junction that explains when to use it.</span>
     </article>
   </section>
 
@@ -358,6 +422,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Agent-first feedback loop</strong>
       <span>Feedback normally starts in agent conversations and is saved in GitHub only when it needs a durable public record.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Configuration repository service directory</strong>
+      <span>The world now names every documented configuration repository offering on a visible service board and Services focus list.</span>
     </article>
   </section>
 </div>

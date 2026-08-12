@@ -145,10 +145,38 @@
         border-radius: 8px;
         bottom: 18px;
         left: 16px;
+        max-height: calc(100vh - 126px);
         max-width: min(360px, calc(100vw - 32px));
+        overflow: auto;
         padding: 14px;
         position: fixed;
         z-index: 10;
+      }
+
+      .panel.is-service-focus {
+        max-width: min(660px, calc(100vw - 32px));
+      }
+
+      .panel.is-service-focus .flow-legend {
+        display: none;
+      }
+
+      .panel.is-service-focus #offering-links {
+        gap: 6px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-height: none;
+      }
+
+      .panel.is-service-focus #offering-links a {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+        justify-content: center;
+        min-height: 46px;
+      }
+
+      .panel.is-service-focus #offering-links span {
+        font-size: 0.68rem;
       }
 
       .panel h2,
@@ -185,6 +213,8 @@
         display: grid;
         gap: 8px;
         margin-top: 12px;
+        max-height: 230px;
+        overflow: auto;
         padding-top: 12px;
       }
 
@@ -443,8 +473,13 @@
         .panel {
           bottom: 12px;
           left: 12px;
+          max-height: calc(100vh - 184px);
           right: 12px;
           max-width: none;
+        }
+
+        .panel.is-service-focus #offering-links {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
         .dialogue {
@@ -506,6 +541,7 @@
         <button class="focus-button" type="button" data-focus="product">Product</button>
         <button class="focus-button" type="button" data-focus="github">GitHub</button>
         <button class="focus-button" type="button" data-focus="assets">Assets</button>
+        <button class="focus-button" type="button" data-focus="services">Services</button>
         <button class="focus-button" type="button" data-focus="house">House</button>
       </div>
       <div class="repository-links" id="repository-links" hidden aria-label="Public repository links">
@@ -522,6 +558,19 @@
         <a href="https://polyhaven.com/">Poly Haven <span>Materials</span></a>
         <a href="https://ambientcg.com/">ambientCG <span>Textures</span></a>
         <a href="https://github.com/KhronosGroup/glTF-Sample-Assets">Khronos glTF Sample Assets <span>glTF</span></a>
+      </div>
+      <div class="repository-links" id="offering-links" hidden aria-label="Configuration repository service offerings">
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Analytics Projects <span>Consumer access</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Data Export <span>Consumer egress</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Data Products <span>Product egress</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Dino <span>Capture</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Object Storage Connection <span>Capture</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Direct Publish <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Wraptor <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Cacheloader <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Skippy <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Query Publish <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Custom Integrations <span>Special cases</span></a>
       </div>
       <div class="flow-legend" aria-label="Flow mode legend">
         <h3>Pipe modes</h3>
@@ -600,8 +649,10 @@
       const loading = document.querySelector("#loading");
       const currentRoom = document.querySelector("#current-room");
       const currentCopy = document.querySelector("#current-copy");
+      const panel = document.querySelector(".panel");
       const repositoryLinks = document.querySelector("#repository-links");
       const assetLinks = document.querySelector("#asset-links");
+      const offeringLinks = document.querySelector("#offering-links");
       const dialogue = document.querySelector("#dialogue");
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
@@ -696,6 +747,10 @@
         assets: {
           title: "Open Asset Library",
           copy: "Great open object libraries become the shelves for the house: proven Three.js examples, reusable helpers, permissive models, materials, lights, and glTF test assets."
+        },
+        services: {
+          title: "Configuration Repository Services",
+          copy: "The configuration repository exposes the platform offerings people can request or declare: consumer access, exports, data products, capture, publishing, and custom integration services."
         }
       };
 
@@ -710,7 +765,8 @@
           export: [1.62, 1.02, -0.1],
           product: [2.72, 0.92, 0.78],
           github: [-1.35, 0.86, 1.25],
-          assets: [-0.18, 0.86, 1.35]
+          assets: [-0.18, 0.86, 1.35],
+          services: [1.05, 0.86, 1.32]
         }
       };
 
@@ -721,7 +777,8 @@
         export: { target: [3.45, 0.35, -1.65], offset: [1.6, 7.1, 8.4] },
         product: { target: [5.45, 0.35, 2.65], offset: [1.2, 7.3, 8.5] },
         github: { target: [-5.6, 0.3, 3.4], offset: [1.4, 7.2, 8.4] },
-        assets: { target: [-2.45, 0.3, 3.35], offset: [1.1, 7.2, 8.2] }
+        assets: { target: [-2.45, 0.3, 3.35], offset: [1.1, 7.2, 8.2] },
+        services: { target: [5.95, 0.75, 0.25], offset: [-1.6, 6.5, 7.6] }
       };
 
       const rooms = [
@@ -740,6 +797,75 @@
         { name: "Kenney game kits", color: 0x2f9e73 },
         { name: "Quaternius character kits", color: 0xf2bd2a },
         { name: "Poly Haven materials", color: 0x1f7a8c }
+      ];
+
+      const platformOfferings = [
+        {
+          name: "Analytics Projects",
+          type: "Consumer access",
+          color: 0x2c7be5,
+          description: "Request governed access to published datasets and define accountability, purpose, and access needs."
+        },
+        {
+          name: "Data Export",
+          type: "Consumer egress",
+          color: 0x7c5cff,
+          description: "Export data from Databricks to Azure SQL databases with an owner, trigger path, and destination."
+        },
+        {
+          name: "Data Products",
+          type: "Product egress",
+          color: 0x1f7a8c,
+          description: "Declare curated data products with dedicated storage, schema, identities, and sharing paths."
+        },
+        {
+          name: "Dino",
+          type: "Capture",
+          color: 0xff5b24,
+          description: "Capture events directly from Feed application programming interface endpoints into object storage."
+        },
+        {
+          name: "Object Storage Connection",
+          type: "Capture",
+          color: 0xf2bd2a,
+          description: "Give the data platform access to a producer-owned storage account."
+        },
+        {
+          name: "Direct Publish",
+          type: "Publish",
+          color: 0x2f9e73,
+          description: "Create Databricks tables directly from files on storage."
+        },
+        {
+          name: "Wraptor",
+          type: "Publish",
+          color: 0x2f9e73,
+          description: "Publish events by streaming from file sources captured by Dino."
+        },
+        {
+          name: "Cacheloader",
+          type: "Publish",
+          color: 0x2f9e73,
+          description: "Stream and transform event data from object storage."
+        },
+        {
+          name: "Skippy",
+          type: "Publish",
+          color: 0x2f9e73,
+          description: "Copy small slow-changing tables from SQL databases on a nightly schedule."
+        },
+        {
+          name: "Query Publish",
+          type: "Publish",
+          color: 0x2f9e73,
+          description: "Create SQL views on top of existing tables."
+        },
+        {
+          name: "Custom Integrations",
+          type: "Special cases",
+          color: 0x37b6c4,
+          description: "Configure custom or one-off integration jobs when the standard path does not fit."
+        }
       ];
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
@@ -762,6 +888,7 @@
       loadAnimatedGuide(isakFallback);
       addRepositoryTable();
       addAssetLibraryWorkbench();
+      addServiceOfferingDirectory();
       addSmokePuffs();
       loadCharacterKnowledge();
 
@@ -822,7 +949,8 @@
 
       window.addEventListener("resize", resize);
 
-      focusRoom("house");
+      const initialFocus = new URLSearchParams(window.location.search).get("focus");
+      focusRoom(initialFocus && roomTargets[initialFocus] ? initialFocus : "house");
       loading.classList.add("is-hidden");
       animate();
 
@@ -1126,6 +1254,7 @@
         makePipe("Product serving", ports.export, ports.product, 0x1f7a8c, "serving", 3);
         makePipe("GitHub Actions", [-5.35, 0.75, 2.6], ports.github, 0xf2bd2a, "reference", 3);
         makePipe("Open object kits", [-4.1, 0.78, 3.55], ports.assets, 0x37b6c4, "reference", 3);
+        makePipe("Service catalog", ports.services, [5.05, 0.82, 0.28], 0xff5b24, "reference", 4);
       }
 
       function makePipe(name, from, to, color, type, count) {
@@ -1523,6 +1652,113 @@
         scene.add(makeLabel("open object library", new THREE.Vector3(-2.55, 1.95, 3.28), 0x37b6c4, 0.62));
       }
 
+      function addServiceOfferingDirectory() {
+        const directory = new THREE.Group();
+        directory.position.set(6.15, 0.05, 0.25);
+        directory.rotation.y = -0.42;
+
+        const boardCanvas = document.createElement("canvas");
+        boardCanvas.width = 1024;
+        boardCanvas.height = 768;
+        const context = boardCanvas.getContext("2d");
+        context.fillStyle = "rgba(255, 255, 255, 0.94)";
+        roundRect(context, 28, 28, 968, 712, 36);
+        context.fill();
+        context.strokeStyle = "#ff5b24";
+        context.lineWidth = 12;
+        context.stroke();
+
+        context.fillStyle = "#18222d";
+        context.font = "800 54px Inter, system-ui, sans-serif";
+        context.fillText("Configuration Repository Services", 70, 100);
+        context.fillStyle = "#5b6776";
+        context.font = "600 28px Inter, system-ui, sans-serif";
+        context.fillText("All platform offerings visible from the configuration files", 70, 144);
+
+        const columns = [
+          { title: "Consumer", types: ["Consumer access", "Consumer egress", "Product egress"], x: 70 },
+          { title: "Capture", types: ["Capture"], x: 384 },
+          { title: "Publish", types: ["Publish", "Special cases"], x: 676 }
+        ];
+
+        columns.forEach((column) => {
+          context.fillStyle = "#ff5b24";
+          context.font = "800 30px Inter, system-ui, sans-serif";
+          context.fillText(column.title, column.x, 210);
+
+          context.font = "700 26px Inter, system-ui, sans-serif";
+          let y = 258;
+          platformOfferings
+            .filter((offering) => column.types.includes(offering.type))
+            .forEach((offering) => {
+              context.fillStyle = `#${offering.color.toString(16).padStart(6, "0")}`;
+              context.beginPath();
+              context.arc(column.x + 10, y - 8, 8, 0, Math.PI * 2);
+              context.fill();
+              context.fillStyle = "#18222d";
+              context.fillText(offering.name, column.x + 30, y);
+              context.fillStyle = "#5b6776";
+              context.font = "600 20px Inter, system-ui, sans-serif";
+              context.fillText(offering.type, column.x + 30, y + 30);
+              context.font = "700 26px Inter, system-ui, sans-serif";
+              y += 82;
+            });
+        });
+
+        const boardTexture = new THREE.CanvasTexture(boardCanvas);
+        const board = new THREE.Mesh(
+          new THREE.PlaneGeometry(3.9, 2.92),
+          new THREE.MeshBasicMaterial({
+            map: boardTexture,
+            transparent: true
+          })
+        );
+        board.position.set(0, 2.25, 0);
+        directory.add(board);
+
+        const standMaterial = new THREE.MeshStandardMaterial({
+          color: 0x27384d,
+          roughness: 0.45,
+          metalness: 0.2
+        });
+        [-1.45, 1.45].forEach((x) => {
+          const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 1.7, 12), standMaterial);
+          stand.position.set(x, 1.1, -0.04);
+          stand.castShadow = true;
+          directory.add(stand);
+        });
+
+        const base = new THREE.Mesh(
+          new THREE.BoxGeometry(3.4, 0.12, 0.45),
+          new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.08 })
+        );
+        base.position.set(0, 0.24, 0);
+        base.castShadow = true;
+        base.receiveShadow = true;
+        directory.add(base);
+
+        platformOfferings.forEach((offering, index) => {
+          const angle = -Math.PI * 0.75 + index * (Math.PI * 1.5 / (platformOfferings.length - 1));
+          const marker = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.16, 0.2, 0.18, 18),
+            new THREE.MeshStandardMaterial({
+              color: offering.color,
+              emissive: offering.color,
+              emissiveIntensity: 0.14,
+              roughness: 0.38,
+              metalness: 0.12
+            })
+          );
+          marker.position.set(Math.sin(angle) * 1.65, 0.42, Math.cos(angle) * 0.55);
+          marker.castShadow = true;
+          marker.userData = { offering };
+          directory.add(marker);
+        });
+
+        scene.add(directory);
+        scene.add(makeLabel("service offerings", new THREE.Vector3(6.0, 3.95, 0.12), 0xff5b24, 0.62));
+      }
+
       function addSmokePuffs() {
         for (let index = 0; index < 26; index += 1) {
           const puff = new THREE.Mesh(
@@ -1589,6 +1825,8 @@
         currentCopy.textContent = details.copy;
         repositoryLinks.hidden = id !== "github";
         assetLinks.hidden = id !== "assets";
+        offeringLinks.hidden = id !== "services";
+        panel.classList.toggle("is-service-focus", id === "services");
       }
 
       function rotateView(direction) {
