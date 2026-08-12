@@ -60,6 +60,7 @@
       #world {
         display: block;
         height: 100vh;
+        touch-action: none;
         width: 100vw;
       }
 
@@ -79,6 +80,7 @@
       .brand,
       .nav,
       .panel,
+      .camera-controls,
       .dialogue {
         backdrop-filter: blur(18px);
         background: var(--panel);
@@ -255,10 +257,46 @@
 
       .focus-button:hover,
       .focus-button:focus-visible,
+      .camera-button:hover,
+      .camera-button:focus-visible,
       .nav a:hover,
       .nav a:focus-visible {
         outline: 2px solid rgba(255, 91, 36, 0.35);
         outline-offset: 2px;
+      }
+
+      .camera-controls {
+        align-items: center;
+        border-radius: 999px;
+        display: flex;
+        gap: 6px;
+        padding: 6px;
+        pointer-events: auto;
+        position: fixed;
+        right: 16px;
+        top: 92px;
+        z-index: 10;
+      }
+
+      .camera-button {
+        align-items: center;
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        cursor: pointer;
+        display: grid;
+        height: 38px;
+        justify-content: center;
+        padding: 0;
+        width: 38px;
+      }
+
+      .camera-button svg {
+        display: block;
+        height: 19px;
+        stroke-width: 2.4;
+        width: 19px;
       }
 
       .dialogue {
@@ -429,6 +467,11 @@
           padding: 9px 8px;
         }
 
+        .camera-controls {
+          right: 12px;
+          top: 170px;
+        }
+
         .asset-credits {
           display: none;
         }
@@ -492,6 +535,23 @@
         </div>
       </div>
     </section>
+
+    <div class="camera-controls" aria-label="Camera controls">
+      <button class="camera-button" type="button" data-orbit="-1" aria-label="Turn view left">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 0 1 15.5-6.2" />
+          <path d="M18.5 2.8v6h-6" />
+          <path d="M10 16l-4-4 4-4" />
+        </svg>
+      </button>
+      <button class="camera-button" type="button" data-orbit="1" aria-label="Turn view right">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12A9 9 0 0 0 5.5 5.8" />
+          <path d="M5.5 2.8v6h6" />
+          <path d="M14 16l4-4-4-4" />
+        </svg>
+      </button>
+    </div>
 
     <section class="dialogue" id="dialogue" hidden aria-live="polite">
       <h2>
@@ -593,7 +653,7 @@
       const clock = new THREE.Clock();
       const raycaster = new THREE.Raycaster();
       const pointer = new THREE.Vector2();
-      const mouse = { down: false, x: 0, y: 0 };
+      const mouse = { down: false, moved: false, startX: 0, startY: 0, x: 0, y: 0 };
       const keys = new Set();
       const clickable = [];
       const packets = [];
@@ -605,6 +665,9 @@
       const desiredTarget = new THREE.Vector3(0, 0.3, 0);
       const desiredOffset = new THREE.Vector3(0, 10, 15);
       const cameraOffset = desiredOffset.clone();
+      const orbitAxis = new THREE.Vector3(0, 1, 0);
+      let currentOrbitAngle = 0;
+      let desiredOrbitAngle = 0;
       const roomDetails = {
         house: {
           title: "Payment Signal Hall",
@@ -706,6 +769,10 @@
         button.addEventListener("click", () => focusRoom(button.dataset.focus));
       });
 
+      document.querySelectorAll("[data-orbit]").forEach((button) => {
+        button.addEventListener("click", () => rotateView(Number(button.dataset.orbit)));
+      });
+
       closeDialogue.addEventListener("click", () => {
         dialogue.hidden = true;
       });
@@ -724,12 +791,15 @@
           return;
         }
         mouse.down = true;
+        mouse.moved = false;
+        mouse.startX = event.clientX;
+        mouse.startY = event.clientY;
         mouse.x = event.clientX;
         mouse.y = event.clientY;
       });
 
       window.addEventListener("pointerup", (event) => {
-        if (mouse.down && Math.abs(event.clientX - mouse.x) < 8 && Math.abs(event.clientY - mouse.y) < 8) {
+        if (mouse.down && !mouse.moved) {
           pickCharacter(event);
         }
         mouse.down = false;
@@ -741,9 +811,11 @@
         }
         const dx = event.clientX - mouse.x;
         const dy = event.clientY - mouse.y;
-        desiredTarget.x -= dx * 0.018;
-        desiredTarget.z -= dy * 0.018;
-        clampTarget();
+        if (Math.abs(event.clientX - mouse.startX) > 8 || Math.abs(event.clientY - mouse.startY) > 8) {
+          mouse.moved = true;
+        }
+        desiredOrbitAngle -= dx * 0.008;
+        desiredOffset.y = THREE.MathUtils.clamp(desiredOffset.y + dy * 0.01, 4.2, 9.4);
         mouse.x = event.clientX;
         mouse.y = event.clientY;
       });
@@ -1519,6 +1591,10 @@
         assetLinks.hidden = id !== "assets";
       }
 
+      function rotateView(direction) {
+        desiredOrbitAngle += direction * (Math.PI / 4);
+      }
+
       async function loadCharacterKnowledge() {
         const slugs = ["isak", "param", "kien", "malo"];
         await Promise.all(
@@ -1687,16 +1763,26 @@
 
       function updateCamera(delta) {
         const speed = 5.6 * delta;
+        const turnSpeed = 1.9 * delta;
         if (keys.has("arrowup") || keys.has("w")) desiredTarget.z -= speed;
         if (keys.has("arrowdown") || keys.has("s")) desiredTarget.z += speed;
         if (keys.has("arrowleft") || keys.has("a")) desiredTarget.x -= speed;
         if (keys.has("arrowright") || keys.has("d")) desiredTarget.x += speed;
+        if (keys.has("q")) desiredOrbitAngle -= turnSpeed;
+        if (keys.has("e")) desiredOrbitAngle += turnSpeed;
         clampTarget();
 
         cameraTarget.lerp(desiredTarget, 0.08);
         cameraOffset.lerp(desiredOffset, 0.08);
-        camera.position.copy(cameraTarget).add(cameraOffset);
+        currentOrbitAngle = lerpAngle(currentOrbitAngle, desiredOrbitAngle, 0.1);
+        const orbitOffset = cameraOffset.clone().applyAxisAngle(orbitAxis, currentOrbitAngle);
+        camera.position.copy(cameraTarget).add(orbitOffset);
         camera.lookAt(cameraTarget);
+      }
+
+      function lerpAngle(from, to, amount) {
+        const delta = Math.atan2(Math.sin(to - from), Math.cos(to - from));
+        return from + delta * amount;
       }
 
       function clampTarget() {
