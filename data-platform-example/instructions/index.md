@@ -502,6 +502,8 @@ First deliverable:
 - A polished Three.js experience, not just a written presentation.
 - A small game where visitors can move around the house in real depth, inspect
   rooms and pipes, and talk to people.
+- The Data Platform House is the first part of a larger Vipps tech world, not
+  the final boundary of the concept.
 - Something that can also run in the background during an event while the team
   explains the data flow.
 - Something that can later be used as a memorable selling point when explaining
@@ -601,6 +603,9 @@ Architecture direction:
 - The house should mirror the real Vipps MobilePay data platform to some extent,
   but it can stay metaphorical where that makes the story easier to understand
   or safer to share.
+- The long-term shape should feel closer to a Game of Thrones-style intro world
+  or animated tech map, where the Data Platform House is the first major place
+  in a broader Vipps technology landscape.
 - It should also work as a reusable example for a customer-style setting, such
   as a Bama-like scenario, where the same platform ideas are explained without
   needing Vipps MobilePay-specific details.
@@ -632,6 +637,10 @@ We want to explain a data platform through an explorable house metaphor, but the
 main experience should be following a concrete data signal through the whole
 system.
 
+The larger product vision is broader than one house. Think of the experience as
+the beginning of a Vipps tech world, where the Data Platform House is the first
+landmark in a bigger explorable map of technical domains.
+
 The visitor should be able to start with a signal as it emerges, such as:
 
 - A button click in an application.
@@ -648,7 +657,10 @@ understand what is happening there.
 
 Possible direction:
 
-- The house represents the data platform.
+- The Data Platform House represents the data platform as the first major
+  landmark in the Vipps tech world.
+- Over time, the world can expand into other Vipps technology areas in the same
+  map-like style, with the house acting as the opening chapter.
 - Product-team spaces sit outside and around the house: they send signals in and
   receive governed outputs back.
 - Pipes represent the signal moving in, through, and out of the platform.
@@ -838,17 +850,24 @@ room, pipe, character, or dialogue moment.
 
 ## Interactive House Deliverable
 
-The house is the target experience.
+The house is the first target experience.
 
 The written explainer is the foundation, not the final destination. The Three.js
 house should grow from the signal journey, pipe semantics, real people, and real
 work examples.
+
+The broader ambition is a Vipps tech world with the same kind of memorable
+overview feeling as a fantasy or prestige-television intro map: distinct places,
+clear landmarks, movement between domains, and a sense that the visitor is
+touring a larger technical world. The Data Platform House should be the first
+place we build to that standard.
 
 The house should:
 
 - Let visitors follow one signal through the building.
 - Let visitors understand that the signal starts in a product team context and
   that trusted outputs return to product teams after platform processing.
+- Feel like one named place in a larger tech world, not an isolated demo scene.
 - Let visitors enter rooms to understand a stage in the process.
 - Let visitors move around like a small game, including movement in depth rather
   than only sliding across a flat camera plane.
@@ -879,11 +898,12 @@ The house should:
 The house should still be built in small steps. The best path is:
 
 1. Make the written explainer and storyboard useful.
-2. Choose the first signal journey.
-3. Identify the first real people, artifacts, and flow modes.
-4. Build the first interactive house prototype.
-5. Add event-mode visuals and role-play hooks.
-6. Let automation help refine the explainer, storyboard, and house.
+2. Define how the Data Platform House fits into the larger Vipps tech world.
+3. Choose the first signal journey.
+4. Identify the first real people, artifacts, and flow modes.
+5. Build the first interactive house prototype.
+6. Add event-mode visuals and role-play hooks.
+7. Let automation help refine the explainer, storyboard, and house.
 
 First prototype scope:
 
@@ -905,6 +925,8 @@ First prototype scope:
    Datafront, Dino, or Wraptor correctly.
 10. Movement that lets a visitor feel depth and approach an object, not only
     inspect it from a distance.
+11. A clear sense that this house is the first landmark in a wider Vipps tech
+    world that can grow later.
 
 ## Core Experience Goal
 
