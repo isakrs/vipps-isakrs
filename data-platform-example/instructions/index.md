@@ -131,7 +131,7 @@ event version more convincing.
     <h3 id="backlog-now">Now</h3>
     <article class="data-platform-card">
       <strong>Improve world interaction</strong>
-      <span>Make walking, tapping people, and following pipes feel natural on desktop and mobile.</span>
+      <span>Make walking, tapping people, and following pipes feel more like a small game on desktop and mobile.</span>
     </article>
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
@@ -206,8 +206,8 @@ event version more convincing.
       <span>The old implementation was removed and this brief became the source of truth.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Noon automation</strong>
-      <span>A workday automation now improves, commits, and pushes useful changes.</span>
+      <strong>Twice-workday automation</strong>
+      <span>Workday automations now improve, commit, and push useful changes twice per workday.</span>
     </article>
     <article class="data-platform-card">
       <strong>Link-only discoverability</strong>
@@ -220,6 +220,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>First house shell</strong>
       <span>The first scene has rooms, animated data pipes, avatars, and repository blueprints.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Cinematic scene foundation</strong>
+      <span>The world now uses postprocessing, stronger lighting, a glass-stage house shell, richer machines, and an animated Isak guide model with fallback.</span>
     </article>
     <article class="data-platform-card">
       <strong>Pipe modes made visible</strong>

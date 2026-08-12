@@ -374,7 +374,7 @@
     <header class="topbar">
       <div class="brand">
         <strong>Data Platform House</strong>
-        <span id="scene-summary">Follow a payment event through rooms, pipes, people, and repositories.</span>
+        <span id="scene-summary">Follow a payment event through a cinematic data platform house.</span>
       </div>
       <nav class="nav" aria-label="Data Platform House links">
         <a href="/data-platform-example/instructions/">Instructions</a>
@@ -442,6 +442,11 @@
     </script>
     <script type="module">
       import * as THREE from "three";
+      import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+      import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js";
+      import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js";
+      import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+      import { OutputPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/OutputPass.js";
 
       const canvas = document.querySelector("#world");
       const loading = document.querySelector("#loading");
@@ -454,8 +459,8 @@
       const closeDialogue = document.querySelector("#close-dialogue");
 
       const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xeef2f6);
-      scene.fog = new THREE.Fog(0xeef2f6, 24, 72);
+      scene.background = new THREE.Color(0xe9eef4);
+      scene.fog = new THREE.Fog(0xe9eef4, 24, 72);
 
       const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 120);
       camera.position.set(0, 10, 15);
@@ -469,6 +474,20 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+
+      const composer = new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene, camera));
+      const bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        0.2,
+        0.28,
+        0.92
+      );
+      composer.addPass(bloomPass);
+      composer.addPass(new OutputPass());
 
       const clock = new THREE.Clock();
       const raycaster = new THREE.Raycaster();
@@ -478,6 +497,8 @@
       const clickable = [];
       const packets = [];
       const smoke = [];
+      const mixers = [];
+      const animatedRooms = [];
 
       const cameraTarget = new THREE.Vector3(0, 0.3, 0);
       const desiredTarget = new THREE.Vector3(0, 0.3, 0);
@@ -512,7 +533,7 @@
       };
 
       const roomTargets = {
-        house: { target: [0, 0.2, 0], offset: [0, 10, 15] },
+        house: { target: [-1.2, 0.35, -1.5], offset: [2.4, 6.6, 10.6] },
         ingestion: { target: [-7.5, 0.3, -3.8], offset: [1.8, 7.5, 9] },
         analytics: { target: [-1.8, 0.3, -3.8], offset: [2, 7.3, 8.7] },
         export: { target: [4.6, 0.3, -3.6], offset: [2, 7.4, 8.6] },
@@ -532,9 +553,11 @@
 
       addLights();
       addHouse();
+      addStageDetails();
       addRooms();
       addPipes();
-      addCharacters();
+      const isakFallback = addCharacters();
+      loadAnimatedGuide(isakFallback);
       addRepositoryTable();
       addSmokePuffs();
 
@@ -591,10 +614,10 @@
       animate();
 
       function addLights() {
-        const ambient = new THREE.HemisphereLight(0xffffff, 0xc9d7e6, 2.4);
+        const ambient = new THREE.HemisphereLight(0xffffff, 0xc9d7e6, 1.35);
         scene.add(ambient);
 
-        const sun = new THREE.DirectionalLight(0xffffff, 3.2);
+        const sun = new THREE.DirectionalLight(0xffffff, 2.5);
         sun.position.set(-8, 16, 10);
         sun.castShadow = true;
         sun.shadow.mapSize.set(2048, 2048);
@@ -613,6 +636,12 @@
         const cool = new THREE.PointLight(0x7bdff2, 0.9, 24);
         cool.position.set(5, 4, -2);
         scene.add(cool);
+
+        const stageLight = new THREE.SpotLight(0xffffff, 1.7, 32, Math.PI / 5, 0.35, 1.4);
+        stageLight.position.set(3, 11, 8);
+        stageLight.target.position.set(-1, 0.2, -1.5);
+        stageLight.castShadow = true;
+        scene.add(stageLight, stageLight.target);
       }
 
       function addHouse() {
@@ -626,10 +655,13 @@
 
         const roof = new THREE.Mesh(
           new THREE.ConeGeometry(9.6, 2.6, 4),
-          new THREE.MeshBasicMaterial({
+          new THREE.MeshPhysicalMaterial({
             color: 0x27384d,
-            opacity: 0.58,
+            opacity: 0.38,
             transparent: true,
+            roughness: 0.2,
+            metalness: 0.24,
+            transmission: 0.18,
             wireframe: true
           })
         );
@@ -639,11 +671,13 @@
         roof.castShadow = true;
         scene.add(roof);
 
-        const wallMaterial = new THREE.MeshStandardMaterial({
+        const wallMaterial = new THREE.MeshPhysicalMaterial({
           color: 0xffffff,
           transparent: true,
-          opacity: 0.56,
-          roughness: 0.6
+          opacity: 0.38,
+          roughness: 0.18,
+          metalness: 0.08,
+          transmission: 0.26
         });
 
         [
@@ -672,6 +706,44 @@
         scene.add(path);
       }
 
+      function addStageDetails() {
+        const grid = new THREE.GridHelper(24, 24, 0x7a8ba1, 0xd4dde8);
+        grid.position.y = -0.205;
+        grid.material.transparent = true;
+        grid.material.opacity = 0.32;
+        scene.add(grid);
+
+        const stageRingMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          emissive: 0xff5b24,
+          emissiveIntensity: 0.12,
+          metalness: 0.35,
+          roughness: 0.28
+        });
+
+        [4.2, 7.1, 10.2].forEach((radius, index) => {
+          const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.012, 8, 180), stageRingMaterial);
+          ring.rotation.x = Math.PI / 2;
+          ring.position.y = -0.16 + index * 0.003;
+          scene.add(ring);
+        });
+
+        const glass = new THREE.Mesh(
+          new THREE.BoxGeometry(17.4, 0.04, 12.2),
+          new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            opacity: 0.08,
+            transparent: true,
+            roughness: 0.05,
+            metalness: 0.04,
+            transmission: 0.16
+          })
+        );
+        glass.position.y = 0.01;
+        glass.receiveShadow = true;
+        scene.add(glass);
+      }
+
       function addRooms() {
         rooms.forEach((room) => {
           const base = new THREE.Mesh(
@@ -687,13 +759,7 @@
           base.receiveShadow = true;
           scene.add(base);
 
-          const machine = new THREE.Mesh(
-            new THREE.BoxGeometry(1.05, 0.9, 0.8),
-            new THREE.MeshStandardMaterial({ color: room.color, roughness: 0.5, metalness: 0.14 })
-          );
-          machine.position.set(room.x - 0.45, 0.5, room.z + 0.05);
-          machine.castShadow = true;
-          machine.userData.roomId = room.id;
+          const machine = makeRoomMachine(room);
           scene.add(machine);
 
           const light = new THREE.PointLight(room.color, 0.75, 7);
@@ -702,6 +768,70 @@
 
           scene.add(makeLabel(room.name, new THREE.Vector3(room.x, 2.3, room.z - 1.15), room.color));
         });
+      }
+
+      function makeRoomMachine(room) {
+        const group = new THREE.Group();
+        group.position.set(room.x - 0.45, 0, room.z + 0.05);
+
+        const coreMaterial = new THREE.MeshStandardMaterial({
+          color: room.color,
+          emissive: room.color,
+          emissiveIntensity: 0.14,
+          roughness: 0.34,
+          metalness: 0.24
+        });
+        const glassMaterial = new THREE.MeshPhysicalMaterial({
+          color: 0xffffff,
+          emissive: room.color,
+          emissiveIntensity: 0.08,
+          opacity: 0.5,
+          transparent: true,
+          roughness: 0.05,
+          metalness: 0.05,
+          transmission: 0.18
+        });
+
+        const core = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.54, 0.94, 24), coreMaterial);
+        core.position.y = 0.56;
+        core.castShadow = true;
+        group.add(core);
+
+        const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 1.08, 24, 1, true), glassMaterial);
+        glass.position.y = 0.6;
+        group.add(glass);
+
+        const halo = new THREE.Mesh(
+          new THREE.TorusGeometry(0.68, 0.035, 12, 40),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: room.color,
+            emissiveIntensity: 0.32,
+            roughness: 0.26
+          })
+        );
+        halo.position.y = 1.18;
+        halo.rotation.x = Math.PI / 2;
+        group.add(halo);
+
+        const console = new THREE.Mesh(
+          new THREE.BoxGeometry(0.62, 0.16, 0.34),
+          new THREE.MeshStandardMaterial({
+            color: 0x27384d,
+            emissive: room.color,
+            emissiveIntensity: 0.08,
+            roughness: 0.42,
+            metalness: 0.18
+          })
+        );
+        console.position.set(0.54, 0.44, 0.34);
+        console.rotation.y = -0.32;
+        console.castShadow = true;
+        group.add(console);
+
+        group.userData = { roomId: room.id, halo };
+        animatedRooms.push(group);
+        return group;
       }
 
       function addPipes() {
@@ -825,7 +955,7 @@
       }
 
       function addCharacters() {
-        makePerson({
+        const isak = makePerson({
           name: "Isak",
           role: "Data platform guide",
           position: [-6.35, 0, -2.6],
@@ -860,6 +990,8 @@
           dialogue:
             "I am at the blueprint table. modern-data-platform-example explains the operating model, and vipps-isakrs shows how this world is built and automated. The pipe language should teach design choices, not only path direction."
         });
+
+        return isak;
       }
 
       function makePerson({ name, role, position, colors, dialogue: text }) {
@@ -899,6 +1031,61 @@
         group.add(makeLabel(name, new THREE.Vector3(0, 1.9, 0), colors[0], 0.72));
         clickable.push(group);
         scene.add(group);
+        return group;
+      }
+
+      function loadAnimatedGuide(fallback) {
+        const loader = new GLTFLoader();
+        loader.load(
+          "https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb",
+          (gltf) => {
+            const guide = gltf.scene;
+            guide.name = "Animated Isak guide";
+            guide.position.copy(fallback.position);
+            guide.rotation.y = -0.55;
+            guide.scale.setScalar(0.42);
+            guide.userData = { ...fallback.userData };
+
+            guide.traverse((child) => {
+              if (!child.isMesh) {
+                return;
+              }
+              child.castShadow = true;
+              child.receiveShadow = true;
+              if (child.material) {
+                child.material.roughness = 0.38;
+                child.material.metalness = 0.18;
+                child.material.emissive = new THREE.Color(0xff5b24);
+                child.material.emissiveIntensity = 0.035;
+              }
+            });
+
+            const label = makeLabel("Isak", new THREE.Vector3(0, 2.25, 0), 0xff5b24, 0.72);
+            guide.add(label);
+
+            const fallbackIndex = clickable.indexOf(fallback);
+            if (fallbackIndex >= 0) {
+              clickable.splice(fallbackIndex, 1);
+            }
+            scene.remove(fallback);
+            clickable.push(guide);
+            scene.add(guide);
+
+            const mixer = new THREE.AnimationMixer(guide);
+            const clip =
+              THREE.AnimationClip.findByName(gltf.animations, "Dance") ??
+              THREE.AnimationClip.findByName(gltf.animations, "Idle") ??
+              gltf.animations[0];
+            if (clip) {
+              mixer.clipAction(clip).setEffectiveTimeScale(0.72).play();
+              mixers.push(mixer);
+            }
+          },
+          undefined,
+          () => {
+            // Keep the procedural guide if the external model is unavailable.
+          }
+        );
       }
 
       function makeArm(color, x) {
@@ -1048,6 +1235,8 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+        bloomPass.setSize(window.innerWidth, window.innerHeight);
       }
 
       function updateCamera(delta) {
@@ -1075,6 +1264,15 @@
         const elapsed = clock.elapsedTime;
 
         updateCamera(delta);
+        mixers.forEach((mixer) => mixer.update(delta));
+
+        animatedRooms.forEach((room, index) => {
+          const halo = room.userData.halo;
+          if (halo) {
+            halo.rotation.z += delta * (0.7 + index * 0.08);
+            halo.scale.setScalar(1 + Math.sin(elapsed * 1.8 + index) * 0.04);
+          }
+        });
 
         packets.forEach((packet, index) => {
           const userData = packet.userData;
@@ -1097,7 +1295,7 @@
           person.position.y = Math.sin(elapsed * 1.4 + index) * 0.025;
         });
 
-        renderer.render(scene, camera);
+        composer.render();
       }
     </script>
   </body>
