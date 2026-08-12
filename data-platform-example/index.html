@@ -294,6 +294,30 @@
         padding: 8px 10px;
       }
 
+      .asset-credits {
+        backdrop-filter: blur(18px);
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        bottom: 18px;
+        box-shadow: 0 14px 40px rgba(24, 34, 45, 0.12);
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 700;
+        line-height: 1.35;
+        max-width: min(330px, calc(100vw - 32px));
+        padding: 9px 11px;
+        pointer-events: auto;
+        position: fixed;
+        right: 16px;
+        z-index: 9;
+      }
+
+      .asset-credits a {
+        color: var(--ink);
+        text-decoration: none;
+      }
+
       .loading {
         align-items: center;
         background: #eef2f6;
@@ -365,6 +389,10 @@
           font-size: 0.78rem;
           padding: 9px 8px;
         }
+
+        .asset-credits {
+          display: none;
+        }
       }
     </style>
   </head>
@@ -423,6 +451,13 @@
       <p id="speaker-copy"></p>
     </section>
 
+    <aside class="asset-credits" aria-label="Scene credits">
+      Open assets:
+      <a href="https://threejs.org/examples/#webgl_animation_keyframes">Littlest Tokyo</a>
+      and
+      <a href="https://threejs.org/examples/#webgl_animation_skinning_morph">Robot Expressive</a>.
+    </aside>
+
     <div class="loading" id="loading">Loading the house</div>
 
     <noscript>
@@ -443,6 +478,7 @@
     <script type="module">
       import * as THREE from "three";
       import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+      import { DRACOLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/DRACOLoader.js";
       import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js";
       import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/RenderPass.js";
       import { UnrealBloomPass } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js";
@@ -457,6 +493,11 @@
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
       const closeDialogue = document.querySelector("#close-dialogue");
+
+      const assetUrls = {
+        keyframeHouse: "https://threejs.org/examples/models/gltf/LittlestTokyo.glb",
+        animatedGuide: "https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb"
+      };
 
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0xe9eef4);
@@ -488,6 +529,11 @@
       );
       composer.addPass(bloomPass);
       composer.addPass(new OutputPass());
+
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/gltf/");
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.setDRACOLoader(dracoLoader);
 
       const clock = new THREE.Clock();
       const raycaster = new THREE.Raycaster();
@@ -554,6 +600,7 @@
       addLights();
       addHouse();
       addStageDetails();
+      loadKeyframeHouse();
       addRooms();
       addPipes();
       const isakFallback = addCharacters();
@@ -742,6 +789,77 @@
         glass.position.y = 0.01;
         glass.receiveShadow = true;
         scene.add(glass);
+      }
+
+      function loadKeyframeHouse() {
+        gltfLoader.load(
+          assetUrls.keyframeHouse,
+          (gltf) => {
+            const model = gltf.scene;
+            model.name = "Littlest Tokyo data platform house";
+            model.position.set(-1.6, -0.12, 0.85);
+            model.rotation.y = -0.44;
+            model.scale.setScalar(0.0068);
+
+            model.traverse((child) => {
+              if (!child.isMesh) {
+                return;
+              }
+              child.castShadow = true;
+              child.receiveShadow = true;
+              if (child.material) {
+                child.material.roughness = Math.min(child.material.roughness ?? 0.5, 0.46);
+                child.material.metalness = Math.max(child.material.metalness ?? 0, 0.05);
+              }
+            });
+
+            scene.add(model);
+
+            const mixer = new THREE.AnimationMixer(model);
+            gltf.animations.forEach((clip) => {
+              mixer.clipAction(clip).setEffectiveTimeScale(0.72).play();
+            });
+            mixers.push(mixer);
+          },
+          undefined,
+          addFallbackKeyframeDistrict
+        );
+      }
+
+      function addFallbackKeyframeDistrict() {
+        const district = new THREE.Group();
+        district.position.set(-1.6, 0, 0.9);
+        const colors = [0xff5b24, 0x2c7be5, 0x2f9e73, 0xf2bd2a, 0x7c5cff];
+        colors.forEach((color, index) => {
+          const height = 0.8 + index * 0.16;
+          const tower = new THREE.Mesh(
+            new THREE.BoxGeometry(0.5, height, 0.5),
+            new THREE.MeshStandardMaterial({
+              color,
+              emissive: color,
+              emissiveIntensity: 0.08,
+              roughness: 0.36,
+              metalness: 0.18
+            })
+          );
+          tower.position.set((index - 2) * 0.62, height / 2, Math.sin(index) * 0.5);
+          tower.castShadow = true;
+          district.add(tower);
+        });
+
+        const rail = new THREE.Mesh(
+          new THREE.TorusGeometry(1.9, 0.025, 8, 80),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: 0xff5b24,
+            emissiveIntensity: 0.24,
+            roughness: 0.22
+          })
+        );
+        rail.rotation.x = Math.PI / 2;
+        rail.position.y = 0.08;
+        district.add(rail);
+        scene.add(district);
       }
 
       function addRooms() {
@@ -1035,9 +1153,8 @@
       }
 
       function loadAnimatedGuide(fallback) {
-        const loader = new GLTFLoader();
-        loader.load(
-          "https://threejs.org/examples/models/gltf/RobotExpressive/RobotExpressive.glb",
+        gltfLoader.load(
+          assetUrls.animatedGuide,
           (gltf) => {
             const guide = gltf.scene;
             guide.name = "Animated Isak guide";

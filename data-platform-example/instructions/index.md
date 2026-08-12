@@ -110,6 +110,23 @@ conversation, shared with others, or tracked by the workday automation. A person
 can fill it in directly, and an agent can also use it as the durable public
 record when a conversation produces useful public-safe feedback.
 
+## Open Asset Strategy
+
+The experience should reuse strong existing Three.js examples, open three-dimensional
+assets, and proven animation patterns wherever that gets the house closer to a
+polished game faster. Do not reinvent character animation, keyframe animation,
+lighting, loaders, or staged environment structure when a permissive example
+already shows the right shape.
+
+Reuse must still be tidy:
+
+- Keep the data platform story, rooms, pipes, and dialogue specific to this
+  experience.
+- Use assets only when their license is compatible with public sharing.
+- Give visible credit when attribution is required or useful.
+- Keep a procedural fallback for important external assets so the page does not
+  break if a model cannot load.
+
 ## Development Backlog
 
 This board is the lightweight product tracker for the house. It should stay
@@ -224,6 +241,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Cinematic scene foundation</strong>
       <span>The world now uses postprocessing, stronger lighting, a glass-stage house shell, richer machines, and an animated Isak guide model with fallback.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Borrowed open animation assets</strong>
+      <span>The world now uses the Three.js keyframes house asset and the morph/skinning guide asset as credited foundations instead of hand-rolling every visual.</span>
     </article>
     <article class="data-platform-card">
       <strong>Pipe modes made visible</strong>
