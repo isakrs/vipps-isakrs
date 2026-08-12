@@ -109,6 +109,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - `/data-platform-example/` is the entrance to the Three.js world.
 - `/data-platform-example/instructions/` is the planning brief, development
   backlog, and instruction source.
+- The world now includes a visible five-step payment journey tracker and
+  explicit product-team source and consumer endpoints so the send-and-receive
+  loop reads more clearly on first view.
 
 This file should serve two purposes:
 
@@ -299,6 +302,18 @@ pipe junctions, or room signs that a visitor can move toward, stand beside, or
 click to learn more. The current service directory is the first pass: it names
 every offering and connects the catalog back to the house with its own pipe.
 
+The payment journey should also stay readable as a sequence, not only as a map.
+A first-time visitor should quickly understand this order:
+
+1. A product team sends a conceptual payment signal into the platform.
+2. Ingestion lands the signal in a storage account such as Azure Storage
+   Account or S3.
+3. Checkpoints, quality gates, Spark-style processing, and dbt-style modeling
+   turn the signal into trusted meaning.
+4. Declared exports leave only through an explicit governed path.
+5. Product teams receive trusted outputs back through analytics projects, data
+   products, or other approved consumers.
+
 The most important next focus is not "all services equally." The brief should
 guide future runs toward the services that matter most for the story:
 
@@ -352,11 +367,11 @@ event version more convincing.
     </article>
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
-      <span>Make a tap or send payment event readable from source to data product.</span>
+      <span>Deepen the now-visible sequence so the scene itself teaches each handoff, not only the side panel.</span>
     </article>
     <article class="data-platform-card">
       <strong>Show the product-team loop</strong>
-      <span>Make it visually clear that product teams feed the platform and later receive governed datasets, exports, and data products back.</span>
+      <span>Build on the new source and consumer terminals so the send-and-receive loop stays obvious from multiple camera angles.</span>
     </article>
     <article class="data-platform-card">
       <strong>Turn service offerings into doors</strong>
@@ -381,6 +396,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Animate storage to database</strong>
       <span>Show data leaving storage, being checked, and becoming queryable in a way that feels spatially connected rather than diagrammatic.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Make journey steps drive the camera</strong>
+      <span>Turn the visible payment journey tracker into a stronger guided tour with scene highlights, room focus, or mode-specific overlays.</span>
     </article>
     <article class="data-platform-card">
       <strong>Broaden knowledge-backed dialogue</strong>
@@ -485,6 +504,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Configuration repository service directory</strong>
       <span>The world now names every documented configuration repository offering on a visible service board and Services focus list.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Visible journey tracker and loop terminals</strong>
+      <span>The world now shows a five-step payment journey in the panel and explicit product-team source and consumer endpoints around the house.</span>
     </article>
   </section>
 </div>

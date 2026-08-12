@@ -21,6 +21,8 @@ or why the experience exists.
 - The payment event is shown conceptually as it moves from source event to
   ingestion, storage account, Databricks and Spark-style processing, dbt-style
   modeling, analytics project use, declared data export, and data product use.
+- Product teams should be visible at both ends of the story: they send the
+  conceptual payment signal in and later receive governed outputs back.
 - The scene should make flow mode visible, not only direction: streaming,
   incremental checkpoints, quality gates, declared exports, and serving flows
   should be readable at a glance.

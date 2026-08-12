@@ -195,6 +195,77 @@
         margin: 0;
       }
 
+      .journey {
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .journey h3 {
+        font-size: 0.76rem;
+        letter-spacing: 0.05em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .journey-grid {
+        display: grid;
+        gap: 8px;
+      }
+
+      .journey-step {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        color: var(--ink);
+        cursor: pointer;
+        display: grid;
+        gap: 2px;
+        grid-template-columns: 26px minmax(0, 1fr);
+        padding: 10px 12px;
+        text-align: left;
+        width: 100%;
+      }
+
+      .journey-step:hover,
+      .journey-step:focus-visible {
+        outline: 2px solid rgba(255, 91, 36, 0.35);
+        outline-offset: 2px;
+      }
+
+      .journey-step strong {
+        font-size: 0.82rem;
+        line-height: 1.2;
+      }
+
+      .journey-step span {
+        color: var(--muted);
+        font-size: 0.72rem;
+        line-height: 1.35;
+      }
+
+      .journey-step.is-active {
+        background: rgba(255, 91, 36, 0.1);
+        border-color: rgba(255, 91, 36, 0.34);
+      }
+
+      .journey-badge {
+        align-items: center;
+        background: var(--ink);
+        border-radius: 999px;
+        color: #ffffff;
+        display: inline-flex;
+        font-size: 0.72rem;
+        font-weight: 800;
+        grid-row: span 2;
+        height: 26px;
+        justify-content: center;
+        width: 26px;
+      }
+
       .focus-grid {
         display: grid;
         gap: 8px;
@@ -536,6 +607,36 @@
         A tap or send payment event enters ingestion, lands safely, becomes
         modeled data, and leaves as products, exports, or decisions.
       </p>
+      <div class="journey" aria-label="Payment journey">
+        <h3>Signal journey</h3>
+        <div class="journey-grid" id="journey-steps">
+          <button class="journey-step" type="button" data-journey-room="ingestion" data-journey-step="source">
+            <span class="journey-badge">1</span>
+            <strong>Product team sends a payment signal</strong>
+            <span>Conceptual tap or send event enters the house through the orange intake.</span>
+          </button>
+          <button class="journey-step" type="button" data-journey-room="ingestion" data-journey-step="storage">
+            <span class="journey-badge">2</span>
+            <strong>Ingestion lands in storage</strong>
+            <span>Streaming capture lands in a storage account such as Azure Storage Account or S3.</span>
+          </button>
+          <button class="journey-step" type="button" data-journey-room="analytics" data-journey-step="modeling">
+            <span class="journey-badge">3</span>
+            <strong>Quality gates and modeling shape trust</strong>
+            <span>Checkpointed Spark and dbt-style work turn raw signal into reusable meaning.</span>
+          </button>
+          <button class="journey-step" type="button" data-journey-room="export" data-journey-step="export">
+            <span class="journey-badge">4</span>
+            <strong>Exports leave by declaration</strong>
+            <span>Approved outbound flow has an owner, destination, and governed trigger path.</span>
+          </button>
+          <button class="journey-step" type="button" data-journey-room="product" data-journey-step="product">
+            <span class="journey-badge">5</span>
+            <strong>Product teams receive trusted outputs</strong>
+            <span>Analytics projects, data products, and consumers get safe outputs back from the platform.</span>
+          </button>
+        </div>
+      </div>
       <div class="focus-grid" aria-label="Focus rooms">
         <button class="focus-button" type="button" data-focus="ingestion">Ingestion</button>
         <button class="focus-button" type="button" data-focus="analytics">Analytics</button>
@@ -655,6 +756,7 @@
       const repositoryLinks = document.querySelector("#repository-links");
       const assetLinks = document.querySelector("#asset-links");
       const offeringLinks = document.querySelector("#offering-links");
+      const journeySteps = [...document.querySelectorAll("[data-journey-step]")];
       const dialogue = document.querySelector("#dialogue");
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
@@ -724,15 +826,15 @@
       const roomDetails = {
         house: {
           title: "Payment Signal Hall",
-          copy: "The borrowed keyframes house is the data platform house. A payment event enters through the orange intake pipe, moves between house ports, and leaves as trusted products or exports."
+          copy: "The borrowed keyframes house is the data platform house. A product team sends a conceptual payment signal into the orange intake, and trusted outputs later leave toward product teams through the teal and purple paths."
         },
         ingestion: {
           title: "Payment Ingestion Room",
-          copy: "The event arrives as a live stream, lands in a storage account such as Azure Storage Account or S3, and moves forward through incremental checkpoints."
+          copy: "The event arrives as a live stream from a product team, lands in a storage account such as Azure Storage Account or S3, and moves forward through incremental checkpoints."
         },
         analytics: {
           title: "dbt Modeling Room",
-          copy: "Databricks, Spark, and dbt-style transformations apply quality gates before a trusted modeled signal becomes reusable analytical meaning."
+          copy: "Databricks, Spark, and dbt-style transformations apply quality gates before a trusted modeled signal becomes reusable analytical meaning for analytics projects and other governed consumers."
         },
         export: {
           title: "Data Export Room",
@@ -754,6 +856,17 @@
           title: "Configuration Repository Services",
           copy: "The configuration repository exposes the platform offerings people can request or declare: consumer access, exports, data products, capture, publishing, and custom integration services."
         }
+      };
+
+      const journeyHighlightsByFocus = {
+        house: ["source", "storage", "modeling", "export", "product"],
+        ingestion: ["source", "storage"],
+        analytics: ["modeling"],
+        export: ["export"],
+        product: ["product"],
+        github: [],
+        assets: [],
+        services: ["source", "product"]
       };
 
       const houseAnchor = {
@@ -884,6 +997,7 @@
       addStageDetails();
       loadKeyframeHouse();
       addRooms();
+      addProductTeamLoop();
       addPipes();
       addHousePipePorts();
       const isakFallback = addCharacters();
@@ -896,6 +1010,10 @@
 
       document.querySelectorAll("[data-focus]").forEach((button) => {
         button.addEventListener("click", () => focusRoom(button.dataset.focus));
+      });
+
+      journeySteps.forEach((button) => {
+        button.addEventListener("click", () => focusRoom(button.dataset.journeyRoom));
       });
 
       document.querySelectorAll("[data-orbit]").forEach((button) => {
@@ -1257,6 +1375,83 @@
         makePipe("GitHub Actions", [-5.35, 0.75, 2.6], ports.github, 0xf2bd2a, "reference", 3);
         makePipe("Open object kits", [-4.1, 0.78, 3.55], ports.assets, 0x37b6c4, "reference", 3);
         makePipe("Service catalog", ports.services, [5.05, 0.82, 0.28], 0xff5b24, "reference", 4);
+      }
+
+      function addProductTeamLoop() {
+        addTeamTerminal({
+          title: "product team source",
+          subtitle: "sends payment signal",
+          position: [-10.45, 0, -2.62],
+          color: 0xff5b24,
+          rotationY: 0.28
+        });
+
+        addTeamTerminal({
+          title: "product team consumer",
+          subtitle: "receives governed outputs",
+          position: [9.35, 0, 2.74],
+          color: 0x1f7a8c,
+          rotationY: -0.42
+        });
+      }
+
+      function addTeamTerminal({ title, subtitle, position, color, rotationY }) {
+        const group = new THREE.Group();
+        group.position.set(...position);
+        group.rotation.y = rotationY;
+
+        const base = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.6, 0.72, 0.16, 24),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.42,
+            metalness: 0.08
+          })
+        );
+        base.position.y = 0.08;
+        base.castShadow = true;
+        base.receiveShadow = true;
+        group.add(base);
+
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(0.48, 0.07, 18, 48),
+          new THREE.MeshStandardMaterial({
+            color,
+            emissive: color,
+            emissiveIntensity: 0.24,
+            roughness: 0.28
+          })
+        );
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.18;
+        group.add(ring);
+
+        const panel = new THREE.Mesh(
+          new THREE.BoxGeometry(0.92, 1.02, 0.12),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.32,
+            metalness: 0.08
+          })
+        );
+        panel.position.set(0, 0.72, 0);
+        panel.castShadow = true;
+        group.add(panel);
+
+        const glow = new THREE.Mesh(
+          new THREE.PlaneGeometry(0.62, 0.44),
+          new THREE.MeshBasicMaterial({
+            color,
+            transparent: true,
+            opacity: 0.9
+          })
+        );
+        glow.position.set(0, 0.8, 0.07);
+        group.add(glow);
+
+        scene.add(group);
+        scene.add(makeLabel(title, new THREE.Vector3(position[0], 1.9, position[2]), color, 0.56));
+        scene.add(makeLabel(subtitle, new THREE.Vector3(position[0], 1.34, position[2]), color, 0.42));
       }
 
       function makePipe(name, from, to, color, type, count) {
@@ -1829,6 +2024,14 @@
         assetLinks.hidden = id !== "assets";
         offeringLinks.hidden = id !== "services";
         panel.classList.toggle("is-service-focus", id === "services");
+        updateJourneyHighlights(id);
+      }
+
+      function updateJourneyHighlights(id) {
+        const activeSteps = new Set(journeyHighlightsByFocus[id] ?? []);
+        journeySteps.forEach((step) => {
+          step.classList.toggle("is-active", activeSteps.has(step.dataset.journeyStep));
+        });
       }
 
       function rotateView(direction) {
@@ -2069,6 +2272,8 @@
 
         composer.render();
       }
+
+      updateJourneyHighlights("house");
     </script>
   </body>
 </html>
