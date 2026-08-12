@@ -161,6 +161,8 @@ Reuse is still welcome, but only when it supports the specific service story:
 
 - Reuse movement patterns, loaders, postprocessing, camera techniques, and
   house-scale interaction patterns when they help the game feel better.
+- Aim for the feeling of an elegant technical reveal when that helps the
+  platform become understandable from the inside, not only from the outside.
 - Prefer service-shaped props and icons over random decorative shelves, crates,
   or library fillers.
 - Remove or avoid elements that make the world feel crowded without teaching
@@ -208,6 +210,12 @@ they directly support a real platform service, room, or character.
 The visual language should center on recognizable data platform services and
 their nearest public-safe metaphors. When possible, a visitor should understand
 what a room is about before reading the label.
+
+The visual tone can borrow from polished product-engineering films where the
+camera moves around an object with precision and craft and sometimes reveals the
+inside. The same idea works here: the visitor should be able to move around the
+data platform with that same feeling, inspect layers when useful, and
+understand how the parts fit together.
 
 Preferred icon and prop direction:
 
@@ -609,6 +617,9 @@ Architecture direction:
 - The eventual world can become globe-like or map-like, almost like Google
   Earth for Vipps technology, where visitors can move around and inspect how
   technologies and service areas are stitched together across the landscape.
+- At the same time, the visitor should sometimes feel as if the map has opened
+  up into an inspectable engineering view, where the inside of the system is
+  visible and navigable when useful.
 - The world should eventually let a visitor look across the map and spot things
   like Azure Event Hubs in one area, storage accounts in another, Spark lifting
   and shaping data elsewhere, and named services such as Dino and Wraptor as
@@ -652,6 +663,10 @@ Over time, this should feel less like one isolated scene and more like an
 inspectable technology world model: part map, part globe, part technical
 landscape.
 
+It should also support moments where the world opens into an inside view, almost
+like a polished product advertisement that reveals how a device is built and
+lets the camera travel through the internal layers.
+
 The visitor should be able to start with a signal as it emerges, such as:
 
 - A button click in an application.
@@ -675,6 +690,10 @@ Possible direction:
 - The wider world can eventually be explored almost like Google Earth for Vipps
   technology, where cities, houses, machines, or zones represent the major
   technologies and service families.
+- Some scenes can feel like cross sections or opened-up technical views where
+  the visitor moves through the inside of the stack, but the broader goal is the
+  same crafted feeling while moving around, not a requirement that everything
+  must literally explode apart.
 - The stitching between places matters as much as the places themselves: the
   visitor should be able to see how Event Hubs, storage accounts, Spark,
   Databricks, dbt, Dino, Wraptor, Dataverse, Datafront, and other services
@@ -886,6 +905,10 @@ living map of Vipps technology, with the same satisfaction as inspecting a
 beautifully exposed system drawing or a race-car-style computer-aided design
 model where every part has a place and a relationship to the rest.
 
+Another equally important metaphor is the polished product-engineering reveal:
+internals become understandable and the camera can travel through the structure
+without losing the feeling of craft.
+
 The house should:
 
 - Let visitors follow one signal through the building.
@@ -894,6 +917,9 @@ The house should:
 - Feel like one named place in a larger tech world, not an isolated demo scene.
 - Hint at the wider map beyond the house, so visitors can sense that other
   technology districts exist even before they are fully built.
+- Allow cutaway or opened-up moments where visitors can inspect the inside of
+  the platform, while keeping that same polished crafted feeling even in normal
+  movement around the world.
 - Let visitors enter rooms to understand a stage in the process.
 - Let visitors move around like a small game, including movement in depth rather
   than only sliding across a flat camera plane.
@@ -927,11 +953,13 @@ The house should still be built in small steps. The best path is:
 2. Define how the Data Platform House fits into the larger Vipps tech world.
 3. Sketch the larger map language: districts, landmarks, globe or map movement,
    and visible stitched-together technologies.
-4. Choose the first signal journey.
-5. Identify the first real people, artifacts, and flow modes.
-6. Build the first interactive house prototype.
-7. Add event-mode visuals and role-play hooks.
-8. Let automation help refine the explainer, storyboard, and house.
+4. Sketch the inside-view language as well: cutaways, reveals, and camera
+   movement through internal technical structure.
+5. Choose the first signal journey.
+6. Identify the first real people, artifacts, and flow modes.
+7. Build the first interactive house prototype.
+8. Add event-mode visuals and role-play hooks.
+9. Let automation help refine the explainer, storyboard, and house.
 
 First prototype scope:
 
@@ -957,6 +985,8 @@ First prototype scope:
     world that can grow later.
 12. At least one visible hint on the horizon or in the scene language that this
     can expand into a globe-like or map-like technology world.
+13. At least one cutaway, reveal, or inside-the-machine moment that shows how a
+    technical layer fits into the larger system.
 
 ## Time And Change Over Time
 
