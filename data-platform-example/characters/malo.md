@@ -17,8 +17,10 @@ appear.
 - The house should show architecture, not only a happy data path.
 - The first payment event journey should make ownership, contracts, quality
   gates, lineage, privacy, and safe use visible.
-- `modern-data-platform-example` is the first public operating-model blueprint.
-- `vipps-isakrs` is the public implementation blueprint for the site itself.
+- `https://github.com/isakrs/modern-data-platform-example` is the first public
+  operating-model blueprint.
+- `https://github.com/isakrs/vipps-isakrs` is the public implementation
+  blueprint for the site itself.
 
 ## Good Answers
 

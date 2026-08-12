@@ -288,6 +288,45 @@
         justify-content: space-between;
       }
 
+      .dialogue-list {
+        color: var(--ink);
+        font-size: 0.84rem;
+        line-height: 1.45;
+        margin: 12px 0 0;
+        padding-left: 18px;
+      }
+
+      .dialogue-list[hidden] {
+        display: none;
+      }
+
+      .dialogue-list li + li {
+        margin-top: 6px;
+      }
+
+      .dialogue-links {
+        border-top: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .dialogue-links[hidden] {
+        display: none;
+      }
+
+      .dialogue-links a {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 800;
+        padding: 7px 10px;
+        text-decoration: none;
+      }
+
       .close-button {
         background: rgba(24, 34, 45, 0.08);
         color: var(--ink);
@@ -460,6 +499,8 @@
         <button class="close-button" id="close-dialogue" type="button" aria-label="Close dialogue">Close</button>
       </h2>
       <p id="speaker-copy"></p>
+      <ul class="dialogue-list" id="speaker-points" hidden></ul>
+      <div class="dialogue-links" id="speaker-links" hidden aria-label="Character source links"></div>
     </section>
 
     <aside class="asset-credits" aria-label="Scene credits">
@@ -504,6 +545,8 @@
       const dialogue = document.querySelector("#dialogue");
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
+      const speakerPoints = document.querySelector("#speaker-points");
+      const speakerLinks = document.querySelector("#speaker-links");
       const closeDialogue = document.querySelector("#close-dialogue");
 
       const assetUrls = {
@@ -562,7 +605,6 @@
       const desiredTarget = new THREE.Vector3(0, 0.3, 0);
       const desiredOffset = new THREE.Vector3(0, 10, 15);
       const cameraOffset = desiredOffset.clone();
-
       const roomDetails = {
         house: {
           title: "Payment Signal Hall",
@@ -638,6 +680,13 @@
       ];
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
+      const characterKnowledge = new Map();
+      const repoLinksByName = {
+        "modern-data-platform-example": "https://github.com/isakrs/modern-data-platform-example",
+        "vipps-isakrs": "https://github.com/isakrs/vipps-isakrs",
+        "opcua-influxdb-grafana-dummy": "https://github.com/isakrs/opcua-influxdb-grafana-dummy",
+        "node-opcua-logger": "https://github.com/isakrs/node-opcua-logger"
+      };
 
       addLights();
       addFoundation();
@@ -651,6 +700,7 @@
       addRepositoryTable();
       addAssetLibraryWorkbench();
       addSmokePuffs();
+      loadCharacterKnowledge();
 
       document.querySelectorAll("[data-focus]").forEach((button) => {
         button.addEventListener("click", () => focusRoom(button.dataset.focus));
@@ -1140,6 +1190,7 @@
       function addCharacters() {
         const isak = makePerson({
           name: "Isak",
+          knowledgeSlug: "isak",
           role: "Data platform guide",
           position: [-4.65, 0, -2.25],
           colors: [0xff5b24, 0x243447, 0xf1c7a8],
@@ -1149,6 +1200,7 @@
 
         makePerson({
           name: "Param",
+          knowledgeSlug: "param",
           role: "Analytics builder",
           position: [-0.8, 0, -2.15],
           colors: [0x2f9e73, 0x27384d, 0xd8a17d],
@@ -1158,6 +1210,7 @@
 
         makePerson({
           name: "Kien",
+          knowledgeSlug: "kien",
           role: "Model collaborator",
           position: [0.35, 0, -2.95],
           colors: [0x2c7be5, 0x1f2a44, 0xe0b08f],
@@ -1167,6 +1220,7 @@
 
         makePerson({
           name: "Malo",
+          knowledgeSlug: "malo",
           role: "Architect",
           position: [-5.25, 0, 4.15],
           colors: [0xf2bd2a, 0x27384d, 0xc98f6f],
@@ -1177,10 +1231,10 @@
         return isak;
       }
 
-      function makePerson({ name, role, position, colors, dialogue: text }) {
+      function makePerson({ name, knowledgeSlug, role, position, colors, dialogue: text }) {
         const group = new THREE.Group();
         group.position.set(...position);
-        group.userData = { name, role, dialogue: text };
+        group.userData = { name, knowledgeSlug, role, dialogue: text };
 
         const body = new THREE.Mesh(
           new THREE.CapsuleGeometry(0.28, 0.68, 8, 16),
@@ -1465,6 +1519,146 @@
         assetLinks.hidden = id !== "assets";
       }
 
+      async function loadCharacterKnowledge() {
+        const slugs = ["isak", "param", "kien", "malo"];
+        await Promise.all(
+          slugs.map(async (slug) => {
+            try {
+              const response = await fetch(`./characters/${slug}.md`);
+              if (!response.ok) {
+                return;
+              }
+              const markdown = await response.text();
+              characterKnowledge.set(slug, parseCharacterKnowledge(markdown));
+            } catch (error) {
+              console.warn(`Could not load character knowledge for ${slug}.`, error);
+            }
+          })
+        );
+      }
+
+      function parseCharacterKnowledge(markdown) {
+        const sections = {};
+        let currentSection = "";
+
+        markdown.split("\n").forEach((line) => {
+          const headingMatch = line.match(/^##\s+(.*)$/);
+          if (headingMatch) {
+            currentSection = headingMatch[1].trim();
+            sections[currentSection] = [];
+            return;
+          }
+
+          if (!currentSection) {
+            return;
+          }
+
+          sections[currentSection].push(line);
+        });
+
+        const role = extractParagraph(sections.Role);
+        const knowledgePoints = extractBullets(sections["Public-Safe Knowledge"]);
+        const guidance = extractBullets(sections["Good Answers"]);
+        const repositories = extractRepositoryLinks(sections["Repository Blueprints"] ?? sections["Public-Safe Knowledge"]);
+
+        return {
+          role,
+          knowledgePoints,
+          guidance,
+          repositories
+        };
+      }
+
+      function extractParagraph(lines = []) {
+        return lines
+          .map((line) => line.trim())
+          .filter(Boolean)
+          .join(" ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function extractBullets(lines = []) {
+        return lines
+          .map((line) => line.match(/^- (.*)$/)?.[1]?.trim())
+          .filter(Boolean)
+          .map((line) => line.replace(/`/g, ""));
+      }
+
+      function extractRepositoryLinks(lines = []) {
+        return extractBullets(lines)
+          .map((bullet) => {
+            const urlMatch = bullet.match(/https?:\/\/\S+/);
+            if (urlMatch) {
+              const url = urlMatch[0];
+              const label = bullet.replace(url, "").replace(/explains|contains|is the|is the public/g, "").trim() || url;
+              return {
+                label: label.replace(/\s+/g, " "),
+                url
+              };
+            }
+
+            const repoNameMatch = bullet.match(/([A-Za-z0-9-]+\/)?([a-z0-9-]+-[a-z0-9-]+(?:-[a-z0-9-]+)*)/);
+            const repoName = repoNameMatch?.[2];
+            if (!repoName || !repoLinksByName[repoName]) {
+              return null;
+            }
+
+            return {
+              label: repoName,
+              url: repoLinksByName[repoName]
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function renderDialogueLinks(links) {
+        speakerLinks.innerHTML = "";
+        if (!links.length) {
+          speakerLinks.hidden = true;
+          return;
+        }
+
+        const uniqueLinks = new Map();
+        links.forEach((link) => {
+          if (!uniqueLinks.has(link.url)) {
+            uniqueLinks.set(link.url, link.label);
+          }
+        });
+
+        uniqueLinks.forEach((label, url) => {
+          const anchor = document.createElement("a");
+          anchor.href = url;
+          anchor.textContent = label;
+          speakerLinks.append(anchor);
+        });
+
+        speakerLinks.hidden = false;
+      }
+
+      function showCharacterDialogue(character) {
+        const knowledge = characterKnowledge.get(character.knowledgeSlug);
+        const role = knowledge?.role || character.role;
+        speakerName.textContent = `${character.name} - ${role}`;
+        speakerCopy.textContent = character.dialogue;
+
+        const points = [...(knowledge?.knowledgePoints ?? []).slice(0, 2), ...(knowledge?.guidance ?? []).slice(0, 1)];
+        speakerPoints.innerHTML = "";
+        if (points.length) {
+          points.forEach((point) => {
+            const item = document.createElement("li");
+            item.textContent = point;
+            speakerPoints.append(item);
+          });
+          speakerPoints.hidden = false;
+        } else {
+          speakerPoints.hidden = true;
+        }
+
+        renderDialogueLinks(knowledge?.repositories ?? []);
+        dialogue.hidden = false;
+      }
+
       function pickCharacter(event) {
         pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
         pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -1480,9 +1674,7 @@
         if (!selected.userData.dialogue) {
           return;
         }
-        speakerName.textContent = `${selected.userData.name} - ${selected.userData.role}`;
-        speakerCopy.textContent = selected.userData.dialogue;
-        dialogue.hidden = false;
+        showCharacterDialogue(selected.userData);
       }
 
       function resize() {

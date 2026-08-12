@@ -231,14 +231,14 @@ event version more convincing.
       <strong>Explain payment event journey</strong>
       <span>Make a tap or send payment event readable from source to data product.</span>
     </article>
-    <article class="data-platform-card">
-      <strong>Connect character knowledge</strong>
-      <span>Use the Markdown knowledge files as source material for richer dialogue.</span>
-    </article>
   </section>
 
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
+    <article class="data-platform-card">
+      <strong>Broaden knowledge-backed dialogue</strong>
+      <span>Let characters answer room-specific prompts, safe repository questions, and pipe-mode questions from their Markdown source files.</span>
+    </article>
     <article class="data-platform-card">
       <strong>Deepen pipe language</strong>
       <span>Build on the visible legend, checkpoints, and quality gate with batch, backfill, and manual correction scenes.</span>
@@ -332,6 +332,10 @@ event version more convincing.
       <span>The borrowed keyframes house now acts as the actual data platform house, with pipes routed into and out of house ports.</span>
     </article>
     <article class="data-platform-card">
+      <strong>Orbit view controls</strong>
+      <span>Visitors can now turn around the house by dragging the scene, using rotate buttons, or rotating from the keyboard.</span>
+    </article>
+    <article class="data-platform-card">
       <strong>Pipe modes made visible</strong>
       <span>The world now shows a public-safe flow legend, incremental checkpoints, a quality gate, and a serving flow.</span>
     </article>
@@ -346,6 +350,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>First repository blueprints chosen</strong>
       <span>modern-data-platform-example and vipps-isakrs are the first public examples.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Character knowledge connected</strong>
+      <span>The world now loads Markdown character files at runtime and uses them to enrich public-safe dialogue and repository links.</span>
     </article>
     <article class="data-platform-card">
       <strong>Agent-first feedback loop</strong>
@@ -373,8 +381,8 @@ Audience:
 First deliverable:
 
 - A polished Three.js experience, not just a written presentation.
-- A small game where visitors can walk around, inspect rooms and pipes, and talk
-  to people.
+- A small game where visitors can walk around, orbit the house, inspect rooms
+  and pipes, and talk to people.
 - Something that can also run in the background during an event while the team
   explains the data flow.
 - Something that can later be used as a memorable selling point when explaining
@@ -406,6 +414,9 @@ Character direction:
 - Isak is the most important first character and should be the main person to ask
   about the data platform.
 - Malo should appear as an architect.
+- The Three.js world should load the Markdown character knowledge files directly
+  so dialogue stays reviewable, public-safe, and easy to improve without
+  rewriting scene code.
 - After the first set, the experience should grow toward the whole Data Insights
   team and then key collaborators around Vipps MobilePay.
 
