@@ -606,6 +606,13 @@ Architecture direction:
 - The long-term shape should feel closer to a Game of Thrones-style intro world
   or animated tech map, where the Data Platform House is the first major place
   in a broader Vipps technology landscape.
+- The eventual world can become globe-like or map-like, almost like Google
+  Earth for Vipps technology, where visitors can move around and inspect how
+  technologies and service areas are stitched together across the landscape.
+- The world should eventually let a visitor look across the map and spot things
+  like Azure Event Hubs in one area, storage accounts in another, Spark lifting
+  and shaping data elsewhere, and named services such as Dino and Wraptor as
+  visible parts of the same technical system.
 - It should also work as a reusable example for a customer-style setting, such
   as a Bama-like scenario, where the same platform ideas are explained without
   needing Vipps MobilePay-specific details.
@@ -641,6 +648,10 @@ The larger product vision is broader than one house. Think of the experience as
 the beginning of a Vipps tech world, where the Data Platform House is the first
 landmark in a bigger explorable map of technical domains.
 
+Over time, this should feel less like one isolated scene and more like an
+inspectable technology world model: part map, part globe, part technical
+landscape.
+
 The visitor should be able to start with a signal as it emerges, such as:
 
 - A button click in an application.
@@ -661,6 +672,13 @@ Possible direction:
   landmark in the Vipps tech world.
 - Over time, the world can expand into other Vipps technology areas in the same
   map-like style, with the house acting as the opening chapter.
+- The wider world can eventually be explored almost like Google Earth for Vipps
+  technology, where cities, houses, machines, or zones represent the major
+  technologies and service families.
+- The stitching between places matters as much as the places themselves: the
+  visitor should be able to see how Event Hubs, storage accounts, Spark,
+  Databricks, dbt, Dino, Wraptor, Dataverse, Datafront, and other services
+  connect across the world.
 - Product-team spaces sit outside and around the house: they send signals in and
   receive governed outputs back.
 - Pipes represent the signal moving in, through, and out of the platform.
@@ -862,12 +880,20 @@ clear landmarks, movement between domains, and a sense that the visitor is
 touring a larger technical world. The Data Platform House should be the first
 place we build to that standard.
 
+Another useful metaphor is a technical globe or inspectable engineering model.
+The visitor should eventually be able to move around the world as if exploring a
+living map of Vipps technology, with the same satisfaction as inspecting a
+beautifully exposed system drawing or a race-car-style computer-aided design
+model where every part has a place and a relationship to the rest.
+
 The house should:
 
 - Let visitors follow one signal through the building.
 - Let visitors understand that the signal starts in a product team context and
   that trusted outputs return to product teams after platform processing.
 - Feel like one named place in a larger tech world, not an isolated demo scene.
+- Hint at the wider map beyond the house, so visitors can sense that other
+  technology districts exist even before they are fully built.
 - Let visitors enter rooms to understand a stage in the process.
 - Let visitors move around like a small game, including movement in depth rather
   than only sliding across a flat camera plane.
@@ -899,11 +925,13 @@ The house should still be built in small steps. The best path is:
 
 1. Make the written explainer and storyboard useful.
 2. Define how the Data Platform House fits into the larger Vipps tech world.
-3. Choose the first signal journey.
-4. Identify the first real people, artifacts, and flow modes.
-5. Build the first interactive house prototype.
-6. Add event-mode visuals and role-play hooks.
-7. Let automation help refine the explainer, storyboard, and house.
+3. Sketch the larger map language: districts, landmarks, globe or map movement,
+   and visible stitched-together technologies.
+4. Choose the first signal journey.
+5. Identify the first real people, artifacts, and flow modes.
+6. Build the first interactive house prototype.
+7. Add event-mode visuals and role-play hooks.
+8. Let automation help refine the explainer, storyboard, and house.
 
 First prototype scope:
 
@@ -927,6 +955,24 @@ First prototype scope:
     inspect it from a distance.
 11. A clear sense that this house is the first landmark in a wider Vipps tech
     world that can grow later.
+12. At least one visible hint on the horizon or in the scene language that this
+    can expand into a globe-like or map-like technology world.
+
+## Time And Change Over Time
+
+Because the automation improves this project twice per workday and every useful
+change is committed to Git, the experience can also become a time-aware record
+of how the tech world changes.
+
+That is part of the value:
+
+- The world should stay reasonably up to date because it is revised often.
+- Git history should make it possible to inspect how the technical landscape has
+  changed over time.
+- The experience can become a public-safe historical layer, not only a snapshot.
+- Future runs can use that history to refine descriptions, preserve important
+  changes, and make the visible world feel more like an evolving engineering
+  model than a frozen mockup.
 
 ## Core Experience Goal
 
