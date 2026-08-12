@@ -54,6 +54,31 @@ title: Data Platform House Instructions And Backlog
     display: block;
     font-size: 0.92em;
   }
+
+  .data-platform-source-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin: 16px 0 24px;
+  }
+
+  .data-platform-source {
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 12px;
+  }
+
+  .data-platform-source strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .data-platform-source span {
+    color: #57606a;
+    display: block;
+    font-size: 0.92em;
+  }
 </style>
 
 ## Routes
@@ -113,10 +138,10 @@ record when a conversation produces useful public-safe feedback.
 ## Open Asset Strategy
 
 The experience should reuse strong existing Three.js examples, open three-dimensional
-assets, and proven animation patterns wherever that gets the house closer to a
-polished game faster. Do not reinvent character animation, keyframe animation,
-lighting, loaders, or staged environment structure when a permissive example
-already shows the right shape.
+assets, open object libraries, and proven animation patterns wherever that gets
+the house closer to a polished game faster. Do not reinvent character animation,
+keyframe animation, lighting, loaders, controls, materials, props, or staged
+environment structure when a permissive example already shows the right shape.
 
 Reuse must still be tidy:
 
@@ -126,6 +151,47 @@ Reuse must still be tidy:
 - Give visible credit when attribution is required or useful.
 - Keep a procedural fallback for important external assets so the page does not
   break if a model cannot load.
+- Prefer direct vanilla Three.js adaptation for this repository. React-oriented
+  libraries can inspire object patterns and interaction design, but should not
+  force a framework or bundler into this static page unless the project
+  deliberately changes direction.
+
+The first preferred sources are:
+
+<div class="data-platform-source-grid" aria-label="Preferred open object sources">
+  <article class="data-platform-source">
+    <strong><a href="https://threejs.org/examples/">Three.js examples</a></strong>
+    <span>Use for animation, loaders, postprocessing, camera behavior, interaction patterns, and credited sample models.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong><a href="https://github.com/pmndrs/three-stdlib">three-stdlib</a></strong>
+    <span>Use for reusable Three.js helpers and examples that can fit a static vanilla page.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong><a href="https://github.com/pmndrs/drei">drei</a></strong>
+    <span>Use as inspiration for mature scene components, controls, effects, and interaction patterns, then adapt carefully.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong><a href="https://kenney.nl/assets?category=3d">Kenney</a></strong>
+    <span>Use for cohesive Creative Commons Zero game-ready props, interface assets, and environment kits.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong><a href="https://quaternius.com/">Quaternius</a></strong>
+    <span>Use for Creative Commons Zero low-poly characters, buildings, furniture, pipes, dinosaurs, and animation-friendly game kits.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong><a href="https://polyhaven.com/">Poly Haven</a></strong>
+    <span>Use for Creative Commons Zero physically based materials, high-dynamic-range lighting, and realistic model detail.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong><a href="https://ambientcg.com/">ambientCG</a></strong>
+    <span>Use for Creative Commons Zero textures, materials, and surface realism.</span>
+  </article>
+  <article class="data-platform-source">
+    <strong><a href="https://github.com/KhronosGroup/glTF-Sample-Assets">Khronos glTF Sample Assets</a></strong>
+    <span>Use for glTF loading, validation, animation, material, and extension reference assets.</span>
+  </article>
+</div>
 
 ## Development Backlog
 
@@ -149,6 +215,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Improve world interaction</strong>
       <span>Make walking, tapping people, and following pipes feel more like a small game on desktop and mobile.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Replace procedural props with open kits</strong>
+      <span>Turn hand-made machines, shelves, furniture, and pipe details into better sourced three-dimensional objects where licenses allow it.</span>
     </article>
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
@@ -245,6 +315,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Borrowed open animation assets</strong>
       <span>The world now uses the Three.js keyframes house asset and the morph/skinning guide asset as credited foundations instead of hand-rolling every visual.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Open object library shelf</strong>
+      <span>The world now has an asset-library room that points future work toward Three.js examples, reusable helpers, and permissive object libraries.</span>
     </article>
     <article class="data-platform-card">
       <strong>Pipe modes made visible</strong>

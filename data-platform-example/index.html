@@ -423,12 +423,23 @@
         <button class="focus-button" type="button" data-focus="export">Export</button>
         <button class="focus-button" type="button" data-focus="product">Product</button>
         <button class="focus-button" type="button" data-focus="github">GitHub</button>
+        <button class="focus-button" type="button" data-focus="assets">Assets</button>
         <button class="focus-button" type="button" data-focus="house">House</button>
       </div>
       <div class="repository-links" id="repository-links" hidden aria-label="Public repository links">
         <a href="https://github.com/isakrs/modern-data-platform-example">modern-data-platform-example <span>Blueprint</span></a>
         <a href="https://github.com/isakrs/vipps-isakrs">vipps-isakrs <span>This world</span></a>
         <a href="https://github.com/isakrs/opcua-influxdb-grafana-dummy">opcua-influxdb-grafana-dummy <span>Later</span></a>
+      </div>
+      <div class="repository-links" id="asset-links" hidden aria-label="Open object library links">
+        <a href="https://threejs.org/examples/">Three.js examples <span>Mechanics</span></a>
+        <a href="https://github.com/pmndrs/three-stdlib">three-stdlib <span>Helpers</span></a>
+        <a href="https://github.com/pmndrs/drei">drei patterns <span>Components</span></a>
+        <a href="https://kenney.nl/assets?category=3d">Kenney <span>Game kits</span></a>
+        <a href="https://quaternius.com/">Quaternius <span>Characters</span></a>
+        <a href="https://polyhaven.com/">Poly Haven <span>Materials</span></a>
+        <a href="https://ambientcg.com/">ambientCG <span>Textures</span></a>
+        <a href="https://github.com/KhronosGroup/glTF-Sample-Assets">Khronos glTF Sample Assets <span>glTF</span></a>
       </div>
       <div class="flow-legend" aria-label="Flow mode legend">
         <h3>Pipe modes</h3>
@@ -489,6 +500,7 @@
       const currentRoom = document.querySelector("#current-room");
       const currentCopy = document.querySelector("#current-copy");
       const repositoryLinks = document.querySelector("#repository-links");
+      const assetLinks = document.querySelector("#asset-links");
       const dialogue = document.querySelector("#dialogue");
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
@@ -575,6 +587,10 @@
         github: {
           title: "GitHub Library",
           copy: "Public repositories from Isak's account become blueprints: platform operating model, this Three.js world, and later sensor-event examples."
+        },
+        assets: {
+          title: "Open Asset Library",
+          copy: "Great open object libraries become the shelves for the house: proven Three.js examples, reusable helpers, permissive models, materials, lights, and glTF test assets."
         }
       };
 
@@ -584,7 +600,8 @@
         analytics: { target: [-1.8, 0.3, -3.8], offset: [2, 7.3, 8.7] },
         export: { target: [4.6, 0.3, -3.6], offset: [2, 7.4, 8.6] },
         product: { target: [5.6, 0.3, 3.3], offset: [1.2, 7.6, 8.9] },
-        github: { target: [-5.6, 0.3, 3.4], offset: [1.4, 7.2, 8.4] }
+        github: { target: [-5.6, 0.3, 3.4], offset: [1.4, 7.2, 8.4] },
+        assets: { target: [-1, 0.3, 3.25], offset: [1.2, 7.2, 8.3] }
       };
 
       const rooms = [
@@ -592,7 +609,17 @@
         { id: "analytics", name: "dbt Models", x: -1.7, z: -3.8, color: 0x2f9e73 },
         { id: "export", name: "Declared Export", x: 4.3, z: -3.8, color: 0x2c7be5 },
         { id: "github", name: "GitHub Library", x: -5.5, z: 3.4, color: 0xf2bd2a },
+        { id: "assets", name: "Open Asset Library", x: -1, z: 3.25, color: 0x37b6c4 },
         { id: "product", name: "Data Product", x: 4.8, z: 3.4, color: 0x7c5cff }
+      ];
+
+      const openComponentLibraries = [
+        { name: "Three.js examples", color: 0xff5b24 },
+        { name: "three-stdlib", color: 0x2c7be5 },
+        { name: "drei patterns", color: 0x7c5cff },
+        { name: "Kenney game kits", color: 0x2f9e73 },
+        { name: "Quaternius character kits", color: 0xf2bd2a },
+        { name: "Poly Haven materials", color: 0x1f7a8c }
       ];
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
@@ -606,6 +633,7 @@
       const isakFallback = addCharacters();
       loadAnimatedGuide(isakFallback);
       addRepositoryTable();
+      addAssetLibraryWorkbench();
       addSmokePuffs();
 
       document.querySelectorAll("[data-focus]").forEach((button) => {
@@ -960,6 +988,7 @@
         makePipe("Declared export", [4.7, 0.8, -2.4], [4.9, 0.8, 1.85], 0x7c5cff, "export", 4);
         makePipe("Serving flow", [6.1, 0.86, 3.4], [9.3, 0.86, 3.4], 0x1f7a8c, "serving", 4);
         makePipe("GitHub Actions", [-4.8, 0.75, 2.1], [-2.1, 0.75, -2.4], 0xf2bd2a, "reference", 3);
+        makePipe("Open object kits", [-4.35, 0.78, 3.45], [-2.15, 0.78, 3.3], 0x37b6c4, "reference", 3);
       }
 
       function makePipe(name, from, to, color, type, count) {
@@ -1106,7 +1135,7 @@
           position: [-4.9, 0, 4.35],
           colors: [0xf2bd2a, 0x27384d, 0xc98f6f],
           dialogue:
-            "I am at the blueprint table. modern-data-platform-example explains the operating model, and vipps-isakrs shows how this world is built and automated. The pipe language should teach design choices, not only path direction."
+            "I am at the blueprint table. modern-data-platform-example explains the operating model, vipps-isakrs shows how this world is built and automated, and the open asset library helps us borrow strong objects before we model by hand."
         });
 
         return isak;
@@ -1261,6 +1290,77 @@
         scene.add(makeLabel("vipps-isakrs", new THREE.Vector3(-5.2, 1.08, 3.72), 0xff5b24, 0.46));
       }
 
+      function addAssetLibraryWorkbench() {
+        const shelf = new THREE.Group();
+        shelf.position.set(-1, 0, 3.25);
+
+        const frameMaterial = new THREE.MeshStandardMaterial({
+          color: 0x243447,
+          roughness: 0.48,
+          metalness: 0.18
+        });
+        const shelfMaterial = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          roughness: 0.56,
+          metalness: 0.08
+        });
+
+        [0.38, 0.84, 1.3].forEach((height) => {
+          const plank = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.08, 0.55), shelfMaterial);
+          plank.position.set(0, height, 0);
+          plank.castShadow = true;
+          plank.receiveShadow = true;
+          shelf.add(plank);
+        });
+
+        [-1.1, 1.1].forEach((x) => {
+          const support = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 1.3, 10), frameMaterial);
+          support.position.set(x, 0.72, -0.23);
+          support.castShadow = true;
+          shelf.add(support);
+        });
+
+        openComponentLibraries.forEach((source, index) => {
+          const column = index % 3;
+          const row = Math.floor(index / 3);
+          const crate = new THREE.Mesh(
+            new THREE.BoxGeometry(0.5, 0.3, 0.32),
+            new THREE.MeshStandardMaterial({
+              color: source.color,
+              emissive: source.color,
+              emissiveIntensity: 0.1,
+              roughness: 0.4,
+              metalness: 0.08
+            })
+          );
+          crate.position.set((column - 1) * 0.67, 0.56 + row * 0.46, 0.03);
+          crate.rotation.y = (column - 1) * 0.06;
+          crate.castShadow = true;
+          shelf.add(crate);
+
+          const glow = new THREE.Mesh(
+            new THREE.TorusGeometry(0.32, 0.012, 8, 32),
+            new THREE.MeshStandardMaterial({
+              color: 0xffffff,
+              emissive: source.color,
+              emissiveIntensity: 0.28,
+              roughness: 0.24
+            })
+          );
+          glow.position.copy(crate.position);
+          glow.position.y += 0.2;
+          glow.rotation.x = Math.PI / 2;
+          shelf.add(glow);
+
+          scene.add(
+            makeLabel(source.name, new THREE.Vector3(-1.67 + column * 0.67, 1.25 + row * 0.42, 3.55), source.color, 0.34)
+          );
+        });
+
+        scene.add(shelf);
+        scene.add(makeLabel("open object library", new THREE.Vector3(-1, 1.95, 3.18), 0x37b6c4, 0.62));
+      }
+
       function addSmokePuffs() {
         for (let index = 0; index < 26; index += 1) {
           const puff = new THREE.Mesh(
@@ -1326,6 +1426,7 @@
         currentRoom.textContent = details.title;
         currentCopy.textContent = details.copy;
         repositoryLinks.hidden = id !== "github";
+        assetLinks.hidden = id !== "assets";
       }
 
       function pickCharacter(event) {
