@@ -147,6 +147,9 @@ Reuse must still be tidy:
 
 - Keep the data platform story, rooms, pipes, and dialogue specific to this
   experience.
+- The borrowed keyframes house is the data platform house, not a decoration.
+  Pipes should visibly enter, cross, and leave that house through meaningful
+  ports.
 - Use assets only when their license is compatible with public sharing.
 - Give visible credit when attribution is required or useful.
 - Keep a procedural fallback for important external assets so the page does not
@@ -215,6 +218,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Improve world interaction</strong>
       <span>Make walking, tapping people, and following pipes feel more like a small game on desktop and mobile.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Make rooms belong to the house</strong>
+      <span>Turn labels and characters into readable areas of the keyframes house instead of floating rooms around it.</span>
     </article>
     <article class="data-platform-card">
       <strong>Replace procedural props with open kits</strong>
@@ -319,6 +326,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Open object library shelf</strong>
       <span>The world now has an asset-library room that points future work toward Three.js examples, reusable helpers, and permissive object libraries.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>House made central</strong>
+      <span>The borrowed keyframes house now acts as the actual data platform house, with pipes routed into and out of house ports.</span>
     </article>
     <article class="data-platform-card">
       <strong>Pipe modes made visible</strong>
