@@ -135,66 +135,85 @@ conversation, shared with others, or tracked by the workday automation. A person
 can fill it in directly, and an agent can also use it as the durable public
 record when a conversation produces useful public-safe feedback.
 
-## Open Asset Strategy
+## Visual Direction And Reuse
 
-The experience should reuse strong existing Three.js examples, open three-dimensional
-assets, open object libraries, and proven animation patterns wherever that gets
-the house closer to a polished game faster. Do not reinvent character animation,
-keyframe animation, lighting, loaders, controls, materials, props, or staged
-environment structure when a permissive example already shows the right shape.
+The world should not become a generic three-dimensional asset showroom. It
+should look like a focused data platform house with recognizable platform
+services, readable flow paths, and a few strong visual landmarks.
 
-Reuse must still be tidy:
+Reuse is still welcome, but only when it supports the specific service story:
 
-- Keep the data platform story, rooms, pipes, and dialogue specific to this
-  experience.
-- The borrowed keyframes house is the data platform house, not a decoration.
-  Pipes should visibly enter, cross, and leave that house through meaningful
-  ports.
-- Use assets only when their license is compatible with public sharing.
-- Give visible credit when attribution is required or useful.
+- Reuse movement patterns, loaders, postprocessing, camera techniques, and
+  house-scale interaction patterns when they help the game feel better.
+- Prefer service-shaped props and icons over random decorative shelves, crates,
+  or library fillers.
+- Remove or avoid elements that make the world feel crowded without teaching
+  anything.
+- The borrowed keyframes house is the actual data platform house, not a scene
+  around a separate decorative object.
+- Pipes should visibly enter, cross, and leave the house through meaningful
+  service ports.
 - Keep a procedural fallback for important external assets so the page does not
   break if a model cannot load.
-- Prefer direct vanilla Three.js adaptation for this repository. React-oriented
-  libraries can inspire object patterns and interaction design, but should not
-  force a framework or bundler into this static page unless the project
-  deliberately changes direction.
+- Use assets only when their license is compatible with public sharing, and
+  keep attribution notes when required or useful.
 
-The first preferred sources are:
+Preferred reuse focus:
 
-<div class="data-platform-source-grid" aria-label="Preferred open object sources">
+<div class="data-platform-source-grid" aria-label="Preferred reuse directions">
   <article class="data-platform-source">
     <strong><a href="https://threejs.org/examples/">Three.js examples</a></strong>
-    <span>Use for animation, loaders, postprocessing, camera behavior, interaction patterns, and credited sample models.</span>
+    <span>Use for movement, camera behavior, loaders, animation patterns, and scene techniques.</span>
   </article>
   <article class="data-platform-source">
     <strong><a href="https://github.com/pmndrs/three-stdlib">three-stdlib</a></strong>
-    <span>Use for reusable Three.js helpers and examples that can fit a static vanilla page.</span>
-  </article>
-  <article class="data-platform-source">
-    <strong><a href="https://github.com/pmndrs/drei">drei</a></strong>
-    <span>Use as inspiration for mature scene components, controls, effects, and interaction patterns, then adapt carefully.</span>
-  </article>
-  <article class="data-platform-source">
-    <strong><a href="https://kenney.nl/assets?category=3d">Kenney</a></strong>
-    <span>Use for cohesive Creative Commons Zero game-ready props, interface assets, and environment kits.</span>
-  </article>
-  <article class="data-platform-source">
-    <strong><a href="https://quaternius.com/">Quaternius</a></strong>
-    <span>Use for Creative Commons Zero low-poly characters, buildings, furniture, pipes, dinosaurs, and animation-friendly game kits.</span>
+    <span>Use for helper patterns that make the world more playable without changing the static-site architecture.</span>
   </article>
   <article class="data-platform-source">
     <strong><a href="https://polyhaven.com/">Poly Haven</a></strong>
-    <span>Use for Creative Commons Zero physically based materials, high-dynamic-range lighting, and realistic model detail.</span>
+    <span>Use for high-quality materials and lighting when they support a more believable technical environment.</span>
   </article>
   <article class="data-platform-source">
     <strong><a href="https://ambientcg.com/">ambientCG</a></strong>
-    <span>Use for Creative Commons Zero textures, materials, and surface realism.</span>
+    <span>Use for surface materials when a room needs more realism without adding clutter.</span>
   </article>
   <article class="data-platform-source">
     <strong><a href="https://github.com/KhronosGroup/glTF-Sample-Assets">Khronos glTF Sample Assets</a></strong>
-    <span>Use for glTF loading, validation, animation, material, and extension reference assets.</span>
+    <span>Use for glTF loading and animation reference, not as a visible theme for the house.</span>
   </article>
 </div>
+
+Do not treat generic game-kit shelves, generic low-poly characters, or random
+open asset collections as first-class content in the public experience unless
+they directly support a real platform service, room, or character.
+
+## Visual Language For Services
+
+The visual language should center on recognizable data platform services and
+their nearest public-safe metaphors. When possible, a visitor should understand
+what a room is about before reading the label.
+
+Preferred icon and prop direction:
+
+- Storage account or Azure Storage Account: storage tanks, object buckets,
+  landing bays, or blob-container walls.
+- SQL server or database hotel style: stacked server racks, database hotel
+  towers, or glowing table floors.
+- Databricks: compute clusters, notebook workbenches, spark-chamber machinery,
+  or job-run control walls.
+- dbt: transformation workshop, model graph wall, or structured build station
+  with lineage boards.
+- Azure Event Hubs or event streaming: event hub rings, intake turbines, or
+  fast streaming corridors.
+- Dataverse: governed delivery or consumer-access space with clear ownership,
+  access, and contract cues.
+- Datafront: presentation or front-door serving space where trusted outputs are
+  presented to consumers.
+- Dino and Wraptor: actual dinosaur-like characters or mascots, not abstract
+  labels. They can still stay stylized and public-safe.
+
+Avoid spending attention on props that do not explain services. A correct
+service-shaped object is more valuable than ten decorative objects.
 
 ## Configuration Repository Offerings
 
@@ -252,9 +271,23 @@ sensitive implementation details.
 </div>
 
 In the Three.js world, these offerings should become visible doors, kiosks,
-pipe junctions, or room signs. The current service directory is the first pass:
-it names every offering and connects the catalog back to the house with its own
-pipe.
+pipe junctions, or room signs that a visitor can move toward, stand beside, or
+click to learn more. The current service directory is the first pass: it names
+every offering and connects the catalog back to the house with its own pipe.
+
+The most important next focus is not "all services equally." The brief should
+guide future runs toward the services that matter most for the story:
+
+- Configuration services are the main focus area.
+- Dataverse should be a clear destination that people can move to or inspect.
+- Datafront should be a clear destination that people can move to or inspect.
+- The visitor should understand when to approach or click a service to learn
+  what it does, when to use it, and what kind of output or responsibility it
+  represents.
+
+Do not let the scene become a crowded board of equally loud service names. Use
+grouping, distance, depth, and room ownership so the most important services
+stand out first.
 
 ## Development Backlog
 
@@ -276,16 +309,20 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-now">
     <h3 id="backlog-now">Now</h3>
     <article class="data-platform-card">
-      <strong>Improve world interaction</strong>
-      <span>Make walking, tapping people, and following pipes feel more like a small game on desktop and mobile.</span>
+      <strong>Enable real depth movement</strong>
+      <span>Let visitors move around the house in depth, not only pan across a flat-feeling scene.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Make rooms belong to the house</strong>
-      <span>Turn labels and characters into readable areas of the keyframes house instead of floating rooms around it.</span>
+      <strong>Declutter the world</strong>
+      <span>Remove low-information props and generic asset-library ideas that make the scene busier without making the platform clearer.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Replace procedural props with open kits</strong>
-      <span>Turn hand-made machines, shelves, furniture, and pipe details into better sourced three-dimensional objects where licenses allow it.</span>
+      <strong>Focus on configuration services</strong>
+      <span>Make configuration services the primary explorable service family, with Dataverse and Datafront as key destinations.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Make service icons recognizable</strong>
+      <span>Turn rooms and props into recognizable storage accounts, database hotels, SQL servers, Databricks, dbt, Azure Event Hubs, Dino, and Wraptor.</span>
     </article>
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
@@ -300,24 +337,24 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
     <article class="data-platform-card">
-      <strong>Broaden knowledge-backed dialogue</strong>
-      <span>Let characters answer room-specific prompts, safe repository questions, and pipe-mode questions from their Markdown source files.</span>
+      <strong>Teach services on interaction</strong>
+      <span>Let visitors move to or click a service and get a concise explanation of when to use it and how it fits the platform.</span>
     </article>
     <article class="data-platform-card">
       <strong>Deepen pipe language</strong>
       <span>Build on the visible legend, checkpoints, and quality gate with batch, backfill, and manual correction scenes.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Add first team characters</strong>
-      <span>Ground Param, Kien, and Malo in safe real artifacts and useful rooms.</span>
+      <strong>Ground characters in service areas</strong>
+      <span>Place Isak, Param, Kien, and Malo near the service families and decisions they should actually explain.</span>
     </article>
     <article class="data-platform-card">
       <strong>Animate storage to database</strong>
-      <span>Show data leaving storage, being checked, and becoming queryable.</span>
+      <span>Show data leaving storage, being checked, and becoming queryable in a way that feels spatially connected rather than diagrammatic.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Add repository conversations</strong>
-      <span>Let characters explain public GitHub repositories from Isak's account.</span>
+      <strong>Broaden knowledge-backed dialogue</strong>
+      <span>Let characters answer room-specific prompts, safe repository questions, and pipe-mode questions from their Markdown source files.</span>
     </article>
   </section>
 
@@ -388,16 +425,8 @@ event version more convincing.
       <span>The world now uses the Three.js keyframes house asset and the morph/skinning guide asset as credited foundations instead of hand-rolling every visual.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Open object library shelf</strong>
-      <span>The world now has an asset-library room that points future work toward Three.js examples, reusable helpers, and permissive object libraries.</span>
-    </article>
-    <article class="data-platform-card">
       <strong>House made central</strong>
       <span>The borrowed keyframes house now acts as the actual data platform house, with pipes routed into and out of house ports.</span>
-    </article>
-    <article class="data-platform-card">
-      <strong>Orbit view controls</strong>
-      <span>Visitors can now turn around the house by dragging the scene, using rotate buttons, or rotating from the keyboard.</span>
     </article>
     <article class="data-platform-card">
       <strong>Pipe modes made visible</strong>
@@ -449,13 +478,15 @@ Audience:
 First deliverable:
 
 - A polished Three.js experience, not just a written presentation.
-- A small game where visitors can walk around, orbit the house, inspect rooms
-  and pipes, and talk to people.
+- A small game where visitors can move around the house in real depth, inspect
+  rooms and pipes, and talk to people.
 - Something that can also run in the background during an event while the team
   explains the data flow.
 - Something that can later be used as a memorable selling point when explaining
   data platform work to new customers or collaborators.
 - The written page remains useful as the explanatory backing and storyboard.
+- The first visual priority is correct service description and clear service
+  identity, not decoration density.
 
 Show-and-tell flavor:
 
@@ -490,10 +521,18 @@ Character direction:
 
 First concepts to explain:
 
+- Configuration services.
 - Ingestion processes.
 - Analytics projects.
 - Data export.
 - Data products.
+
+Most important named service focus:
+
+- Dataverse.
+- Datafront.
+- Dino.
+- Wraptor.
 
 First signal journey:
 
@@ -512,6 +551,9 @@ Technologies that can be named:
 - GitHub Actions.
 - Spark.
 - Storage account, with Azure Storage Account or S3 as concrete examples.
+- Azure Event Hubs.
+- SQL servers and database hotel style metaphors where they make the storage and
+  serving layers easier to understand.
 - GitHub repositories as public, inspectable examples.
 
 Large language model boundary:
@@ -574,18 +616,22 @@ Possible direction:
 - The house represents the data platform.
 - Pipes represent the signal moving in, through, and out of the platform.
 - Rooms represent checkpoints in the signal journey.
+- Service zones represent the configuration services people can approach to
+  learn what each offering does.
 - Characters inside rooms represent real people or real roles from the team and
   explain work they have actually done.
 - The visitor can follow the signal from room to room or jump directly into a
   stage to understand that part of the flow.
-- The interaction should feel like a small exploratory game: walk around, enter
-  rooms, inspect machinery, follow pipes, and talk to humans.
+- The interaction should feel like a small exploratory game: move around in
+  depth, enter rooms, inspect machinery, follow pipes, and talk to humans.
 - Dialogue can borrow the feeling of an old handheld role-playing game, but the
   characters should be smarter than fixed dialogue trees. Each character should
   have a Markdown knowledge file and eventually a large language model-backed
   conversation layer.
 - The visual ambition could eventually be a polished Three.js scene with
   animated characters, camera movement, cutaway rooms, and richer materials.
+- The scene should stay legible. If a prop does not teach a service, room, flow
+  mode, or character responsibility, it is a candidate for removal.
 
 None of this is locked in yet.
 
@@ -760,8 +806,10 @@ The house should:
 
 - Let visitors follow one signal through the building.
 - Let visitors enter rooms to understand a stage in the process.
-- Let visitors move around like a small game rather than only clicking through a
-  fixed slide deck.
+- Let visitors move around like a small game, including movement in depth rather
+  than only sliding across a flat camera plane.
+- Let visitors approach or click service destinations such as Dataverse,
+  Datafront, Dino, and Wraptor to learn more.
 - Show different pipe types through shape, rhythm, labels, and machinery.
 - Include characters grounded in real people and real work.
 - Let characters explain their room, the technology around them, the pipelines
@@ -777,6 +825,10 @@ The house should:
   team explains the flow live.
 - Include playful effects such as virtual smoke, dinosaur-costume-inspired
   characters for Dino and Wraptor, and visible machinery around pipes.
+- Use service-shaped iconography so a visitor can visually recognize storage,
+  serving, modeling, streaming, and export areas before reading a lot of text.
+- Stay visually selective. Remove crowded decorative elements that do not make
+  the service story clearer.
 - Keep the written explainer available, so the interactive version does not
   become the only way to understand the process.
 
@@ -803,6 +855,10 @@ First prototype scope:
    language model integration is built.
 8. At least one public GitHub repository from Isak's account represented as a
    blueprint, library item, or workbench artifact.
+9. At least one explorable configuration service area that teaches Dataverse,
+   Datafront, Dino, or Wraptor correctly.
+10. Movement that lets a visitor feel depth and approach an object, not only
+    inspect it from a distance.
 
 ## Core Experience Goal
 
