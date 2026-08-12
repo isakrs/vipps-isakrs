@@ -130,6 +130,22 @@ something, or which part of the data flow deserves a better scene. The agent can
 turn clear input into instruction changes, backlog changes, character knowledge,
 or implementation work.
 
+Every automation run should begin by reviewing the most recent relevant chat
+input that was passed into the run and improving the written descriptions first
+when that input makes the story clearer. This means recent chat feedback should
+not only affect code or backlog cards. It should also sharpen the wording of
+the instructions page so the next automation run starts from a better source of
+truth.
+
+Priority order for startup inputs:
+
+1. The most recent relevant user and agent chat input passed into the active
+   run.
+2. This instructions page as the current source of truth after those chat-driven
+   refinements are applied.
+3. Saved public GitHub feedback issues when the feedback should persist beyond a
+   single conversation or be shared with others.
+
 Use the GitHub feedback form when the input should be saved outside the
 conversation, shared with others, or tracked by the workday automation. A person
 can fill it in directly, and an agent can also use it as the durable public
@@ -599,6 +615,11 @@ Publishing direction:
 
 Automation direction:
 
+- The automation should improve the written descriptions from recent relevant
+  chat input every time it starts, not only make implementation changes.
+- The automation should treat the active thread's recent chat input as the first
+  input queue for wording corrections, concept clarifications, and direction
+  changes.
 - The automation should inspect Isak's personal repositories for inspiration and
   Git contributions.
 - The automation may update the public page automatically.
