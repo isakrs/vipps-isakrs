@@ -112,6 +112,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The world now includes a visible five-step payment journey tracker and
   explicit product-team source and consumer endpoints so the send-and-receive
   loop reads more clearly on first view.
+- Each journey handoff now shows its active flow mode directly in the world, so
+  visitors can see when the path is streaming, incremental, quality-gated,
+  declared export, or serving flow without relying only on the legend.
 
 This file should serve two purposes:
 
@@ -314,6 +317,16 @@ A first-time visitor should quickly understand this order:
 5. Product teams receive trusted outputs back through analytics projects, data
    products, or other approved consumers.
 
+That sequence should teach flow mode at the same time as order. When a visitor
+focuses a handoff, the scene and panel should make it obvious which of these
+apply there:
+
+- Streaming at the source intake.
+- Streaming plus incremental checkpointing at landing and storage movement.
+- Incremental plus quality gate behavior through processing and modeling.
+- Declared export at governed outbound delivery.
+- Serving flow at trusted consumer and data product delivery.
+
 The most important next focus is not "all services equally." The brief should
 guide future runs toward the services that matter most for the story:
 
@@ -368,6 +381,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
       <span>Deepen the now-visible sequence so the scene itself teaches each handoff, not only the side panel.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Make handoff props match flow modes</strong>
+      <span>Now that the tracker names each mode, make room props and pipes reinforce the same mode visually.</span>
     </article>
     <article class="data-platform-card">
       <strong>Show the product-team loop</strong>
@@ -508,6 +525,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Visible journey tracker and loop terminals</strong>
       <span>The world now shows a five-step payment journey in the panel and explicit product-team source and consumer endpoints around the house.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Journey steps now teach flow modes</strong>
+      <span>Each payment handoff now names the active mode and updates the current handoff panel when visitors focus it.</span>
     </article>
   </section>
 </div>

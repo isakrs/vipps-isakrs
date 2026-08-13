@@ -247,6 +247,26 @@
         line-height: 1.35;
       }
 
+      .journey-mode-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        grid-column: 2;
+        margin-top: 4px;
+      }
+
+      .journey-mode-chip {
+        background: rgba(24, 34, 45, 0.06);
+        border: 1px solid rgba(24, 34, 45, 0.09);
+        border-radius: 999px;
+        color: var(--ink);
+        display: inline-flex;
+        font-size: 0.65rem;
+        font-weight: 800;
+        line-height: 1;
+        padding: 5px 8px;
+      }
+
       .journey-step.is-active {
         background: rgba(255, 91, 36, 0.1);
         border-color: rgba(255, 91, 36, 0.34);
@@ -321,6 +341,46 @@
         gap: 8px;
         margin-top: 12px;
         padding-top: 12px;
+      }
+
+      .journey-detail {
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .journey-detail h3 {
+        font-size: 0.76rem;
+        letter-spacing: 0.05em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .journey-detail-card {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .journey-detail-card strong {
+        display: block;
+        font-size: 0.82rem;
+        line-height: 1.2;
+        margin-bottom: 6px;
+      }
+
+      .journey-detail-card p {
+        font-size: 0.77rem;
+      }
+
+      .journey-detail-modes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
       }
 
       .flow-legend h3 {
@@ -614,27 +674,56 @@
             <span class="journey-badge">1</span>
             <strong>Product team sends a payment signal</strong>
             <span>Conceptual tap or send event enters the house through the orange intake.</span>
+            <span class="journey-mode-line" aria-label="Flow modes">
+              <span class="journey-mode-chip">Streaming</span>
+            </span>
           </button>
           <button class="journey-step" type="button" data-journey-room="ingestion" data-journey-step="storage">
             <span class="journey-badge">2</span>
             <strong>Ingestion lands in storage</strong>
             <span>Streaming capture lands in a storage account such as Azure Storage Account or S3.</span>
+            <span class="journey-mode-line" aria-label="Flow modes">
+              <span class="journey-mode-chip">Streaming</span>
+              <span class="journey-mode-chip">Incremental</span>
+            </span>
           </button>
           <button class="journey-step" type="button" data-journey-room="analytics" data-journey-step="modeling">
             <span class="journey-badge">3</span>
             <strong>Quality gates and modeling shape trust</strong>
             <span>Checkpointed Spark and dbt-style work turn raw signal into reusable meaning.</span>
+            <span class="journey-mode-line" aria-label="Flow modes">
+              <span class="journey-mode-chip">Incremental</span>
+              <span class="journey-mode-chip">Quality gate</span>
+            </span>
           </button>
           <button class="journey-step" type="button" data-journey-room="export" data-journey-step="export">
             <span class="journey-badge">4</span>
             <strong>Exports leave by declaration</strong>
             <span>Approved outbound flow has an owner, destination, and governed trigger path.</span>
+            <span class="journey-mode-line" aria-label="Flow modes">
+              <span class="journey-mode-chip">Declared export</span>
+            </span>
           </button>
           <button class="journey-step" type="button" data-journey-room="product" data-journey-step="product">
             <span class="journey-badge">5</span>
             <strong>Product teams receive trusted outputs</strong>
             <span>Analytics projects, data products, and consumers get safe outputs back from the platform.</span>
+            <span class="journey-mode-line" aria-label="Flow modes">
+              <span class="journey-mode-chip">Serving flow</span>
+            </span>
           </button>
+        </div>
+      </div>
+      <div class="journey-detail" aria-label="Current journey handoff">
+        <h3>Current handoff</h3>
+        <div class="journey-detail-card">
+          <strong id="journey-detail-title">End-to-end payment walkthrough</strong>
+          <p id="journey-detail-copy">
+            Follow the orange intake into storage, the green and blue trust path
+            through Databricks and dbt-style modeling, then the purple and teal
+            governed exits back to product teams.
+          </p>
+          <div class="journey-detail-modes" id="journey-detail-modes" aria-label="Active flow modes"></div>
         </div>
       </div>
       <div class="focus-grid" aria-label="Focus rooms">
@@ -757,6 +846,9 @@
       const assetLinks = document.querySelector("#asset-links");
       const offeringLinks = document.querySelector("#offering-links");
       const journeySteps = [...document.querySelectorAll("[data-journey-step]")];
+      const journeyDetailTitle = document.querySelector("#journey-detail-title");
+      const journeyDetailCopy = document.querySelector("#journey-detail-copy");
+      const journeyDetailModes = document.querySelector("#journey-detail-modes");
       const dialogue = document.querySelector("#dialogue");
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
@@ -867,6 +959,50 @@
         github: [],
         assets: [],
         services: ["source", "product"]
+      };
+
+      const journeyDetails = {
+        overview: {
+          title: "End-to-end payment walkthrough",
+          copy: "Follow the orange intake into storage, the green and blue trust path through Databricks and dbt-style modeling, then the purple and teal governed exits back to product teams.",
+          modes: ["Streaming", "Incremental", "Quality gate", "Declared export", "Serving flow"]
+        },
+        source: {
+          title: "Signal enters through the orange intake",
+          copy: "A conceptual tap or send event starts as a streaming signal from a product team. The house shows the source clearly so visitors understand where the story begins.",
+          modes: ["Streaming"]
+        },
+        storage: {
+          title: "Capture lands in storage with checkpoints",
+          copy: "The signal is captured into a storage account such as Azure Storage Account or S3, then moved forward with incremental state so the platform knows what was already processed.",
+          modes: ["Streaming", "Incremental"]
+        },
+        modeling: {
+          title: "Trust is built before reuse",
+          copy: "Databricks and Spark-style processing shape the signal, and dbt-style modeling turns it into reusable meaning only after checkpoints and quality gates say it is safe.",
+          modes: ["Incremental", "Quality gate"]
+        },
+        export: {
+          title: "Outbound flow leaves by declaration",
+          copy: "Exports are explicit platform decisions, not side effects. The declared path makes owner, destination, and trigger visible before data leaves the house.",
+          modes: ["Declared export"]
+        },
+        product: {
+          title: "Trusted outputs return to product teams",
+          copy: "Serving flows deliver governed tables, insights, dashboards, and data products back to teams that need them, without exposing raw operational data.",
+          modes: ["Serving flow"]
+        }
+      };
+
+      const primaryJourneyStepByFocus = {
+        house: "overview",
+        ingestion: "storage",
+        analytics: "modeling",
+        export: "export",
+        product: "product",
+        github: "overview",
+        assets: "overview",
+        services: "overview"
       };
 
       const houseAnchor = {
@@ -1013,7 +1149,10 @@
       });
 
       journeySteps.forEach((button) => {
-        button.addEventListener("click", () => focusRoom(button.dataset.journeyRoom));
+        button.addEventListener("click", () => {
+          setJourneyDetail(button.dataset.journeyStep);
+          focusRoom(button.dataset.journeyRoom, button.dataset.journeyStep);
+        });
       });
 
       document.querySelectorAll("[data-orbit]").forEach((button) => {
@@ -2013,7 +2152,7 @@
         context.closePath();
       }
 
-      function focusRoom(id) {
+      function focusRoom(id, stepOverride) {
         const room = roomTargets[id] ?? roomTargets.house;
         desiredTarget.set(...room.target);
         desiredOffset.set(...room.offset);
@@ -2025,12 +2164,26 @@
         offeringLinks.hidden = id !== "services";
         panel.classList.toggle("is-service-focus", id === "services");
         updateJourneyHighlights(id);
+        setJourneyDetail(stepOverride ?? primaryJourneyStepByFocus[id] ?? "overview");
       }
 
       function updateJourneyHighlights(id) {
         const activeSteps = new Set(journeyHighlightsByFocus[id] ?? []);
         journeySteps.forEach((step) => {
           step.classList.toggle("is-active", activeSteps.has(step.dataset.journeyStep));
+        });
+      }
+
+      function setJourneyDetail(stepId) {
+        const details = journeyDetails[stepId] ?? journeyDetails.overview;
+        journeyDetailTitle.textContent = details.title;
+        journeyDetailCopy.textContent = details.copy;
+        journeyDetailModes.innerHTML = "";
+        details.modes.forEach((mode) => {
+          const chip = document.createElement("span");
+          chip.className = "journey-mode-chip";
+          chip.textContent = mode;
+          journeyDetailModes.append(chip);
         });
       }
 
