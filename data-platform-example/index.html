@@ -752,17 +752,17 @@
         <a href="https://github.com/KhronosGroup/glTF-Sample-Assets">Khronos glTF Sample Assets <span>glTF</span></a>
       </div>
       <div class="repository-links" id="offering-links" hidden aria-label="Configuration repository service offerings">
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Analytics Projects <span>Consumer access</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Data Export <span>Consumer egress</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Data Products <span>Product egress</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Dino <span>Capture</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Object Storage Connection <span>Capture</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Direct Publish <span>Publish</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Wraptor <span>Publish</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Cacheloader <span>Publish</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Skippy <span>Publish</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Query Publish <span>Publish</span></a>
-        <a href="/data-platform-example/instructions/#configuration-repository-offerings">Custom Integrations <span>Special cases</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Analytics Projects">Analytics Projects <span>Consumer access</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Data Export">Data Export <span>Consumer egress</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Data Products">Data Products <span>Product egress</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Dino">Dino <span>Capture</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Object Storage Connection">Object Storage Connection <span>Capture</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Direct Publish">Direct Publish <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Wraptor">Wraptor <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Cacheloader">Cacheloader <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Skippy">Skippy <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Query Publish">Query Publish <span>Publish</span></a>
+        <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Custom Integrations">Custom Integrations <span>Special cases</span></a>
       </div>
       <div class="flow-legend" aria-label="Flow mode legend">
         <h3>Pipe modes</h3>
@@ -845,6 +845,7 @@
       const repositoryLinks = document.querySelector("#repository-links");
       const assetLinks = document.querySelector("#asset-links");
       const offeringLinks = document.querySelector("#offering-links");
+      const offeringLinkItems = [...document.querySelectorAll("[data-service-offering]")];
       const journeySteps = [...document.querySelectorAll("[data-journey-step]")];
       const journeyDetailTitle = document.querySelector("#journey-detail-title");
       const journeyDetailCopy = document.querySelector("#journey-detail-copy");
@@ -946,7 +947,7 @@
         },
         services: {
           title: "Configuration Repository Services",
-          copy: "The configuration repository exposes the platform offerings people can request or declare: consumer access, exports, data products, capture, publishing, and custom integration services."
+          copy: "The configuration repository exposes explorable service kiosks for consumer access, exports, data products, capture, publishing, and custom integrations. Click a kiosk or service name to hear when it is used."
         }
       };
 
@@ -1118,6 +1119,7 @@
           description: "Configure custom or one-off integration jobs when the standard path does not fit."
         }
       ];
+      const offeringByName = new Map(platformOfferings.map((offering) => [offering.name, offering]));
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
       const characterKnowledge = new Map();
@@ -1146,6 +1148,17 @@
 
       document.querySelectorAll("[data-focus]").forEach((button) => {
         button.addEventListener("click", () => focusRoom(button.dataset.focus));
+      });
+
+      offeringLinkItems.forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          const offering = offeringByName.get(link.dataset.serviceOffering);
+          if (!offering) {
+            return;
+          }
+          focusServiceOffering(offering);
+        });
       });
 
       journeySteps.forEach((button) => {
@@ -2075,24 +2088,75 @@
 
         platformOfferings.forEach((offering, index) => {
           const angle = -Math.PI * 0.75 + index * (Math.PI * 1.5 / (platformOfferings.length - 1));
-          const marker = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.16, 0.2, 0.18, 18),
-            new THREE.MeshStandardMaterial({
-              color: offering.color,
-              emissive: offering.color,
-              emissiveIntensity: 0.14,
-              roughness: 0.38,
-              metalness: 0.12
-            })
-          );
-          marker.position.set(Math.sin(angle) * 1.65, 0.42, Math.cos(angle) * 0.55);
-          marker.castShadow = true;
-          marker.userData = { offering };
-          directory.add(marker);
+          const kiosk = makeServiceKiosk(offering);
+          kiosk.position.set(Math.sin(angle) * 1.65, 0, Math.cos(angle) * 0.55);
+          kiosk.rotation.y = -angle * 0.18;
+          directory.add(kiosk);
+          clickable.push(kiosk);
         });
 
         scene.add(directory);
         scene.add(makeLabel("service offerings", new THREE.Vector3(6.0, 3.95, 0.12), 0xff5b24, 0.62));
+      }
+
+      function makeServiceKiosk(offering) {
+        const kiosk = new THREE.Group();
+        kiosk.userData = { serviceOffering: offering };
+
+        const base = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.2, 0.28, 0.16, 18),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.42,
+            metalness: 0.08
+          })
+        );
+        base.position.y = 0.08;
+        base.castShadow = true;
+        base.receiveShadow = true;
+        kiosk.add(base);
+
+        const beacon = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.14, 0.14, 0.54, 18),
+          new THREE.MeshStandardMaterial({
+            color: offering.color,
+            emissive: offering.color,
+            emissiveIntensity: 0.24,
+            roughness: 0.34,
+            metalness: 0.18
+          })
+        );
+        beacon.position.y = 0.46;
+        beacon.castShadow = true;
+        kiosk.add(beacon);
+
+        const cap = new THREE.Mesh(
+          new THREE.TorusGeometry(0.19, 0.03, 12, 30),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: offering.color,
+            emissiveIntensity: 0.34,
+            roughness: 0.22
+          })
+        );
+        cap.position.y = 0.78;
+        cap.rotation.x = Math.PI / 2;
+        kiosk.add(cap);
+
+        const sign = new THREE.Mesh(
+          new THREE.BoxGeometry(0.52, 0.3, 0.06),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            roughness: 0.38,
+            metalness: 0.06
+          })
+        );
+        sign.position.set(0, 0.72, 0.18);
+        sign.castShadow = true;
+        kiosk.add(sign);
+
+        kiosk.add(makeLabel(offering.name, new THREE.Vector3(0, 1.16, 0), offering.color, 0.34));
+        return kiosk;
       }
 
       function addSmokePuffs() {
@@ -2165,6 +2229,14 @@
         panel.classList.toggle("is-service-focus", id === "services");
         updateJourneyHighlights(id);
         setJourneyDetail(stepOverride ?? primaryJourneyStepByFocus[id] ?? "overview");
+      }
+
+      function focusServiceOffering(offering) {
+        focusRoom("services");
+        const copy = `${offering.description} Category: ${offering.type}.`;
+        currentRoom.textContent = offering.name;
+        currentCopy.textContent = copy;
+        showServiceDialogue(offering);
       }
 
       function updateJourneyHighlights(id) {
@@ -2308,6 +2380,46 @@
         speakerLinks.hidden = false;
       }
 
+      function showServiceDialogue(offering) {
+        speakerName.textContent = offering.name;
+        speakerCopy.textContent = offering.description;
+
+        const serviceGuidance = [
+          `${offering.type} service in the public-safe configuration catalog.`,
+          servicePrompt(offering),
+          "This kiosk shows the safe name and purpose only, never private configuration payloads or internal endpoints."
+        ];
+
+        speakerPoints.innerHTML = "";
+        serviceGuidance.forEach((point) => {
+          const item = document.createElement("li");
+          item.textContent = point;
+          speakerPoints.append(item);
+        });
+        speakerPoints.hidden = false;
+
+        renderDialogueLinks([
+          {
+            label: "Open service catalog notes",
+            url: "/data-platform-example/instructions/#configuration-repository-offerings"
+          }
+        ]);
+        dialogue.hidden = false;
+      }
+
+      function servicePrompt(offering) {
+        if (offering.type === "Capture") {
+          return "Use it when a producer needs a safe way to get source data into the house.";
+        }
+        if (offering.type === "Publish") {
+          return "Use it when landed data should become queryable, transformed, or continuously published for reuse.";
+        }
+        if (offering.type === "Consumer access" || offering.type === "Consumer egress" || offering.type === "Product egress") {
+          return "Use it when a team needs governed access or a declared outbound path back out of the platform.";
+        }
+        return "Use it when the standard capture or publish paths do not fit the need.";
+      }
+
       function showCharacterDialogue(character) {
         const knowledge = characterKnowledge.get(character.knowledgeSlug);
         const role = knowledge?.role || character.role;
@@ -2341,7 +2453,14 @@
         }
         let selected = hits[0].object;
         while (selected.parent && !selected.userData.dialogue) {
+          if (selected.userData.serviceOffering) {
+            break;
+          }
           selected = selected.parent;
+        }
+        if (selected.userData.serviceOffering) {
+          focusServiceOffering(selected.userData.serviceOffering);
+          return;
         }
         if (!selected.userData.dialogue) {
           return;

@@ -115,6 +115,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - Each journey handoff now shows its active flow mode directly in the world, so
   visitors can see when the path is streaming, incremental, quality-gated,
   declared export, or serving flow without relying only on the legend.
+- The configuration repository offerings now appear as clickable service kiosks
+  in the world as well as in the Services panel, so visitors can inspect safe
+  purpose and category without leaving the scene.
 
 This file should serve two purposes:
 
@@ -390,17 +393,13 @@ event version more convincing.
       <strong>Show the product-team loop</strong>
       <span>Build on the new source and consumer terminals so the send-and-receive loop stays obvious from multiple camera angles.</span>
     </article>
-    <article class="data-platform-card">
-      <strong>Turn service offerings into doors</strong>
-      <span>Make each configuration repository service become a door, kiosk, or pipe junction that explains when to use it.</span>
-    </article>
   </section>
 
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
     <article class="data-platform-card">
       <strong>Teach services on interaction</strong>
-      <span>Let visitors move to or click a service and get a concise explanation of when to use it and how it fits the platform.</span>
+      <span>Build on the new kiosks so service interaction teaches room ownership, likely users, and the nearest pipe or destination.</span>
     </article>
     <article class="data-platform-card">
       <strong>Deepen pipe language</strong>
@@ -521,6 +520,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Configuration repository service directory</strong>
       <span>The world now names every documented configuration repository offering on a visible service board and Services focus list.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Service kiosks in the world</strong>
+      <span>Visitors can now click each configuration repository offering in the scene or Services panel to get a public-safe explanation.</span>
     </article>
     <article class="data-platform-card">
       <strong>Visible journey tracker and loop terminals</strong>
