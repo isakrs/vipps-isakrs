@@ -115,9 +115,13 @@ The previous implementation has been deleted and replaced with a clearer split:
 - Each journey handoff now shows its active flow mode directly in the world, so
   visitors can see when the path is streaming, incremental, quality-gated,
   declared export, or serving flow without relying only on the legend.
-- The configuration repository offerings now appear as clickable service kiosks
-  in the world as well as in the Services panel, so visitors can inspect safe
-  purpose and category without leaving the scene.
+- The world now supports zooming in and out, both from the camera buttons and
+  from mouse-wheel input on the canvas.
+- The decorative repository table, open asset workbench, and smoke effects have
+  been removed so the house and core signal journey are easier to read.
+- The configuration repository offerings now appear as plain clickable service
+  boxes in the world as well as in the Services panel, so visitors can inspect
+  safe purpose and category without extra scene clutter.
 
 This file should serve two purposes:
 
@@ -371,15 +375,15 @@ event version more convincing.
     </article>
     <article class="data-platform-card">
       <strong>Declutter the world</strong>
-      <span>Remove low-information props and generic asset-library ideas that make the scene busier without making the platform clearer.</span>
+      <span>Keep trimming labels, props, and decorative effects until the house, pipes, and service boxes read clearly on first view.</span>
     </article>
     <article class="data-platform-card">
       <strong>Focus on configuration services</strong>
       <span>Make configuration services the primary explorable service family, with Dataverse and Datafront as key destinations.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Make service icons recognizable</strong>
-      <span>Turn rooms and props into recognizable storage accounts, database hotels, SQL servers, Databricks, dbt, Azure Event Hubs, Dino, and Wraptor.</span>
+      <strong>Simplify service presentation</strong>
+      <span>Keep configuration services as clean name boxes first, then add only the minimum visual cues needed to separate categories.</span>
     </article>
     <article class="data-platform-card">
       <strong>Explain payment event journey</strong>
@@ -399,7 +403,7 @@ event version more convincing.
     <h3 id="backlog-next">Next</h3>
     <article class="data-platform-card">
       <strong>Teach services on interaction</strong>
-      <span>Build on the new kiosks so service interaction teaches room ownership, likely users, and the nearest pipe or destination.</span>
+      <span>Build on the new service boxes so interaction teaches room ownership, likely users, and the nearest pipe or destination.</span>
     </article>
     <article class="data-platform-card">
       <strong>Deepen pipe language</strong>
@@ -522,8 +526,16 @@ event version more convincing.
       <span>The world now names every documented configuration repository offering on a visible service board and Services focus list.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Service kiosks in the world</strong>
-      <span>Visitors can now click each configuration repository offering in the scene or Services panel to get a public-safe explanation.</span>
+      <strong>Zoom controls added</strong>
+      <span>Visitors can now zoom in and out with camera buttons and mouse-wheel input on the main world canvas.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Scene declutter pass</strong>
+      <span>The decorative repository table, asset workbench, and smoke were removed so the house and pipes stay easier to scan.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Service boxes in the world</strong>
+      <span>Visitors can now click each configuration repository offering as a plain box in the scene or Services panel to get a public-safe explanation.</span>
     </article>
     <article class="data-platform-card">
       <strong>Visible journey tracker and loop terminals</strong>

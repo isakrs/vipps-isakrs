@@ -440,6 +440,13 @@
         z-index: 10;
       }
 
+      .camera-divider {
+        background: var(--line);
+        border-radius: 999px;
+        height: 22px;
+        width: 1px;
+      }
+
       .camera-button {
         align-items: center;
         background: #ffffff;
@@ -731,8 +738,6 @@
         <button class="focus-button" type="button" data-focus="analytics">Analytics</button>
         <button class="focus-button" type="button" data-focus="export">Export</button>
         <button class="focus-button" type="button" data-focus="product">Product</button>
-        <button class="focus-button" type="button" data-focus="github">GitHub</button>
-        <button class="focus-button" type="button" data-focus="assets">Assets</button>
         <button class="focus-button" type="button" data-focus="services">Services</button>
         <button class="focus-button" type="button" data-focus="house">House</button>
       </div>
@@ -778,6 +783,22 @@
     </section>
 
     <div class="camera-controls" aria-label="Camera controls">
+      <button class="camera-button" type="button" data-zoom="1" aria-label="Zoom in">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="6" />
+          <path d="M11 8v6" />
+          <path d="M8 11h6" />
+          <path d="M20 20l-4.2-4.2" />
+        </svg>
+      </button>
+      <button class="camera-button" type="button" data-zoom="-1" aria-label="Zoom out">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="6" />
+          <path d="M8 11h6" />
+          <path d="M20 20l-4.2-4.2" />
+        </svg>
+      </button>
+      <span class="camera-divider" aria-hidden="true"></span>
       <button class="camera-button" type="button" data-orbit="-1" aria-label="Turn view left">
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 0 1 15.5-6.2" />
@@ -913,6 +934,8 @@
       const desiredTarget = new THREE.Vector3(0, 0.3, 0);
       const desiredOffset = new THREE.Vector3(0, 10, 15);
       const cameraOffset = desiredOffset.clone();
+      const minCameraDistance = 6.4;
+      const maxCameraDistance = 20;
       const orbitAxis = new THREE.Vector3(0, 1, 0);
       let currentOrbitAngle = 0;
       let desiredOrbitAngle = 0;
@@ -947,7 +970,7 @@
         },
         services: {
           title: "Configuration Repository Services",
-          copy: "The configuration repository exposes explorable service kiosks for consumer access, exports, data products, capture, publishing, and custom integrations. Click a kiosk or service name to hear when it is used."
+          copy: "The configuration repository is shown as plain service-name boxes. Click a box or service name to hear when it is used without adding more scene clutter."
         }
       };
 
@@ -1140,10 +1163,7 @@
       addHousePipePorts();
       const isakFallback = addCharacters();
       loadAnimatedGuide(isakFallback);
-      addRepositoryTable();
-      addAssetLibraryWorkbench();
       addServiceOfferingDirectory();
-      addSmokePuffs();
       loadCharacterKnowledge();
 
       document.querySelectorAll("[data-focus]").forEach((button) => {
@@ -1170,6 +1190,10 @@
 
       document.querySelectorAll("[data-orbit]").forEach((button) => {
         button.addEventListener("click", () => rotateView(Number(button.dataset.orbit)));
+      });
+
+      document.querySelectorAll("[data-zoom]").forEach((button) => {
+        button.addEventListener("click", () => adjustZoom(Number(button.dataset.zoom) * -1.5));
       });
 
       closeDialogue.addEventListener("click", () => {
@@ -1215,9 +1239,22 @@
         }
         desiredOrbitAngle -= dx * 0.008;
         desiredOffset.y = THREE.MathUtils.clamp(desiredOffset.y + dy * 0.01, 4.2, 9.4);
+        clampCameraOffset();
         mouse.x = event.clientX;
         mouse.y = event.clientY;
       });
+
+      window.addEventListener(
+        "wheel",
+        (event) => {
+          if (event.target !== canvas) {
+            return;
+          }
+          event.preventDefault();
+          adjustZoom(event.deltaY * 0.01);
+        },
+        { passive: false }
+      );
 
       window.addEventListener("resize", resize);
 
@@ -2003,160 +2040,62 @@
 
       function addServiceOfferingDirectory() {
         const directory = new THREE.Group();
-        directory.position.set(6.15, 0.05, 0.25);
+        directory.position.set(5.95, 0.05, 0.28);
         directory.rotation.y = -0.42;
 
-        const boardCanvas = document.createElement("canvas");
-        boardCanvas.width = 1024;
-        boardCanvas.height = 768;
-        const context = boardCanvas.getContext("2d");
-        context.fillStyle = "rgba(255, 255, 255, 0.94)";
-        roundRect(context, 28, 28, 968, 712, 36);
-        context.fill();
-        context.strokeStyle = "#ff5b24";
-        context.lineWidth = 12;
-        context.stroke();
-
-        context.fillStyle = "#18222d";
-        context.font = "800 54px Inter, system-ui, sans-serif";
-        context.fillText("Configuration Repository Services", 70, 100);
-        context.fillStyle = "#5b6776";
-        context.font = "600 28px Inter, system-ui, sans-serif";
-        context.fillText("All platform offerings visible from the configuration files", 70, 144);
-
-        const columns = [
-          { title: "Consumer", types: ["Consumer access", "Consumer egress", "Product egress"], x: 70 },
-          { title: "Capture", types: ["Capture"], x: 384 },
-          { title: "Publish", types: ["Publish", "Special cases"], x: 676 }
+        const rows = [
+          platformOfferings.slice(0, 4),
+          platformOfferings.slice(4, 8),
+          platformOfferings.slice(8)
         ];
 
-        columns.forEach((column) => {
-          context.fillStyle = "#ff5b24";
-          context.font = "800 30px Inter, system-ui, sans-serif";
-          context.fillText(column.title, column.x, 210);
-
-          context.font = "700 26px Inter, system-ui, sans-serif";
-          let y = 258;
-          platformOfferings
-            .filter((offering) => column.types.includes(offering.type))
-            .forEach((offering) => {
-              context.fillStyle = `#${offering.color.toString(16).padStart(6, "0")}`;
-              context.beginPath();
-              context.arc(column.x + 10, y - 8, 8, 0, Math.PI * 2);
-              context.fill();
-              context.fillStyle = "#18222d";
-              context.fillText(offering.name, column.x + 30, y);
-              context.fillStyle = "#5b6776";
-              context.font = "600 20px Inter, system-ui, sans-serif";
-              context.fillText(offering.type, column.x + 30, y + 30);
-              context.font = "700 26px Inter, system-ui, sans-serif";
-              y += 82;
-            });
-        });
-
-        const boardTexture = new THREE.CanvasTexture(boardCanvas);
-        const board = new THREE.Mesh(
-          new THREE.PlaneGeometry(3.9, 2.92),
-          new THREE.MeshBasicMaterial({
-            map: boardTexture,
-            transparent: true
-          })
-        );
-        board.position.set(0, 2.25, 0);
-        directory.add(board);
-
-        const standMaterial = new THREE.MeshStandardMaterial({
-          color: 0x27384d,
-          roughness: 0.45,
-          metalness: 0.2
-        });
-        [-1.45, 1.45].forEach((x) => {
-          const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 1.7, 12), standMaterial);
-          stand.position.set(x, 1.1, -0.04);
-          stand.castShadow = true;
-          directory.add(stand);
-        });
-
-        const base = new THREE.Mesh(
-          new THREE.BoxGeometry(3.4, 0.12, 0.45),
-          new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0.08 })
-        );
-        base.position.set(0, 0.24, 0);
-        base.castShadow = true;
-        base.receiveShadow = true;
-        directory.add(base);
-
-        platformOfferings.forEach((offering, index) => {
-          const angle = -Math.PI * 0.75 + index * (Math.PI * 1.5 / (platformOfferings.length - 1));
-          const kiosk = makeServiceKiosk(offering);
-          kiosk.position.set(Math.sin(angle) * 1.65, 0, Math.cos(angle) * 0.55);
-          kiosk.rotation.y = -angle * 0.18;
-          directory.add(kiosk);
-          clickable.push(kiosk);
+        rows.forEach((row, rowIndex) => {
+          row.forEach((offering, columnIndex) => {
+            const box = makeServiceBox(offering);
+            const x = (columnIndex - (row.length - 1) / 2) * 0.92;
+            const z = (rowIndex - 1) * 0.72;
+            box.position.set(x, 0, z);
+            directory.add(box);
+            clickable.push(box);
+          });
         });
 
         scene.add(directory);
-        scene.add(makeLabel("service offerings", new THREE.Vector3(6.0, 3.95, 0.12), 0xff5b24, 0.62));
+        scene.add(makeLabel("service boxes", new THREE.Vector3(6.0, 2.8, 0.12), 0xff5b24, 0.62));
       }
 
-      function makeServiceKiosk(offering) {
-        const kiosk = new THREE.Group();
-        kiosk.userData = { serviceOffering: offering };
+      function makeServiceBox(offering) {
+        const box = new THREE.Group();
+        box.userData = { serviceOffering: offering };
 
-        const base = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.2, 0.28, 0.16, 18),
-          new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            roughness: 0.42,
-            metalness: 0.08
-          })
-        );
-        base.position.y = 0.08;
-        base.castShadow = true;
-        base.receiveShadow = true;
-        kiosk.add(base);
-
-        const beacon = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.14, 0.14, 0.54, 18),
-          new THREE.MeshStandardMaterial({
-            color: offering.color,
-            emissive: offering.color,
-            emissiveIntensity: 0.24,
-            roughness: 0.34,
-            metalness: 0.18
-          })
-        );
-        beacon.position.y = 0.46;
-        beacon.castShadow = true;
-        kiosk.add(beacon);
-
-        const cap = new THREE.Mesh(
-          new THREE.TorusGeometry(0.19, 0.03, 12, 30),
-          new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            emissive: offering.color,
-            emissiveIntensity: 0.34,
-            roughness: 0.22
-          })
-        );
-        cap.position.y = 0.78;
-        cap.rotation.x = Math.PI / 2;
-        kiosk.add(cap);
-
-        const sign = new THREE.Mesh(
-          new THREE.BoxGeometry(0.52, 0.3, 0.06),
+        const body = new THREE.Mesh(
+          new THREE.BoxGeometry(0.8, 0.34, 0.42),
           new THREE.MeshStandardMaterial({
             color: 0xffffff,
             roughness: 0.38,
-            metalness: 0.06
+            metalness: 0.04
           })
         );
-        sign.position.set(0, 0.72, 0.18);
-        sign.castShadow = true;
-        kiosk.add(sign);
+        body.position.y = 0.22;
+        body.castShadow = true;
+        body.receiveShadow = true;
+        box.add(body);
 
-        kiosk.add(makeLabel(offering.name, new THREE.Vector3(0, 1.16, 0), offering.color, 0.34));
-        return kiosk;
+        const accent = new THREE.Mesh(
+          new THREE.BoxGeometry(0.8, 0.06, 0.42),
+          new THREE.MeshStandardMaterial({
+            color: offering.color,
+            emissive: offering.color,
+            emissiveIntensity: 0.16,
+            roughness: 0.3,
+            metalness: 0.08
+          })
+        );
+        accent.position.y = 0.39;
+        box.add(accent);
+
+        box.add(makeLabel(offering.name, new THREE.Vector3(0, 0.88, 0), offering.color, 0.3));
+        return box;
       }
 
       function addSmokePuffs() {
@@ -2220,6 +2159,7 @@
         const room = roomTargets[id] ?? roomTargets.house;
         desiredTarget.set(...room.target);
         desiredOffset.set(...room.offset);
+        clampCameraOffset();
         const details = roomDetails[id] ?? roomDetails.house;
         currentRoom.textContent = details.title;
         currentCopy.textContent = details.copy;
@@ -2261,6 +2201,13 @@
 
       function rotateView(direction) {
         desiredOrbitAngle += direction * (Math.PI / 4);
+      }
+
+      function adjustZoom(delta) {
+        const currentDistance = desiredOffset.length();
+        const nextDistance = THREE.MathUtils.clamp(currentDistance + delta, minCameraDistance, maxCameraDistance);
+        desiredOffset.setLength(nextDistance);
+        clampCameraOffset();
       }
 
       async function loadCharacterKnowledge() {
@@ -2503,6 +2450,12 @@
       function clampTarget() {
         desiredTarget.x = THREE.MathUtils.clamp(desiredTarget.x, -9.2, 9.2);
         desiredTarget.z = THREE.MathUtils.clamp(desiredTarget.z, -6.8, 6.8);
+      }
+
+      function clampCameraOffset() {
+        const distance = THREE.MathUtils.clamp(desiredOffset.length(), minCameraDistance, maxCameraDistance);
+        desiredOffset.setLength(distance);
+        desiredOffset.y = THREE.MathUtils.clamp(desiredOffset.y, 3.8, 10.5);
       }
 
       function animate() {
