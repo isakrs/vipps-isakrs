@@ -639,8 +639,8 @@
       .flow,
       .code-layout,
       .example-layout {
-        width: calc(100vw - 56px) !important;
-        max-width: calc(100vw - 56px) !important;
+        width: calc(100vw - 96px) !important;
+        max-width: calc(100vw - 96px) !important;
       }
 
       h1,
@@ -653,7 +653,7 @@
         max-width: 100%;
         white-space: normal;
         word-break: normal;
-        overflow-wrap: break-word;
+        overflow-wrap: anywhere;
       }
 
       .slide * {
@@ -691,13 +691,14 @@
       }
       h1 { font-size: 2.6rem; }
       h2 { font-size: 2.35rem; }
-      .hero-title { font-size: 2.9rem; }
-      .lead { font-size: 1.24rem; }
-      p { font-size: 1.04rem; }
+      .hero-title { font-size: 2.35rem; }
+      .lead { font-size: 1.02rem; line-height: 1.34; }
+      p { font-size: 0.96rem; }
 
       .thesis-line {
         grid-template-columns: 1fr;
         gap: 8px;
+        font-size: 0.98rem;
       }
 
       .thesis-line span:first-child {
