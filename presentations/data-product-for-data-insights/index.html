@@ -639,8 +639,21 @@
       .flow,
       .code-layout,
       .example-layout {
-        width: calc(100vw - 28px);
-        max-width: calc(100vw - 28px);
+        width: calc(100vw - 56px) !important;
+        max-width: calc(100vw - 56px) !important;
+      }
+
+      h1,
+      h2,
+      h3,
+      p,
+      strong,
+      span,
+      li {
+        max-width: 100%;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
       }
 
       .slide * {
