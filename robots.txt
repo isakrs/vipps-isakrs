@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /millionaire/
 Disallow: /presentations/
+Disallow: /presentations/data-product-azure-databricks-deep-dive/
 Disallow: /presentations/data-product-for-data-insights/

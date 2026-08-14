@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Data product Azure and Databricks deep dive cover</title>
+  <desc id="desc">Architecture style cover for a technical data product presentation.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="0.55" stop-color="#eef4f7"/>
+      <stop offset="1" stop-color="#fff3ee"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0v48" fill="none" stroke="#16212f" stroke-opacity=".08" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#111317" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="760" fill="url(#paper)"/>
+  <rect width="1200" height="760" fill="url(#grid)"/>
+  <rect x="70" y="70" width="1060" height="620" rx="22" fill="#ffffff" stroke="#172033" stroke-opacity=".12" filter="url(#shadow)"/>
+  <rect x="70" y="70" width="1060" height="76" rx="22" fill="#111317"/>
+  <rect x="70" y="124" width="1060" height="22" fill="#111317"/>
+  <circle cx="113" cy="108" r="13" fill="#ff5b24"/>
+  <circle cx="151" cy="108" r="13" fill="#35a67d"/>
+  <circle cx="189" cy="108" r="13" fill="#f2bd45"/>
+  <text x="235" y="116" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="800">vipps data product resources</text>
+  <g transform="translate(112 198)">
+    <text x="0" y="0" fill="#111317" font-family="Inter, Arial, sans-serif" font-size="69" font-weight="900">Azure + Databricks</text>
+    <text x="0" y="74" fill="#111317" font-family="Inter, Arial, sans-serif" font-size="69" font-weight="900">deep dive</text>
+    <text x="2" y="125" fill="#5b6471" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700">Terraform stack, Unity Catalog, identities, network rules, and publication paths</text>
+  </g>
+  <g transform="translate(128 405)" font-family="Inter, Arial, sans-serif">
+    <rect x="0" y="0" width="218" height="116" rx="12" fill="#fff3ee" stroke="#ff5b24" stroke-width="3"/>
+    <text x="22" y="42" fill="#111317" font-size="28" font-weight="900">Terraform</text>
+    <text x="22" y="74" fill="#6a4750" font-size="18" font-weight="700">data-product-v1</text>
+    <path d="M218 58h73" stroke="#ff5b24" stroke-width="5" stroke-linecap="round"/>
+    <path d="M282 45l16 13-16 13" fill="none" stroke="#ff5b24" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="306" y="-34" width="224" height="84" rx="12" fill="#ecf8f3" stroke="#35a67d" stroke-width="3"/>
+    <text x="328" y="0" fill="#111317" font-size="26" font-weight="900">Azure</text>
+    <text x="328" y="30" fill="#406d61" font-size="18" font-weight="700">storage, Key Vault, identities</text>
+    <rect x="306" y="84" width="224" height="84" rx="12" fill="#eef5ff" stroke="#3478d4" stroke-width="3"/>
+    <text x="328" y="118" fill="#111317" font-size="26" font-weight="900">Databricks</text>
+    <text x="328" y="148" fill="#46627f" font-size="18" font-weight="700">schemas, views, volumes</text>
+    <path d="M530 8h72" stroke="#35a67d" stroke-width="5" stroke-linecap="round"/>
+    <path d="M593 -5l16 13-16 13" fill="none" stroke="#35a67d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M530 126h72" stroke="#3478d4" stroke-width="5" stroke-linecap="round"/>
+    <path d="M593 113l16 13-16 13" fill="none" stroke="#3478d4" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="618" y="-18" width="248" height="202" rx="14" fill="#111317"/>
+    <text x="644" y="23" fill="#ffffff" font-size="26" font-weight="900">Data product</text>
+    <text x="644" y="59" fill="#dce5ee" font-size="18" font-weight="700">data_products.&lt;schema&gt;</text>
+    <rect x="644" y="84" width="86" height="42" rx="8" fill="#ff5b24"/>
+    <text x="664" y="111" fill="#170802" font-size="17" font-weight="900">views</text>
+    <rect x="744" y="84" width="96" height="42" rx="8" fill="#35a67d"/>
+    <text x="762" y="111" fill="#07150f" font-size="17" font-weight="900">volumes</text>
+    <rect x="644" y="138" width="196" height="18" rx="9" fill="#f2bd45"/>
+  </g>
+</svg>

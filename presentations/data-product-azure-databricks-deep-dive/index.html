@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ff5b24" />
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+  <meta name="description" content="A technical presentation about the Azure and Databricks resources created for Vipps data products." />
+  <title>Data Product Azure + Databricks Deep Dive | Vipps Presentations</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --ink: #111317;
+      --paper: #f6f8fa;
+      --muted: #5b6471;
+      --line: rgba(17, 19, 23, 0.14);
+      --line-strong: rgba(17, 19, 23, 0.24);
+      --vipps: #ff5b24;
+      --teal: #35a67d;
+      --blue: #3478d4;
+      --gold: #f2bd45;
+      --purple: #7357d6;
+      --dark: #111317;
+      --white: #ffffff;
+      --shadow: 0 22px 70px rgba(17, 19, 23, 0.14);
+    }
+
+    html, body { min-height: 100%; }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(17, 19, 23, 0.06) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(17, 19, 23, 0.05) 1px, transparent 1px),
+        var(--paper);
+      background-size: 64px 64px;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; }
+    code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+
+    .deck {
+      height: 100dvh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+    }
+
+    .topbar {
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 22px 10px;
+      background: var(--dark);
+      color: var(--white);
+      border-bottom: 4px solid var(--vipps);
+    }
+
+    .brand {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      border-radius: 8px;
+      background: var(--vipps);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.1;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .brand span span {
+      display: block;
+      margin-top: 2px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.78rem;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill,
+    .control {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      padding: 8px 11px;
+      font-size: 0.82rem;
+      font-weight: 850;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .control {
+      min-width: 42px;
+      cursor: pointer;
+    }
+
+    .control:hover,
+    .control:focus-visible {
+      border-color: var(--vipps);
+      outline: none;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      height: calc(100dvh - 118px);
+      overflow: auto;
+      padding: 32px 48px 30px;
+    }
+
+    .slide.active {
+      display: grid;
+      align-content: start;
+    }
+
+    .slide-inner {
+      width: min(1210px, 100%);
+      margin: 0 auto;
+    }
+
+    .slide-kicker {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 31px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      background: var(--vipps);
+      color: #170802;
+      padding: 6px 10px;
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2 {
+      letter-spacing: 0;
+      line-height: 0.94;
+      font-weight: 900;
+      text-wrap: balance;
+    }
+
+    h1 {
+      max-width: 1030px;
+      margin-bottom: 20px;
+      font-size: 4.25rem;
+    }
+
+    h2 {
+      max-width: 1080px;
+      margin-bottom: 24px;
+      font-size: 3.25rem;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 1.18rem;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 1.12rem;
+      line-height: 1.42;
+      font-weight: 650;
+    }
+
+    .lead {
+      max-width: 900px;
+      color: var(--ink);
+      font-size: 1.3rem;
+      line-height: 1.36;
+      font-weight: 760;
+    }
+
+    .accent { color: var(--vipps); }
+    .muted { color: var(--muted); }
+    .tight { margin-bottom: 12px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 0.94fr 1.06fr;
+      align-items: center;
+      gap: 34px;
+    }
+
+    .hero-title {
+      font-size: 4.5rem;
+      margin-bottom: 24px;
+    }
+
+    .thesis {
+      display: grid;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .thesis-line {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.04rem;
+      font-weight: 850;
+    }
+
+    .thesis-line span:first-child {
+      border-radius: 8px;
+      background: var(--dark);
+      color: #ffffff;
+      padding: 9px 10px;
+      text-align: center;
+    }
+
+    .hero-visual,
+    .diagram-dark,
+    .architecture-map,
+    .flow-rail,
+    .network-map,
+    .identity-map,
+    .catalog-map,
+    .share-map {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-visual {
+      min-height: 420px;
+      display: grid;
+      gap: 16px;
+      align-content: center;
+      background: var(--dark);
+      color: #ffffff;
+      padding: 26px;
+    }
+
+    .terminal {
+      border-radius: 8px;
+      background: #05070a;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+
+    .terminal-top {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 13px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--vipps); }
+    .dot:nth-child(2) { background: var(--teal); }
+    .dot:nth-child(3) { background: var(--gold); }
+
+    pre {
+      margin: 0;
+      overflow: auto;
+      padding: 17px 18px;
+      color: #eef5ff;
+      font-size: 0.9rem;
+      line-height: 1.52;
+      font-weight: 650;
+      tab-size: 2;
+    }
+
+    .code-comment { color: #7ecaa8; }
+    .code-key { color: #88b8ff; }
+    .code-hot { color: #ff9d77; }
+    .code-gold { color: #ffd36c; }
+
+    .resource-chips {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .chip {
+      min-height: 74px;
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.08);
+      padding: 13px;
+    }
+
+    .chip strong {
+      display: block;
+      color: #ffffff;
+      font-size: 0.92rem;
+      font-weight: 900;
+    }
+
+    .chip span {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.78rem;
+      line-height: 1.25;
+      font-weight: 750;
+    }
+
+    .columns-2,
+    .columns-3,
+    .columns-4,
+    .split {
+      display: grid;
+      gap: 16px;
+    }
+
+    .columns-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .columns-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .columns-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .split { grid-template-columns: 0.9fr 1.1fr; align-items: start; }
+
+    .tile {
+      min-height: 146px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.86);
+      padding: 18px;
+      box-shadow: 0 14px 38px rgba(17, 19, 23, 0.07);
+    }
+
+    .tile strong,
+    .tile code {
+      overflow-wrap: anywhere;
+    }
+
+    .tile p {
+      margin-bottom: 0;
+      font-size: 0.98rem;
+      line-height: 1.36;
+    }
+
+    .tile .label {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 12px;
+      border-radius: 999px;
+      background: #111317;
+      color: #ffffff;
+      padding: 6px 10px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .tile.orange { border-color: rgba(255, 91, 36, 0.45); }
+    .tile.green { border-color: rgba(53, 166, 125, 0.45); }
+    .tile.blue { border-color: rgba(52, 120, 212, 0.45); }
+    .tile.gold { border-color: rgba(242, 189, 69, 0.55); }
+    .tile.purple { border-color: rgba(115, 87, 214, 0.45); }
+
+    .tile.orange .label { background: var(--vipps); color: #170802; }
+    .tile.green .label { background: var(--teal); color: #06140f; }
+    .tile.blue .label { background: var(--blue); }
+    .tile.gold .label { background: var(--gold); color: #191006; }
+    .tile.purple .label { background: var(--purple); }
+
+    .diagram-dark {
+      background: var(--dark);
+      color: #ffffff;
+      padding: 24px;
+    }
+
+    .diagram-dark h3,
+    .diagram-dark strong { color: #ffffff; }
+
+    .diagram-dark p,
+    .diagram-dark span { color: rgba(255, 255, 255, 0.72); }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .pipe-node {
+      position: relative;
+      min-height: 132px;
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+    }
+
+    .pipe-node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 10px;
+      height: 3px;
+      background: var(--vipps);
+    }
+
+    .pipe-node b {
+      color: #ffffff;
+      font-size: 1rem;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .pipe-node span {
+      font-size: 0.78rem;
+      line-height: 1.3;
+      font-weight: 750;
+    }
+
+    .environment-table,
+    .matrix,
+    .checklist-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 34px rgba(17, 19, 23, 0.07);
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow: auto;
+      border-radius: 8px;
+    }
+
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.9rem;
+      line-height: 1.32;
+      font-weight: 700;
+    }
+
+    th {
+      background: #111317;
+      color: #ffffff;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    td code {
+      color: #171b21;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+    td:last-child, th:last-child { border-right: 0; }
+
+    .architecture-map {
+      display: grid;
+      grid-template-columns: 0.88fr 1.12fr;
+      gap: 18px;
+      background: #ffffff;
+      padding: 22px;
+    }
+
+    .name-stack {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .name-row {
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #f9fbfc;
+    }
+
+    .name-row b {
+      display: block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .name-row code {
+      font-size: 0.82rem;
+      line-height: 1.25;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .resource-map {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .resource-box {
+      min-height: 130px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f9fbfc;
+      padding: 14px;
+    }
+
+    .resource-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .resource-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.34;
+      font-weight: 730;
+    }
+
+    .network-map {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+      background: #ffffff;
+      padding: 20px;
+    }
+
+    .network-column {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .network-node {
+      min-height: 86px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f9fbfc;
+      padding: 13px;
+    }
+
+    .network-node strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.94rem;
+      font-weight: 900;
+    }
+
+    .network-node span {
+      color: var(--muted);
+      font-size: 0.79rem;
+      line-height: 1.32;
+      font-weight: 720;
+    }
+
+    .firewall {
+      display: grid;
+      align-content: center;
+      min-height: 100%;
+      border-radius: 8px;
+      background: var(--dark);
+      color: #ffffff;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .firewall strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #ffffff;
+      font-size: 1.28rem;
+      font-weight: 900;
+    }
+
+    .firewall span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.9rem;
+      line-height: 1.36;
+      font-weight: 740;
+    }
+
+    .identity-map,
+    .catalog-map,
+    .share-map {
+      background: #ffffff;
+      padding: 22px;
+    }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .identity-track {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 360px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f9fbfc;
+      padding: 14px;
+    }
+
+    .identity-track h3 {
+      min-height: 46px;
+      margin-bottom: 2px;
+    }
+
+    .mini-node {
+      min-height: 70px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      padding: 10px;
+    }
+
+    .mini-node b {
+      color: var(--ink);
+      font-size: 0.85rem;
+      line-height: 1.16;
+      font-weight: 900;
+    }
+
+    .mini-node span {
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.28;
+      font-weight: 730;
+    }
+
+    .catalog-lanes {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .catalog-lane {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f9fbfc;
+      padding: 14px;
+    }
+
+    .object-node {
+      min-height: 76px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      padding: 12px;
+    }
+
+    .object-node b {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.88rem;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+
+    .object-node span {
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.28;
+      font-weight: 730;
+    }
+
+    .object-node.orange { border-color: rgba(255, 91, 36, 0.4); }
+    .object-node.green { border-color: rgba(53, 166, 125, 0.4); }
+    .object-node.blue { border-color: rgba(52, 120, 212, 0.42); }
+    .object-node.gold { border-color: rgba(242, 189, 69, 0.52); }
+
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 255, 255, 0.76);
+      padding: 6px 9px;
+      color: var(--ink);
+      font-size: 0.78rem;
+      line-height: 1.15;
+      font-weight: 850;
+    }
+
+    .badge.orange { border-color: rgba(255, 91, 36, 0.45); background: rgba(255, 91, 36, 0.12); }
+    .badge.green { border-color: rgba(53, 166, 125, 0.45); background: rgba(53, 166, 125, 0.12); }
+    .badge.blue { border-color: rgba(52, 120, 212, 0.42); background: rgba(52, 120, 212, 0.12); }
+    .badge.gold { border-color: rgba(242, 189, 69, 0.56); background: rgba(242, 189, 69, 0.16); }
+    .badge.purple { border-color: rgba(115, 87, 214, 0.42); background: rgba(115, 87, 214, 0.12); }
+
+    .owner-rights {
+      display: grid;
+      grid-template-columns: 1fr 0.82fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .right-flow {
+      display: grid;
+      gap: 10px;
+      align-content: center;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      padding: 16px;
+    }
+
+    .right-step {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 10px;
+      align-items: center;
+      min-height: 64px;
+      border-radius: 8px;
+      background: #f9fbfc;
+      border: 1px solid var(--line);
+      padding: 10px;
+    }
+
+    .right-step b {
+      color: var(--vipps);
+      font-size: 0.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .right-step span {
+      color: var(--ink);
+      font-size: 0.86rem;
+      line-height: 1.28;
+      font-weight: 760;
+    }
+
+    .share-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .share-step {
+      position: relative;
+      min-height: 150px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #f9fbfc;
+      padding: 14px;
+    }
+
+    .share-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      width: 10px;
+      height: 3px;
+      background: var(--vipps);
+    }
+
+    .share-step strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .share-step span {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.32;
+      font-weight: 730;
+    }
+
+    .footer {
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 22px 12px;
+      background: rgba(255, 255, 255, 0.88);
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.25;
+      font-weight: 750;
+    }
+
+    .footer strong { color: var(--ink); font-weight: 900; }
+
+    .notes-panel {
+      position: fixed;
+      right: 18px;
+      bottom: 72px;
+      width: min(460px, calc(100% - 36px));
+      max-height: min(420px, calc(100dvh - 150px));
+      display: none;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 22px 70px rgba(17, 19, 23, 0.24);
+      padding: 18px;
+      z-index: 10;
+    }
+
+    body.show-notes .notes-panel { display: block; }
+
+    .notes-panel h2 {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      line-height: 1.1;
+    }
+
+    .notes-panel p {
+      margin: 0;
+      color: var(--ink);
+      font-size: 0.94rem;
+      line-height: 1.42;
+      font-weight: 650;
+    }
+
+    .notes { display: none; }
+
+    @media (max-width: 1060px) {
+      .slide { padding: 28px 28px 28px; }
+      .hero-grid,
+      .split,
+      .architecture-map,
+      .owner-rights {
+        grid-template-columns: 1fr;
+      }
+
+      .pipeline,
+      .columns-4,
+      .catalog-lanes,
+      .share-steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .columns-3,
+      .identity-grid,
+      .network-map {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual { min-height: 340px; }
+      .identity-track { min-height: 0; }
+      .share-step:not(:last-child)::after,
+      .pipe-node:not(:last-child)::after { display: none; }
+    }
+
+    @media (max-width: 720px) {
+      .deck {
+        min-height: 100dvh;
+        height: 100dvh;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px 14px 10px;
+      }
+
+      .brand img { width: 34px; height: 34px; }
+      .brand strong { font-size: 0.92rem; }
+      .brand span span { font-size: 0.72rem; }
+
+      .controls {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 42px 42px 1fr;
+      }
+
+      .pill,
+      .control {
+        min-height: 36px;
+        padding: 7px 8px;
+        font-size: 0.76rem;
+      }
+
+      .slide {
+        height: calc(100dvh - 155px);
+        padding: 22px 14px 24px;
+      }
+
+      h1,
+      .hero-title {
+        font-size: 2.45rem;
+        line-height: 0.98;
+      }
+
+      h2 {
+        font-size: 2.05rem;
+        line-height: 1;
+      }
+
+      h3 { font-size: 1.02rem; }
+      p, .lead { font-size: 0.98rem; }
+
+      .columns-2,
+      .columns-4,
+      .pipeline,
+      .catalog-lanes,
+      .share-steps,
+      .resource-map,
+      .resource-chips {
+        grid-template-columns: 1fr;
+      }
+
+      .thesis-line,
+      .right-step,
+      .name-row {
+        grid-template-columns: 1fr;
+      }
+
+      .tile { min-height: 0; padding: 15px; }
+      .hero-visual,
+      .diagram-dark,
+      .architecture-map,
+      .network-map,
+      .identity-map,
+      .catalog-map,
+      .share-map {
+        padding: 15px;
+      }
+
+      pre {
+        font-size: 0.76rem;
+        line-height: 1.48;
+      }
+
+      th, td {
+        min-width: 170px;
+        padding: 11px 12px;
+        font-size: 0.8rem;
+      }
+
+      .footer {
+        min-height: 48px;
+        padding: 8px 14px 10px;
+        font-size: 0.74rem;
+      }
+
+      .footer span:last-child { display: none; }
+      .notes-panel { right: 12px; bottom: 58px; width: calc(100% - 24px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <header class="topbar">
+      <a class="brand" href="/presentations/">
+        <img src="/favicon.svg" alt="Vipps" />
+        <span>
+          <strong>Data Product Resource Map</strong>
+          <span>Azure + Databricks deep dive</span>
+        </span>
+      </a>
+      <div class="controls" aria-label="Presentation controls">
+        <span class="pill" id="slideCounter">1 / 13</span>
+        <button class="control" id="prevSlide" type="button" aria-label="Previous slide"><span aria-hidden="true">&lt;</span></button>
+        <button class="control" id="nextSlide" type="button" aria-label="Next slide"><span aria-hidden="true">&gt;</span></button>
+        <button class="control" id="notesToggle" type="button" aria-pressed="false">Notes</button>
+      </div>
+    </header>
+
+    <main class="stage" aria-live="polite">
+      <section class="slide active" data-title="Title">
+        <div class="slide-inner hero-grid">
+          <div>
+            <span class="slide-kicker">Technical version</span>
+            <h1 class="hero-title">Data product Azure + Databricks deep dive</h1>
+            <p class="lead">What one data product configuration becomes when Terraform applies it: Azure resources, Databricks objects, identities, grants, network controls, and publication paths.</p>
+            <div class="thesis">
+              <div class="thesis-line"><span>Configuration</span><strong>Product intent lives in versioned configuration.</strong></div>
+              <div class="thesis-line"><span>Platform module</span><strong>The module creates the repeatable resource envelope.</strong></div>
+              <div class="thesis-line"><span>Product team</span><strong>Teams deploy code against a ready-made operating surface.</strong></div>
+            </div>
+          </div>
+          <div class="hero-visual" aria-label="Resource map preview">
+            <div class="terminal">
+              <div class="terminal-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <pre><code><span class="code-key">module</span> <span class="code-gold">"product"</span> {
+  <span class="code-key">for_each</span> = var.data_products
+  <span class="code-key">source</span>   = <span class="code-hot">"../../../../modules/data-product-v1"</span>
+
+  <span class="code-key">environment</span>             = var.environment
+  <span class="code-key">data_product_name</span>       = each.key
+  <span class="code-key">config</span>                  = each.value
+  <span class="code-key">serverless_warehouse_id</span> = data.databricks_sql_warehouse.serverless.id
+}</code></pre>
+            </div>
+            <div class="resource-chips">
+              <div class="chip"><strong>Azure</strong><span>resource group, storage account, managed identities, Key Vault</span></div>
+              <div class="chip"><strong>Databricks</strong><span>schema, volumes, views, service principals, grants</span></div>
+              <div class="chip"><strong>Entra ID</strong><span>access group, application assignment, identity ownership</span></div>
+            </div>
+          </div>
+          <aside class="notes">Open with the mental model: this is not just a schema. It is an operating envelope. The product configuration is intentionally small, but the platform expands it into everything a team needs to build and run safely.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Control Plane">
+        <div class="slide-inner">
+          <span class="slide-kicker">1. Control plane</span>
+          <h2>One declaration fans out through a small number of planes.</h2>
+          <div class="diagram-dark">
+            <div class="pipeline">
+              <div class="pipe-node"><b>Product configuration</b><span>Short name, schema name, owner, GitHub repositories, optional secrets, access views, publications, notifications.</span></div>
+              <div class="pipe-node"><b>Generated variables</b><span>Environment specific Terraform input is produced by the platform configuration pipeline.</span></div>
+              <div class="pipe-node"><b>Deploy stack</b><span><code>config-deploy/data-products</code> selects workspace, resource group, folder, warehouse, and storage credential context.</span></div>
+              <div class="pipe-node"><b>Product module</b><span><code>modules/data-product-v1</code> creates every per-product Azure, Databricks, and Entra ID object.</span></div>
+              <div class="pipe-node"><b>Product surface</b><span>Teams get a schema, storage-backed volumes, identities, permissions, and deployment authentication.</span></div>
+            </div>
+          </div>
+          <div class="columns-3" style="margin-top: 16px;">
+            <div class="tile orange"><span class="label">Stable contract</span><h3>Configuration stays product-shaped.</h3><p>The implementation absorbs platform details like workspace identifiers, storage credentials, and resource naming.</p></div>
+            <div class="tile green"><span class="label">Environment aware</span><h3>Production and user acceptance testing resolve different workspaces.</h3><p>The same stack chooses the right Databricks workspace and resource group based on environment.</p></div>
+            <div class="tile blue"><span class="label">Shared execution</span><h3>The serverless warehouse is looked up centrally.</h3><p>Terraform uses the workspace serverless warehouse when creating data access views.</p></div>
+          </div>
+          <aside class="notes">This slide is the platform flow. The important bit for Data Insights is that product teams do not need to know the full set of Azure and Databricks primitives. They declare the product. The platform materializes the primitives.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Shared Foundation">
+        <div class="slide-inner">
+          <span class="slide-kicker">2. Shared foundation</span>
+          <h2>The stack anchors every product in common platform resources.</h2>
+          <div class="table-scroll">
+            <table class="environment-table">
+              <thead>
+                <tr>
+                  <th>Area</th>
+                  <th>Production</th>
+                  <th>User acceptance testing</th>
+                  <th>Why it matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Databricks workspace</td>
+                  <td><code>dbw-analytics</code></td>
+                  <td><code>dbw-datainsights-uat</code></td>
+                  <td>Products land where users and scheduled workloads already operate.</td>
+                </tr>
+                <tr>
+                  <td>Workspace folder</td>
+                  <td><code>/data-products</code></td>
+                  <td><code>/data-products</code></td>
+                  <td>All product workspace assets sit under a predictable folder tree.</td>
+                </tr>
+                <tr>
+                  <td>Azure resource group</td>
+                  <td><code>rg-data-platform-data-products</code></td>
+                  <td><code>rg-data-platform-data-products-uat</code></td>
+                  <td>Product resources are isolated from the core workspace resource group.</td>
+                </tr>
+                <tr>
+                  <td>Unity Catalog</td>
+                  <td><code>data_products</code></td>
+                  <td><code>data_products</code></td>
+                  <td>The catalog is shared; each product gets its own schema inside it.</td>
+                </tr>
+                <tr>
+                  <td>Storage credential</td>
+                  <td><code>data-products-contributor</code></td>
+                  <td><code>data-products-contributor</code></td>
+                  <td>Backed by the <code>ac-data-products-contributor</code> access connector managed identity.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="columns-3" style="margin-top: 16px;">
+            <div class="tile gold"><span class="label">Tags</span><h3>Every resource carries ownership metadata.</h3><p>Environment, owner team, created by Terraform, confidentiality, and review metadata are stamped consistently.</p></div>
+            <div class="tile purple"><span class="label">State</span><h3>Foundation and product deploy state are split.</h3><p>The base component owns shared scaffolding; product configuration deploys fan out per environment.</p></div>
+            <div class="tile blue"><span class="label">Credential</span><h3>The storage credential is metastore-level.</h3><p>Unity Catalog uses the access connector managed identity to reach each product storage account.</p></div>
+          </div>
+          <aside class="notes">Call out that the access connector is deliberately shared at the metastore level. The product module grants that managed identity Azure Storage Blob Data Contributor on each storage account, so Databricks can mount external locations without product-specific credentials.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Azure Landing Zone">
+        <div class="slide-inner">
+          <span class="slide-kicker">3. Azure landing zone</span>
+          <h2>Each product gets a storage-first resource envelope.</h2>
+          <div class="architecture-map">
+            <div class="name-stack">
+              <div class="name-row"><b>Storage</b><code>stdp&lt;short_name&gt;&lt;environment&gt;</code></div>
+              <div class="name-row"><b>Container</b><code>volumes</code></div>
+              <div class="name-row"><b>Key Vault</b><code>akv-dp-&lt;short_name&gt;-&lt;environment&gt;</code></div>
+              <div class="name-row"><b>Runner identity</b><code>data-product-runner-&lt;name&gt;-&lt;environment&gt;</code></div>
+              <div class="name-row"><b>Deployer identity</b><code>data-product-deployer-&lt;name&gt;-&lt;environment&gt;</code></div>
+            </div>
+            <div class="resource-map">
+              <div class="resource-box"><strong>Storage account</strong><span>StorageV2, zone redundant storage, hierarchical namespace enabled, transport layer security 1.2, shared access key disabled, cross-tenant replication disabled.</span></div>
+              <div class="resource-box"><strong>Managed tables path</strong><span><code>abfss://volumes@.../managed-tables</code> becomes the schema storage root for managed Unity Catalog tables.</span></div>
+              <div class="resource-box"><strong>Volume path</strong><span><code>abfss://volumes@.../</code> backs external location access for files and managed volumes.</span></div>
+              <div class="resource-box"><strong>Optional Key Vault</strong><span>Created when product configuration asks for secrets or notification webhooks.</span></div>
+              <div class="resource-box"><strong>Azure role assignments</strong><span>Runner and deployer get storage contributor where needed; the product access group gets reader on storage data.</span></div>
+              <div class="resource-box"><strong>Databricks connector role</strong><span>The access connector managed identity gets Storage Blob Data Contributor on the product storage account.</span></div>
+            </div>
+          </div>
+          <aside class="notes">The storage account is the hard isolation boundary for product data. The short name is intentionally constrained because Azure resource names are strict, especially storage accounts and Key Vault.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Network Controls">
+        <div class="slide-inner">
+          <span class="slide-kicker">4. Network controls</span>
+          <h2>The storage firewall starts closed, then opens only explicit paths.</h2>
+          <div class="network-map">
+            <div class="network-column">
+              <div class="network-node"><strong>Vipps virtual private network</strong><span>Allowed address ranges support interactive administration and controlled human access.</span></div>
+              <div class="network-node"><strong>GitHub Actions</strong><span>Deployment runner address ranges are allowed for infrastructure and bundle deploys.</span></div>
+              <div class="network-node"><strong>Publication recipients</strong><span>Delta Sharing recipient address ranges are added when external publication is configured.</span></div>
+            </div>
+            <div class="firewall">
+              <strong>Storage account firewall</strong>
+              <span>Default action is deny. Azure services bypass is enabled, and every allowed path is generated from platform configuration.</span>
+            </div>
+            <div class="network-column">
+              <div class="network-node"><strong>Workspace subnets</strong><span>Classic compute reaches storage through the Databricks workspace private and public subnets.</span></div>
+              <div class="network-node"><strong>Network connectivity configuration</strong><span>Serverless compute and serverless warehouse traffic use private endpoint rules.</span></div>
+              <div class="network-node"><strong>Blob and Data Lake endpoints</strong><span>Private endpoint rules are created for both <code>blob</code> and <code>dfs</code> storage endpoints.</span></div>
+            </div>
+          </div>
+          <div class="columns-2" style="margin-top: 16px;">
+            <div class="tile orange"><span class="label">Serverless detail</span><h3>The warehouse is not inside the classic workspace subnets.</h3><p>That is why the module attaches private endpoints through the Databricks network connectivity configuration.</p></div>
+            <div class="tile green"><span class="label">External detail</span><h3>Recipient access is reflected back into the firewall.</h3><p>Publication configuration produces recipient address rules, so shared data remains reachable without opening storage broadly.</p></div>
+          </div>
+          <aside class="notes">This is one of the more technical slides. The key nuance is that serverless Databricks access needs network connectivity configuration private endpoints, because it does not come from the same subnet path as all-purpose clusters.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Identity Topology">
+        <div class="slide-inner">
+          <span class="slide-kicker">5. Identity topology</span>
+          <h2>Runner, deployer, and access group are separate actors.</h2>
+          <div class="identity-map">
+            <div class="identity-grid">
+              <div class="identity-track">
+                <h3>Runner identity</h3>
+                <div class="mini-node"><b>Azure user assigned identity</b><span><code>data-product-runner-...</code></span></div>
+                <div class="mini-node"><b>Databricks service principal</b><span>Uses the managed identity client identifier.</span></div>
+                <div class="mini-node"><b>Workspace assignment</b><span>Assigned as a user in the target workspace.</span></div>
+                <div class="mini-node"><b>Cluster create entitlement</b><span>Can run product jobs without owning deploy rights.</span></div>
+              </div>
+              <div class="identity-track">
+                <h3>Deployer identity</h3>
+                <div class="mini-node"><b>Azure user assigned identity</b><span><code>data-product-deployer-...</code></span></div>
+                <div class="mini-node"><b>GitHub federated credential</b><span>Subject is <code>repo:&lt;repository&gt;:environment:&lt;environment&gt;</code>.</span></div>
+                <div class="mini-node"><b>Databricks federation policy</b><span>Direct Databricks authentication through GitHub OpenID Connect.</span></div>
+                <div class="mini-node"><b>Manage product assets</b><span>Can manage workspace folder, create tables, and use the runner.</span></div>
+              </div>
+              <div class="identity-track">
+                <h3>Product access group</h3>
+                <div class="mini-node"><b>Entra ID group</b><span><code>data-product-&lt;name&gt;-&lt;environment&gt;</code></span></div>
+                <div class="mini-node"><b>Administrative unit</b><span>Group is created under the Data Insights environment unit.</span></div>
+                <div class="mini-node"><b>Databricks group pre-registration</b><span>External identifier is set immediately to the Entra ID group object identifier.</span></div>
+                <div class="mini-node"><b>Provisioning connector assignment</b><span>Included in the System for Cross-domain Identity Management sync path.</span></div>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">The split is useful because deploy rights are stronger than runtime rights. The group is for humans and team-owned access. The runner executes product workloads. The deployer owns infrastructure and bundle deployment tasks.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Unity Catalog Surface">
+        <div class="slide-inner">
+          <span class="slide-kicker">6. Unity Catalog surface</span>
+          <h2>The Databricks side is a schema plus storage-backed objects.</h2>
+          <div class="catalog-map">
+            <div class="catalog-lanes">
+              <div class="catalog-lane">
+                <h3>Catalog</h3>
+                <div class="object-node orange"><b><code>data_products</code></b><span>Shared catalog, owned by the platform foundation.</span></div>
+                <div class="object-node blue"><b>Catalog grant</b><span>Product actors receive additive <code>USE_CATALOG</code> without replacing foundation-owned grants.</span></div>
+              </div>
+              <div class="catalog-lane">
+                <h3>Product schema</h3>
+                <div class="object-node green"><b><code>&lt;catalog_schema_name&gt;</code></b><span>Comment comes from product description; properties include product, team, and business owner.</span></div>
+                <div class="object-node gold"><b>Storage root</b><span><code>abfss://volumes@stdp.../managed-tables</code></span></div>
+              </div>
+              <div class="catalog-lane">
+                <h3>Volumes and location</h3>
+                <div class="object-node blue"><b><code>input_data</code></b><span>Managed volume for product input data.</span></div>
+                <div class="object-node purple"><b><code>artifacts</code></b><span>Managed volume for deploy and runtime artifacts.</span></div>
+                <div class="object-node orange"><b>External location</b><span>Uses <code>data-products-contributor</code> and skips validation because the storage firewall blocks control-plane validation.</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="terminal" style="margin-top: 16px;">
+            <div class="terminal-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code><span class="code-key">storage_root</span> = <span class="code-hot">"abfss://volumes@stdp${short_name}${environment}.dfs.core.windows.net/managed-tables"</span>
+<span class="code-key">external_location</span> = <span class="code-hot">"abfss://volumes@stdp${short_name}${environment}.dfs.core.windows.net/"</span>
+<span class="code-key">credential_name</span> = <span class="code-hot">"data-products-contributor"</span></code></pre>
+          </div>
+          <aside class="notes">The schema is not just a namespace. Its storage root pins managed tables to product-owned storage. The external location and volumes make file paths accessible through Unity Catalog rather than raw storage credentials.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Grant Model">
+        <div class="slide-inner">
+          <span class="slide-kicker">7. Grant model</span>
+          <h2>Permissions are role-shaped, not one big owner grant.</h2>
+          <div class="table-scroll">
+            <table class="matrix">
+              <thead>
+                <tr>
+                  <th>Actor</th>
+                  <th>Catalog and schema</th>
+                  <th>Volumes</th>
+                  <th>Workspace folder</th>
+                  <th>Runner service principal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Product access group</td>
+                  <td><code>USE_CATALOG</code>, <code>USE_SCHEMA</code>, <code>SELECT</code></td>
+                  <td><code>READ_VOLUME</code> and <code>WRITE_VOLUME</code> on <code>input_data</code></td>
+                  <td><code>CAN_READ</code></td>
+                  <td><code>roles/servicePrincipal.user</code></td>
+                </tr>
+                <tr>
+                  <td>Runner</td>
+                  <td><code>USE_CATALOG</code>, <code>USE_SCHEMA</code>, <code>SELECT</code>, <code>CREATE_TABLE</code>, <code>MODIFY</code></td>
+                  <td><code>READ_VOLUME</code> on <code>artifacts</code></td>
+                  <td>Runtime only</td>
+                  <td>Owns job execution context</td>
+                </tr>
+                <tr>
+                  <td>Deployer</td>
+                  <td><code>USE_CATALOG</code>, <code>USE_SCHEMA</code>, <code>CREATE_TABLE</code>, <code>CREATE_MODEL</code>, <code>CREATE_MATERIALIZED_VIEW</code></td>
+                  <td><code>WRITE_VOLUME</code> on <code>artifacts</code></td>
+                  <td><code>CAN_MANAGE</code></td>
+                  <td><code>roles/servicePrincipal.user</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="columns-2" style="margin-top: 16px;">
+            <div class="tile blue"><span class="label">Catalog grants</span><h3>Catalog access is additive.</h3><p>The module uses grant resources that do not replace catalog grants owned by the Unity Catalog foundation component.</p></div>
+            <div class="tile orange"><span class="label">Schema grants</span><h3>Schema access is authoritative.</h3><p>The product schema is owned by the product module, so Terraform can manage the full grant set there.</p></div>
+          </div>
+          <aside class="notes">This is where governance becomes concrete. The product group can read and use the runner, the runner can write product tables, and the deployer can create product assets without becoming a broad platform administrator.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Data Access Views">
+        <div class="slide-inner">
+          <span class="slide-kicker">8. Data access views</span>
+          <h2>Views let products depend on source data without copying source grants.</h2>
+          <div class="owner-rights">
+            <div class="terminal">
+              <div class="terminal-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <pre><code><span class="code-key">resource</span> <span class="code-gold">"databricks_sql_table"</span> <span class="code-gold">"data_access_view"</span> {
+  <span class="code-key">for_each</span>        = var.config.data_access
+  <span class="code-key">table_type</span>      = <span class="code-hot">"VIEW"</span>
+  <span class="code-key">warehouse_id</span>    = var.serverless_warehouse_id
+  <span class="code-key">view_definition</span> = each.value.query
+}</code></pre>
+            </div>
+            <div class="right-flow">
+              <div class="right-step"><b>1</b><span>Terraform creates the view with the platform-owned execution context.</span></div>
+              <div class="right-step"><b>2</b><span>The view owner can reference underlying source tables.</span></div>
+              <div class="right-step"><b>3</b><span>Product actors receive <code>SELECT</code> on the product schema.</span></div>
+              <div class="right-step"><b>4</b><span>Product jobs read the view without direct grants on the source catalog or source schema.</span></div>
+            </div>
+          </div>
+          <div class="columns-3" style="margin-top: 16px;">
+            <div class="tile green"><span class="label">Boundary</span><h3>Source access stays centralized.</h3><p>The product sees a stable view contract rather than the raw source permission model.</p></div>
+            <div class="tile blue"><span class="label">Compute</span><h3>Views are created through the shared serverless warehouse.</h3><p>The deploy stack looks up <code>Serverless Warehouse</code> in the target workspace.</p></div>
+            <div class="tile gold"><span class="label">Lifecycle</span><h3>Queries are configuration.</h3><p>The view definition moves with the product declaration and is applied by Terraform.</p></div>
+          </div>
+          <aside class="notes">This explains why the product can consume curated sources without direct grants against every source table. The view owner rights model keeps the access boundary tighter.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Secrets And Notifications">
+        <div class="slide-inner">
+          <span class="slide-kicker">9. Secrets and notifications</span>
+          <h2>Optional product services are still governed by the same identity model.</h2>
+          <div class="columns-4">
+            <div class="tile orange"><span class="label">Key Vault</span><h3><code>akv-dp-&lt;short_name&gt;-&lt;environment&gt;</code></h3><p>Created only when product configuration enables secrets or notification destinations.</p></div>
+            <div class="tile green"><span class="label">Azure roles</span><h3>Runner reads; deployer and group administer secrets.</h3><p>Runner gets Key Vault Secrets User. Deployer and access group get Key Vault Secrets Officer.</p></div>
+            <div class="tile blue"><span class="label">Databricks secrets</span><h3>Secret scope access mirrors runtime boundaries.</h3><p>Runner, deployer, and access group get read access through Databricks secret access controls.</p></div>
+            <div class="tile purple"><span class="label">Notifications</span><h3>Slack webhook references become Databricks destinations.</h3><p>The webhook URL stays in Key Vault; Terraform creates notification destinations from configured secret names.</p></div>
+          </div>
+          <div class="terminal" style="margin-top: 16px;">
+            <div class="terminal-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code><span class="code-key">display_name</span> = <span class="code-hot">"dp-${data_product_name}-${webhook_secret}-${environment}"</span>
+<span class="code-key">destination_type</span> = <span class="code-hot">"SLACK"</span>
+<span class="code-key">url</span> = data.azurerm_key_vault_secret.notification_destination_webhook[webhook_secret].value</code></pre>
+          </div>
+          <aside class="notes">Point out that webhook values are not encoded in product configuration. The product owner stores the webhook in Key Vault, and Terraform reads the value when creating the Databricks notification destination.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Deployment Authentication">
+        <div class="slide-inner split">
+          <div>
+            <span class="slide-kicker">10. Deployment authentication</span>
+            <h2>GitHub deploys into both Azure and Databricks without stored passwords.</h2>
+            <p class="lead">The deployer managed identity receives an Azure federated identity credential, and the Databricks service principal receives a matching GitHub OpenID Connect federation policy.</p>
+            <div class="badge-list">
+              <span class="badge orange">No long-lived token in repository secrets</span>
+              <span class="badge green">One deployer per product and environment</span>
+              <span class="badge blue">Repository and environment scoped subject</span>
+              <span class="badge gold">Same product configuration owns both sides</span>
+            </div>
+          </div>
+          <div class="terminal">
+            <div class="terminal-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code><span class="code-comment"># GitHub environment deployment</span>
+AZURE_CLIENT_ID=&lt;deployer-managed-identity-client-id&gt;
+AZURE_TENANT_ID=&lt;tenant-id&gt;
+AZURE_SUBSCRIPTION_ID=&lt;subscription-id&gt;
+
+DATABRICKS_AUTH_TYPE=github-oidc
+DATABRICKS_CLIENT_ID=&lt;deployer-service-principal-application-id&gt;
+DATABRICKS_HOST=https://&lt;workspace-host&gt;</code></pre>
+          </div>
+          <aside class="notes">The theme is passwordless deployment. Azure and Databricks have separate federation resources, but both are scoped to the GitHub repository and environment declared for the product.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Publication">
+        <div class="slide-inner">
+          <span class="slide-kicker">11. Publication path</span>
+          <h2>Delta Sharing publication is explicit, table-scoped, and network-aware.</h2>
+          <div class="share-map">
+            <div class="share-steps">
+              <div class="share-step"><strong>1. Product configuration</strong><span>Declares publication type, recipient metastore identifier, allowed recipient address ranges, and full table names.</span></div>
+              <div class="share-step"><strong>2. Share object</strong><span>Terraform creates a Databricks share containing only configured table objects.</span></div>
+              <div class="share-step"><strong>3. Recipient object</strong><span>Databricks recipient uses Databricks-to-Databricks authentication and receives <code>SELECT</code> on the share.</span></div>
+              <div class="share-step"><strong>4. Firewall update</strong><span>Recipient address ranges are folded into product storage firewall rules so pre-signed blob access works.</span></div>
+            </div>
+          </div>
+          <div class="columns-2" style="margin-top: 16px;">
+            <div class="tile orange"><span class="label">Provider nuance</span><h3>Share table changes trigger replacement logic.</h3><p>The module uses a Terraform data resource to recreate the share when table membership changes, avoiding fragile in-place reorder behavior.</p></div>
+            <div class="tile blue"><span class="label">Exposure boundary</span><h3>Publication does not open the product schema.</h3><p>The share contains only the configured table full names, and recipient network access is scoped through generated address rules.</p></div>
+          </div>
+          <aside class="notes">This slide is useful if someone asks how external sharing stays bounded. The answer is table list plus recipient object plus storage firewall path. Publication is explicit configuration, not a blanket grant.</aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Verification Checklist">
+        <div class="slide-inner">
+          <span class="slide-kicker">12. Verification checklist</span>
+          <h2>What I would inspect before calling a product ready.</h2>
+          <div class="table-scroll">
+            <table class="checklist-table">
+              <thead>
+                <tr>
+                  <th>Layer</th>
+                  <th>Check</th>
+                  <th>Expected signal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Configuration</td>
+                  <td>Short name, owner, schema name, GitHub repositories, optional services.</td>
+                  <td>Names satisfy Azure constraints and ownership is unambiguous.</td>
+                </tr>
+                <tr>
+                  <td>Azure</td>
+                  <td>Storage account, container, role assignments, optional Key Vault, firewall rules.</td>
+                  <td>Storage is closed by default and only generated actors can read or write.</td>
+                </tr>
+                <tr>
+                  <td>Databricks</td>
+                  <td>Schema, external location, volumes, service principals, workspace folder.</td>
+                  <td>Objects exist in the target workspace and catalog with expected grants.</td>
+                </tr>
+                <tr>
+                  <td>Identity</td>
+                  <td>Runner, deployer, access group, GitHub federation, Databricks federation policy.</td>
+                  <td>Deployment authenticates with OpenID Connect and workloads run as the runner.</td>
+                </tr>
+                <tr>
+                  <td>Data access</td>
+                  <td>Configured views and their underlying source queries.</td>
+                  <td>Runner can select through the view without direct grants to the source catalog.</td>
+                </tr>
+                <tr>
+                  <td>Publication</td>
+                  <td>Delta Sharing recipient, share objects, generated recipient address rules.</td>
+                  <td>Recipient can access only configured tables, and storage remains firewall-bound.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="columns-3" style="margin-top: 16px;">
+            <div class="tile orange"><span class="label">Message</span><h3>Data products are an operating model.</h3><p>The platform creates the resource contract, not just a folder and schema.</p></div>
+            <div class="tile green"><span class="label">Ask</span><h3>Bring product examples.</h3><p>The next useful conversation is which Data Insights products should become first production examples.</p></div>
+            <div class="tile blue"><span class="label">Risk</span><h3>The sharp edges are network and grants.</h3><p>Serverless reachability, source view ownership, and publication address rules deserve extra review.</p></div>
+          </div>
+          <aside class="notes">Close with an invitation to verify a concrete product together. This is the practical endpoint: a checklist that maps directly to Terraform plan review and Databricks workspace inspection.</aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span><strong>Data Product Resource Map</strong> - Azure, Databricks, Unity Catalog, identities, network, publication</span>
+      <span>Vipps MobilePay Data Platform</span>
+    </footer>
+  </div>
+
+  <aside class="notes-panel" aria-live="polite" aria-label="Speaker notes">
+    <h2 id="notesTitle">Speaker Notes</h2>
+    <p id="notesText"></p>
+  </aside>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.getElementById("slideCounter");
+    const notesToggle = document.getElementById("notesToggle");
+    const notesTitle = document.getElementById("notesTitle");
+    const notesText = document.getElementById("notesText");
+    let current = 0;
+
+    function readHash() {
+      const value = Number.parseInt(window.location.hash.replace("#", ""), 10);
+      return Number.isFinite(value) && value >= 1 && value <= slides.length ? value - 1 : 0;
+    }
+
+    function showSlide(index, updateHash = true) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => {
+        slide.classList.toggle("active", slideIndex === current);
+      });
+      counter.textContent = `${current + 1} / ${slides.length}`;
+      const title = slides[current].dataset.title || `Slide ${current + 1}`;
+      const note = slides[current].querySelector(".notes");
+      notesTitle.textContent = `${current + 1}. ${title}`;
+      notesText.textContent = note ? note.textContent.trim() : "";
+      if (updateHash) {
+        window.history.replaceState(null, "", `#${current + 1}`);
+      }
+    }
+
+    document.getElementById("prevSlide").addEventListener("click", () => showSlide(current - 1));
+    document.getElementById("nextSlide").addEventListener("click", () => showSlide(current + 1));
+    notesToggle.addEventListener("click", () => {
+      const active = document.body.classList.toggle("show-notes");
+      notesToggle.setAttribute("aria-pressed", String(active));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+        event.preventDefault();
+        showSlide(current + 1);
+      }
+      if (event.key === "ArrowLeft" || event.key === "PageUp") {
+        event.preventDefault();
+        showSlide(current - 1);
+      }
+      if (event.key.toLowerCase() === "n") {
+        const active = document.body.classList.toggle("show-notes");
+        notesToggle.setAttribute("aria-pressed", String(active));
+      }
+      if (event.key === "Escape") {
+        document.body.classList.remove("show-notes");
+        notesToggle.setAttribute("aria-pressed", "false");
+      }
+    });
+
+    window.addEventListener("hashchange", () => showSlide(readHash(), false));
+    showSlide(readHash(), false);
+  </script>
+</body>
+</html>
