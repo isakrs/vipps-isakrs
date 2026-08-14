@@ -122,6 +122,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The configuration repository offerings now appear as plain clickable service
   boxes in the world as well as in the Services panel, so visitors can inspect
   safe purpose and category without extra scene clutter.
+- Dataverse and Datafront now appear as visible trusted-consumer destinations
+  in the product side of the world, so the serving flow lands somewhere
+  concrete instead of ending as an abstract label.
 
 This file should serve two purposes:
 
@@ -307,6 +310,21 @@ sensitive implementation details.
   </article>
 </div>
 
+<h3 id="trusted-consumer-destinations">Trusted Consumer Destinations</h3>
+
+Dataverse and Datafront should read as real places in the house, not only as
+names in a paragraph. They are destination landmarks on the product side of the
+journey where trusted outputs become explorable, consumable, or presentable.
+
+- Dataverse is the governed consumer space where people explore trusted outputs,
+  combine them with context, and work with them safely.
+- Datafront is the trusted serving front door where approved outputs are
+  presented clearly to product teams and analytics consumers.
+
+When the serving flow is in focus, a visitor should be able to see that the
+product-side path can land in both of these destinations before continuing back
+to product teams.
+
 In the Three.js world, these offerings should become visible doors, kiosks,
 pipe junctions, or room signs that a visitor can move toward, stand beside, or
 click to learn more. The current service directory is the first pass: it names
@@ -338,8 +356,8 @@ The most important next focus is not "all services equally." The brief should
 guide future runs toward the services that matter most for the story:
 
 - Configuration services are the main focus area.
-- Dataverse should be a clear destination that people can move to or inspect.
-- Datafront should be a clear destination that people can move to or inspect.
+- Dataverse should stay a clear destination that people can move to or inspect.
+- Datafront should stay a clear destination that people can move to or inspect.
 - It should be obvious that product teams both send data into the platform and
   receive governed outputs back from the platform.
 - The visitor should understand when to approach or click a service to learn
@@ -379,7 +397,7 @@ event version more convincing.
     </article>
     <article class="data-platform-card">
       <strong>Focus on configuration services</strong>
-      <span>Make configuration services the primary explorable service family, with Dataverse and Datafront as key destinations.</span>
+      <span>Keep configuration services as the primary explorable service family, with Dataverse and Datafront anchored clearly on the product side.</span>
     </article>
     <article class="data-platform-card">
       <strong>Simplify service presentation</strong>
@@ -404,6 +422,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Teach services on interaction</strong>
       <span>Build on the new service boxes so interaction teaches room ownership, likely users, and the nearest pipe or destination.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Let product destinations explain themselves</strong>
+      <span>Turn Dataverse and Datafront from visible landmarks into clickable teaching moments with public-safe explanations.</span>
     </article>
     <article class="data-platform-card">
       <strong>Deepen pipe language</strong>
@@ -544,6 +566,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Journey steps now teach flow modes</strong>
       <span>Each payment handoff now names the active mode and updates the current handoff panel when visitors focus it.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Trusted product destinations added</strong>
+      <span>Dataverse and Datafront now stand as visible serving destinations so the product side of the loop has concrete endpoints.</span>
     </article>
   </section>
 </div>

@@ -769,6 +769,10 @@
         <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Query Publish">Query Publish <span>Publish</span></a>
         <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Custom Integrations">Custom Integrations <span>Special cases</span></a>
       </div>
+      <div class="repository-links" id="destination-links" hidden aria-label="Trusted consumer destinations">
+        <a href="/data-platform-example/instructions/#trusted-consumer-destinations">Dataverse <span>Governed consumer space</span></a>
+        <a href="/data-platform-example/instructions/#trusted-consumer-destinations">Datafront <span>Trusted serving front door</span></a>
+      </div>
       <div class="flow-legend" aria-label="Flow mode legend">
         <h3>Pipe modes</h3>
         <div class="legend-grid">
@@ -866,6 +870,7 @@
       const repositoryLinks = document.querySelector("#repository-links");
       const assetLinks = document.querySelector("#asset-links");
       const offeringLinks = document.querySelector("#offering-links");
+      const destinationLinks = document.querySelector("#destination-links");
       const offeringLinkItems = [...document.querySelectorAll("[data-service-offering]")];
       const journeySteps = [...document.querySelectorAll("[data-journey-step]")];
       const journeyDetailTitle = document.querySelector("#journey-detail-title");
@@ -958,7 +963,7 @@
         },
         product: {
           title: "Data Product Room",
-          copy: "The payment signal becomes a governed table, insight, dashboard, alert, or downstream data product through a serving flow rather than a raw copy."
+          copy: "The payment signal becomes a governed table, insight, dashboard, alert, or downstream data product through a serving flow that visibly lands in Dataverse and Datafront destinations."
         },
         github: {
           title: "GitHub Library",
@@ -1012,8 +1017,8 @@
           modes: ["Declared export"]
         },
         product: {
-          title: "Trusted outputs return to product teams",
-          copy: "Serving flows deliver governed tables, insights, dashboards, and data products back to teams that need them, without exposing raw operational data.",
+          title: "Trusted outputs return through real destinations",
+          copy: "Serving flows deliver governed outputs back to product teams through visible Dataverse and Datafront destinations, without exposing raw operational data.",
           modes: ["Serving flow"]
         }
       };
@@ -1050,7 +1055,7 @@
         ingestion: { target: [-5.5, 0.35, -2.45], offset: [1.4, 7.1, 8.8] },
         analytics: { target: [-0.7, 0.35, -2.4], offset: [1.5, 6.9, 8.3] },
         export: { target: [3.45, 0.35, -1.65], offset: [1.6, 7.1, 8.4] },
-        product: { target: [5.45, 0.35, 2.65], offset: [1.2, 7.3, 8.5] },
+        product: { target: [6.4, 0.45, 2.15], offset: [1.25, 7.4, 8.9] },
         github: { target: [-5.6, 0.3, 3.4], offset: [1.4, 7.2, 8.4] },
         assets: { target: [-2.45, 0.3, 3.35], offset: [1.1, 7.2, 8.2] },
         services: { target: [5.95, 0.75, 0.25], offset: [-1.6, 6.5, 7.6] }
@@ -1142,6 +1147,18 @@
           description: "Configure custom or one-off integration jobs when the standard path does not fit."
         }
       ];
+      const trustedConsumerDestinations = [
+        {
+          name: "Dataverse",
+          color: 0x1f7a8c,
+          description: "A governed consumer space where trusted outputs can be explored, joined with context, and used safely by downstream teams."
+        },
+        {
+          name: "Datafront",
+          color: 0x2c7be5,
+          description: "A trusted serving front door where approved outputs are presented clearly to product and analytics consumers."
+        }
+      ];
       const offeringByName = new Map(platformOfferings.map((offering) => [offering.name, offering]));
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
@@ -1161,6 +1178,7 @@
       addProductTeamLoop();
       addPipes();
       addHousePipePorts();
+      addTrustedConsumerDestinations();
       const isakFallback = addCharacters();
       loadAnimatedGuide(isakFallback);
       addServiceOfferingDirectory();
@@ -1561,6 +1579,8 @@
         makePipe("Declared export", ports.export, [5.5, 0.82, -1.25], 0x7c5cff, "export", 4);
         makePipe("Serving flow", ports.product, [9.25, 0.86, 2.8], 0x1f7a8c, "serving", 4);
         makePipe("Product serving", ports.export, ports.product, 0x1f7a8c, "serving", 3);
+        makePipe("Dataverse serving", ports.product, [6.9, 0.96, 4.18], 0x1f7a8c, "serving", 3);
+        makePipe("Datafront serving", ports.product, [8.2, 0.96, 1.06], 0x2c7be5, "serving", 3);
         makePipe("GitHub Actions", [-5.35, 0.75, 2.6], ports.github, 0xf2bd2a, "reference", 3);
         makePipe("Open object kits", [-4.1, 0.78, 3.55], ports.assets, 0x37b6c4, "reference", 3);
         makePipe("Service catalog", ports.services, [5.05, 0.82, 0.28], 0xff5b24, "reference", 4);
@@ -1641,6 +1661,77 @@
         scene.add(group);
         scene.add(makeLabel(title, new THREE.Vector3(position[0], 1.9, position[2]), color, 0.56));
         scene.add(makeLabel(subtitle, new THREE.Vector3(position[0], 1.34, position[2]), color, 0.42));
+      }
+
+      function addTrustedConsumerDestinations() {
+        trustedConsumerDestinations.forEach((destination, index) => {
+          const pedestal = new THREE.Group();
+          const x = index === 0 ? 6.9 : 8.2;
+          const z = index === 0 ? 4.18 : 1.06;
+          pedestal.position.set(x, 0, z);
+          pedestal.rotation.y = index === 0 ? -0.36 : -0.62;
+
+          const base = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.62, 0.76, 0.2, 24),
+            new THREE.MeshStandardMaterial({
+              color: 0xffffff,
+              roughness: 0.36,
+              metalness: 0.08
+            })
+          );
+          base.position.y = 0.1;
+          base.castShadow = true;
+          base.receiveShadow = true;
+          pedestal.add(base);
+
+          const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(0.5, 0.06, 18, 42),
+            new THREE.MeshStandardMaterial({
+              color: destination.color,
+              emissive: destination.color,
+              emissiveIntensity: 0.24,
+              roughness: 0.24
+            })
+          );
+          ring.rotation.x = Math.PI / 2;
+          ring.position.y = 0.2;
+          pedestal.add(ring);
+
+          const towerGeometry =
+            index === 0
+              ? new THREE.CylinderGeometry(0.28, 0.36, 0.92, 18)
+              : new THREE.BoxGeometry(0.62, 0.9, 0.38);
+          const tower = new THREE.Mesh(
+            towerGeometry,
+            new THREE.MeshStandardMaterial({
+              color: 0xffffff,
+              emissive: destination.color,
+              emissiveIntensity: 0.08,
+              roughness: 0.26,
+              metalness: 0.06
+            })
+          );
+          tower.position.y = 0.72;
+          tower.castShadow = true;
+          pedestal.add(tower);
+
+          const beacon = new THREE.Mesh(
+            new THREE.SphereGeometry(index === 0 ? 0.16 : 0.14, 18, 18),
+            new THREE.MeshStandardMaterial({
+              color: destination.color,
+              emissive: destination.color,
+              emissiveIntensity: 0.52,
+              roughness: 0.18
+            })
+          );
+          beacon.position.set(0, index === 0 ? 1.3 : 1.26, 0);
+          pedestal.add(beacon);
+
+          scene.add(pedestal);
+          scene.add(makeLabel(destination.name, new THREE.Vector3(x, 1.98, z), destination.color, 0.52));
+        });
+
+        scene.add(makeLabel("trusted destinations", new THREE.Vector3(7.48, 2.58, 2.62), 0x1f7a8c, 0.56));
       }
 
       function makePipe(name, from, to, color, type, count) {
@@ -2166,6 +2257,7 @@
         repositoryLinks.hidden = id !== "github";
         assetLinks.hidden = id !== "assets";
         offeringLinks.hidden = id !== "services";
+        destinationLinks.hidden = id !== "product";
         panel.classList.toggle("is-service-focus", id === "services");
         updateJourneyHighlights(id);
         setJourneyDetail(stepOverride ?? primaryJourneyStepByFocus[id] ?? "overview");
