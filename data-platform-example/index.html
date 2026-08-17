@@ -1203,67 +1203,133 @@
           name: "Analytics Projects",
           type: "Consumer access",
           color: 0x2c7be5,
-          description: "Request governed access to published datasets and define accountability, purpose, and access needs."
+          description: "Request governed access to published datasets and define accountability, purpose, and access needs.",
+          roomId: "product",
+          flowMode: "Serving flow",
+          likelyUsers: "Product analysts and teams who need trusted reusable outputs.",
+          output: "Governed dataset access for analysis, dashboards, and follow-up decisions.",
+          interactionPrompt: "Use it when a team needs trusted platform outputs without rebuilding logic from raw signals.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Data Export",
           type: "Consumer egress",
           color: 0x7c5cff,
-          description: "Export data from Databricks to Azure SQL databases with an owner, trigger path, and destination."
+          description: "Export data from Databricks to Azure SQL databases with an owner, trigger path, and destination.",
+          roomId: "export",
+          flowMode: "Declared export",
+          likelyUsers: "Platform builders and destination owners coordinating a governed outbound path.",
+          output: "Approved outbound delivery with a named owner, destination, and trigger path.",
+          interactionPrompt: "Use it when trusted platform data must leave through an explicit governed delivery path.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Data Products",
           type: "Product egress",
           color: 0x1f7a8c,
-          description: "Declare curated data products with dedicated storage, schema, identities, and sharing paths."
+          description: "Declare curated data products with dedicated storage, schema, identities, and sharing paths.",
+          roomId: "product",
+          flowMode: "Serving flow",
+          likelyUsers: "Product teams and domain owners publishing reusable governed outputs.",
+          output: "A shareable governed product with storage, schema, identity, and contract cues.",
+          interactionPrompt: "Use it when an output should behave like a named product instead of an ad hoc export.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Dino",
           type: "Capture",
           color: 0xff5b24,
-          description: "Capture events directly from Feed application programming interface endpoints into object storage."
+          description: "Capture events directly from Feed application programming interface endpoints into object storage.",
+          roomId: "ingestion",
+          flowMode: "Streaming",
+          likelyUsers: "Producer teams and ingestion builders sending source events into the house.",
+          output: "Live event files landing in object storage for downstream publish paths.",
+          interactionPrompt: "Use it when a producer needs a safe way to land source events directly in storage.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Object Storage Connection",
           type: "Capture",
           color: 0xf2bd2a,
-          description: "Give the data platform access to a producer-owned storage account."
+          description: "Give the data platform access to a producer-owned storage account.",
+          roomId: "ingestion",
+          flowMode: "Incremental",
+          likelyUsers: "Teams that already own a storage account and need a governed bridge into the platform.",
+          output: "A connected landing path from producer-owned storage into platform processing.",
+          interactionPrompt: "Use it when the producer already has files in storage and the platform should read them safely.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Direct Publish",
           type: "Publish",
           color: 0x2f9e73,
-          description: "Create Databricks tables directly from files on storage."
+          description: "Create Databricks tables directly from files on storage.",
+          roomId: "analytics",
+          flowMode: "Incremental",
+          likelyUsers: "Platform builders who want landed files to become trusted tables quickly.",
+          output: "Published Databricks tables created from governed storage files.",
+          interactionPrompt: "Use it when landed files are ready to become queryable tables without a more custom pipeline.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Wraptor",
           type: "Publish",
           color: 0x2f9e73,
-          description: "Publish events by streaming from file sources captured by Dino."
+          description: "Publish events by streaming from file sources captured by Dino.",
+          roomId: "analytics",
+          flowMode: "Streaming plus incremental checkpointing",
+          likelyUsers: "Streaming-oriented builders who want source files to keep flowing into reusable tables.",
+          output: "Continuously published event tables backed by checkpointed file ingestion.",
+          interactionPrompt: "Use it when event files should keep moving forward as a streaming publish path.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Cacheloader",
           type: "Publish",
           color: 0x2f9e73,
-          description: "Stream and transform event data from object storage."
+          description: "Stream and transform event data from object storage.",
+          roomId: "analytics",
+          flowMode: "Incremental plus quality gate",
+          likelyUsers: "Teams shaping raw captured events into trusted reusable published outputs.",
+          output: "Transformed event datasets with checks before broader reuse.",
+          interactionPrompt: "Use it when storage-landed events need transformation and trust-building before serving.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Skippy",
           type: "Publish",
           color: 0x2f9e73,
-          description: "Copy small slow-changing tables from SQL databases on a nightly schedule."
+          description: "Copy small slow-changing tables from SQL databases on a nightly schedule.",
+          roomId: "analytics",
+          flowMode: "Scheduled batch",
+          likelyUsers: "Teams with small slow-changing source tables that fit a predictable nightly copy.",
+          output: "Published reference-style tables refreshed on a schedule.",
+          interactionPrompt: "Use it when a small source can move on a stable schedule rather than as a live stream.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Query Publish",
           type: "Publish",
           color: 0x2f9e73,
-          description: "Create SQL views on top of existing tables."
+          description: "Create SQL views on top of existing tables.",
+          roomId: "analytics",
+          flowMode: "Serving flow",
+          likelyUsers: "Analytics builders curating a consumer-friendly shape on top of trusted tables.",
+          output: "Curated SQL views ready for governed consumption.",
+          interactionPrompt: "Use it when the right published output is a view on trusted existing tables.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
           name: "Custom Integrations",
           type: "Special cases",
           color: 0x37b6c4,
-          description: "Configure custom or one-off integration jobs when the standard path does not fit."
+          description: "Configure custom or one-off integration jobs when the standard path does not fit.",
+          roomId: "services",
+          flowMode: "Manual correction or special path",
+          likelyUsers: "Platform engineers handling cases that do not fit the standard capture or publish services.",
+          output: "A public-safe placeholder for a reviewed custom path, not a default pattern.",
+          interactionPrompt: "Use it only when the standard catalog does not fit and a reviewed special path is justified.",
+          instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         }
       ];
       const trustedConsumerDestinations = [
@@ -2620,12 +2686,30 @@
       }
 
       function showServiceDialogue(offering) {
+        const room = offering.roomId ? roomById.get(offering.roomId) : null;
+        const relatedDestinations = [];
+        if (offering.type === "Consumer access" || offering.type === "Product egress" || offering.type === "Publish") {
+          relatedDestinations.push("Dataverse");
+        }
+        if (offering.type === "Consumer access" || offering.type === "Consumer egress" || offering.type === "Product egress" || offering.type === "Publish") {
+          relatedDestinations.push("Datafront");
+        }
+
         speakerName.textContent = offering.name;
         speakerCopy.textContent = offering.description;
 
         const serviceGuidance = [
           `${offering.type} service in the public-safe configuration catalog.`,
-          servicePrompt(offering),
+          room
+            ? `House area: ${room.name}.`
+            : "House area: Service catalog overview.",
+          `Flow mode: ${offering.flowMode}.`,
+          `Likely users: ${offering.likelyUsers}`,
+          `Output shape: ${offering.output}`,
+          offering.interactionPrompt ?? servicePrompt(offering),
+          relatedDestinations.length
+            ? `Nearest destinations: ${relatedDestinations.join(" and ")}.`
+            : "Nearest destinations: depends on the reviewed custom path.",
           "This kiosk shows the safe name and purpose only, never private configuration payloads or internal endpoints."
         ];
 
@@ -2640,8 +2724,20 @@
         renderDialogueLinks([
           {
             label: "Open service catalog notes",
-            url: "/data-platform-example/instructions/#configuration-repository-offerings"
-          }
+            url: offering.instructionAnchor ?? "/data-platform-example/instructions/#configuration-repository-offerings"
+          },
+          ...(room
+            ? [
+                {
+                  label: `Focus ${room.name}`,
+                  url: `/data-platform-example/?focus=${room.id}`
+                }
+              ]
+            : []),
+          ...relatedDestinations.map((destination) => ({
+            label: `${destination} notes`,
+            url: "/data-platform-example/instructions/#trusted-consumer-destinations"
+          }))
         ]);
         dialogue.hidden = false;
       }

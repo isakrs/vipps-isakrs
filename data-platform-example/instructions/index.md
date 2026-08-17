@@ -128,6 +128,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - Dataverse and Datafront now appear as visible trusted-consumer destinations
   in the product side of the world, so the serving flow lands somewhere
   concrete instead of ending as an abstract label.
+- Service clicks now teach house area, likely users, flow mode, output shape,
+  and nearest destinations, so the configuration catalog explains when each
+  offering fits without exposing private configuration details.
 
 This file should serve two purposes:
 
@@ -423,10 +426,6 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
     <article class="data-platform-card">
-      <strong>Teach services on interaction</strong>
-      <span>Build on the new service boxes so interaction teaches room ownership, likely users, and the nearest pipe or destination.</span>
-    </article>
-    <article class="data-platform-card">
       <strong>Let product destinations explain themselves</strong>
       <span>Turn Dataverse and Datafront from visible landmarks into clickable teaching moments with public-safe explanations.</span>
     </article>
@@ -517,6 +516,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Borrowed open animation assets</strong>
       <span>The world now uses the Three.js keyframes house asset and the morph/skinning guide asset as credited foundations instead of hand-rolling every visual.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Teach services on interaction</strong>
+      <span>Service clicks now explain room ownership, likely users, flow mode, output shape, and nearest destinations while staying public-safe.</span>
     </article>
     <article class="data-platform-card">
       <strong>House made central</strong>
