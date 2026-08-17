@@ -117,6 +117,9 @@ The previous implementation has been deleted and replaced with a clearer split:
   declared export, or serving flow without relying only on the legend.
 - The world now supports zooming in and out, both from the camera buttons and
   from mouse-wheel input on the canvas.
+- The payment journey tracker now acts as a guided tour with step-specific
+  camera moves, previous and next controls, autoplay, and scene-cue notes that
+  explain what to inspect in the house.
 - The decorative repository table, open asset workbench, and smoke effects have
   been removed so the house and core signal journey are easier to read.
 - The configuration repository offerings now appear as plain clickable service
@@ -441,7 +444,7 @@ event version more convincing.
     </article>
     <article class="data-platform-card">
       <strong>Make journey steps drive the camera</strong>
-      <span>Turn the visible payment journey tracker into a stronger guided tour with scene highlights, room focus, or mode-specific overlays.</span>
+      <span>Build on the new guided camera tour with stronger in-scene highlights, mode-specific props, and fewer places where visitors can lose the handoff.</span>
     </article>
     <article class="data-platform-card">
       <strong>Broaden knowledge-backed dialogue</strong>
@@ -566,6 +569,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Journey steps now teach flow modes</strong>
       <span>Each payment handoff now names the active mode and updates the current handoff panel when visitors focus it.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Journey steps now drive a guided camera tour</strong>
+      <span>The payment tracker now offers previous and next controls, autoplay, step-specific camera moves, and scene cues that tell visitors what to inspect.</span>
     </article>
     <article class="data-platform-card">
       <strong>Trusted product destinations added</strong>

@@ -376,11 +376,62 @@
         font-size: 0.77rem;
       }
 
+      .journey-scene-cues {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .journey-scene-cues strong {
+        display: block;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .journey-scene-cues ul {
+        color: var(--ink);
+        font-size: 0.75rem;
+        line-height: 1.4;
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .journey-scene-cues li + li {
+        margin-top: 4px;
+      }
+
       .journey-detail-modes {
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
         margin-top: 10px;
+      }
+
+      .journey-tour-controls {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 12px;
+      }
+
+      .journey-tour-button {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.75rem;
+        font-weight: 800;
+        min-height: 36px;
+        padding: 8px 10px;
+      }
+
+      .journey-tour-button.is-active {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: #ffffff;
       }
 
       .flow-legend h3 {
@@ -636,6 +687,14 @@
           grid-template-columns: repeat(3, minmax(0, 1fr));
         }
 
+        .journey-tour-controls {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .journey-tour-button[data-tour-action="play"] {
+          grid-column: 1 / -1;
+        }
+
         .focus-button {
           font-size: 0.78rem;
           padding: 9px 8px;
@@ -731,6 +790,15 @@
             governed exits back to product teams.
           </p>
           <div class="journey-detail-modes" id="journey-detail-modes" aria-label="Active flow modes"></div>
+          <div class="journey-scene-cues" aria-label="Visible scene cues">
+            <strong>Visible scene cues</strong>
+            <ul id="journey-scene-cues"></ul>
+          </div>
+          <div class="journey-tour-controls" aria-label="Guided journey controls">
+            <button class="journey-tour-button" type="button" data-tour-action="previous">Previous</button>
+            <button class="journey-tour-button" type="button" data-tour-action="next">Next</button>
+            <button class="journey-tour-button" type="button" data-tour-action="play">Play tour</button>
+          </div>
         </div>
       </div>
       <div class="focus-grid" aria-label="Focus rooms">
@@ -876,6 +944,9 @@
       const journeyDetailTitle = document.querySelector("#journey-detail-title");
       const journeyDetailCopy = document.querySelector("#journey-detail-copy");
       const journeyDetailModes = document.querySelector("#journey-detail-modes");
+      const journeySceneCues = document.querySelector("#journey-scene-cues");
+      const tourButtons = [...document.querySelectorAll("[data-tour-action]")];
+      const sceneSummary = document.querySelector("#scene-summary");
       const dialogue = document.querySelector("#dialogue");
       const speakerName = document.querySelector("#speaker-name");
       const speakerCopy = document.querySelector("#speaker-copy");
@@ -934,6 +1005,7 @@
       const smoke = [];
       const mixers = [];
       const animatedRooms = [];
+      const orderedJourneyStepIds = ["source", "storage", "modeling", "export", "product"];
 
       const cameraTarget = new THREE.Vector3(0, 0.3, 0);
       const desiredTarget = new THREE.Vector3(0, 0.3, 0);
@@ -944,6 +1016,9 @@
       const orbitAxis = new THREE.Vector3(0, 1, 0);
       let currentOrbitAngle = 0;
       let desiredOrbitAngle = 0;
+      let activeJourneyStepId = "overview";
+      let currentFocusId = "house";
+      let tourTimer = null;
       const roomDetails = {
         house: {
           title: "Payment Signal Hall",
@@ -994,32 +1069,68 @@
         overview: {
           title: "End-to-end payment walkthrough",
           copy: "Follow the orange intake into storage, the green and blue trust path through Databricks and dbt-style modeling, then the purple and teal governed exits back to product teams.",
-          modes: ["Streaming", "Incremental", "Quality gate", "Declared export", "Serving flow"]
+          modes: ["Streaming", "Incremental", "Quality gate", "Declared export", "Serving flow"],
+          sceneCues: [
+            "The orange intake starts on the product team source terminal outside the house.",
+            "Green and blue handoffs cross the house through storage, checkpoints, and trust gates.",
+            "Purple and teal paths leave toward declared exports, Dataverse, Datafront, and the product team consumer terminal."
+          ],
+          summary: "Explore the full payment path from source terminal to trusted consumer destinations."
         },
         source: {
           title: "Signal enters through the orange intake",
           copy: "A conceptual tap or send event starts as a streaming signal from a product team. The house shows the source clearly so visitors understand where the story begins.",
-          modes: ["Streaming"]
+          modes: ["Streaming"],
+          sceneCues: [
+            "The left terminal marks the product team source.",
+            "The orange pipe is the live intake into the house.",
+            "This first view establishes where the payment story begins."
+          ],
+          summary: "Step 1: follow the source terminal and orange intake into the house."
         },
         storage: {
           title: "Capture lands in storage with checkpoints",
           copy: "The signal is captured into a storage account such as Azure Storage Account or S3, then moved forward with incremental state so the platform knows what was already processed.",
-          modes: ["Streaming", "Incremental"]
+          modes: ["Streaming", "Incremental"],
+          sceneCues: [
+            "The first internal handoff lands near the storage side of the house.",
+            "Checkpoint rings along the green path signal incremental continuation.",
+            "The scene teaches that storage is a controlled landing zone, not the end state."
+          ],
+          summary: "Step 2: watch streaming capture land in storage and continue through checkpoints."
         },
         modeling: {
           title: "Trust is built before reuse",
           copy: "Databricks and Spark-style processing shape the signal, and dbt-style modeling turns it into reusable meaning only after checkpoints and quality gates say it is safe.",
-          modes: ["Incremental", "Quality gate"]
+          modes: ["Incremental", "Quality gate"],
+          sceneCues: [
+            "Blue gate props mark the trust check before reuse.",
+            "The analytics room sits behind the storage landing, not beside the final consumer view.",
+            "Green and blue segments show that shaping and trust-building are separate handoffs."
+          ],
+          summary: "Step 3: quality gates and dbt-style modeling turn raw signal into trusted meaning."
         },
         export: {
           title: "Outbound flow leaves by declaration",
           copy: "Exports are explicit platform decisions, not side effects. The declared path makes owner, destination, and trigger visible before data leaves the house.",
-          modes: ["Declared export"]
+          modes: ["Declared export"],
+          sceneCues: [
+            "The purple path leaves through a dedicated outbound side of the house.",
+            "Export is separated from the trusted product-serving loop.",
+            "This view keeps declared egress distinct from general product reuse."
+          ],
+          summary: "Step 4: declared export uses its own governed outbound route."
         },
         product: {
           title: "Trusted outputs return through real destinations",
           copy: "Serving flows deliver governed outputs back to product teams through visible Dataverse and Datafront destinations, without exposing raw operational data.",
-          modes: ["Serving flow"]
+          modes: ["Serving flow"],
+          sceneCues: [
+            "Dataverse and Datafront stand as visible consumer destinations.",
+            "The teal serving path returns toward the product team consumer terminal.",
+            "This closes the loop from product signal in to trusted outputs back out."
+          ],
+          summary: "Step 5: serving flows reach Dataverse, Datafront, and the product-side consumer terminal."
         }
       };
 
@@ -1059,6 +1170,14 @@
         github: { target: [-5.6, 0.3, 3.4], offset: [1.4, 7.2, 8.4] },
         assets: { target: [-2.45, 0.3, 3.35], offset: [1.1, 7.2, 8.2] },
         services: { target: [5.95, 0.75, 0.25], offset: [-1.6, 6.5, 7.6] }
+      };
+
+      const journeyStepViews = {
+        source: { target: [-8.9, 0.55, -2.5], offset: [1.35, 5.7, 7.25] },
+        storage: { target: [-3.15, 0.9, -1.1], offset: [1.15, 5.85, 7.1] },
+        modeling: { target: [-0.15, 0.95, -1.28], offset: [1.2, 5.95, 7] },
+        export: { target: [3.75, 0.95, -0.92], offset: [1.25, 6.15, 7.25] },
+        product: { target: [7.55, 0.95, 2.35], offset: [1.1, 6.05, 7.3] }
       };
 
       const rooms = [
@@ -1201,8 +1320,25 @@
 
       journeySteps.forEach((button) => {
         button.addEventListener("click", () => {
-          setJourneyDetail(button.dataset.journeyStep);
-          focusRoom(button.dataset.journeyRoom, button.dataset.journeyStep);
+          stopJourneyTour();
+          focusJourneyStep(button.dataset.journeyStep, button.dataset.journeyRoom);
+        });
+      });
+
+      tourButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.tourAction;
+          if (action === "previous") {
+            stopJourneyTour();
+            stepJourney(-1);
+            return;
+          }
+          if (action === "next") {
+            stopJourneyTour();
+            stepJourney(1);
+            return;
+          }
+          toggleJourneyTour();
         });
       });
 
@@ -2247,20 +2383,33 @@
       }
 
       function focusRoom(id, stepOverride) {
+        currentFocusId = id in roomDetails ? id : "house";
         const room = roomTargets[id] ?? roomTargets.house;
         desiredTarget.set(...room.target);
         desiredOffset.set(...room.offset);
         clampCameraOffset();
-        const details = roomDetails[id] ?? roomDetails.house;
+        const details = roomDetails[currentFocusId] ?? roomDetails.house;
         currentRoom.textContent = details.title;
         currentCopy.textContent = details.copy;
-        repositoryLinks.hidden = id !== "github";
-        assetLinks.hidden = id !== "assets";
-        offeringLinks.hidden = id !== "services";
-        destinationLinks.hidden = id !== "product";
-        panel.classList.toggle("is-service-focus", id === "services");
-        updateJourneyHighlights(id);
-        setJourneyDetail(stepOverride ?? primaryJourneyStepByFocus[id] ?? "overview");
+        repositoryLinks.hidden = currentFocusId !== "github";
+        assetLinks.hidden = currentFocusId !== "assets";
+        offeringLinks.hidden = currentFocusId !== "services";
+        destinationLinks.hidden = currentFocusId !== "product";
+        panel.classList.toggle("is-service-focus", currentFocusId === "services");
+        updateJourneyHighlights(currentFocusId);
+        setJourneyDetail(stepOverride ?? primaryJourneyStepByFocus[currentFocusId] ?? "overview");
+      }
+
+      function focusJourneyStep(stepId, fallbackRoomId) {
+        const button = journeySteps.find((step) => step.dataset.journeyStep === stepId);
+        const roomId = fallbackRoomId ?? button?.dataset.journeyRoom ?? "house";
+        focusRoom(roomId, stepId);
+        const view = journeyStepViews[stepId];
+        if (view) {
+          desiredTarget.set(...view.target);
+          desiredOffset.set(...view.offset);
+          clampCameraOffset();
+        }
       }
 
       function focusServiceOffering(offering) {
@@ -2274,14 +2423,17 @@
       function updateJourneyHighlights(id) {
         const activeSteps = new Set(journeyHighlightsByFocus[id] ?? []);
         journeySteps.forEach((step) => {
-          step.classList.toggle("is-active", activeSteps.has(step.dataset.journeyStep));
+          const isSelected = step.dataset.journeyStep === activeJourneyStepId;
+          step.classList.toggle("is-active", isSelected || activeSteps.has(step.dataset.journeyStep));
         });
       }
 
       function setJourneyDetail(stepId) {
         const details = journeyDetails[stepId] ?? journeyDetails.overview;
+        activeJourneyStepId = stepId;
         journeyDetailTitle.textContent = details.title;
         journeyDetailCopy.textContent = details.copy;
+        sceneSummary.textContent = details.summary ?? "Explore the Data Platform House: rooms, pipes, characters, and trusted product paths.";
         journeyDetailModes.innerHTML = "";
         details.modes.forEach((mode) => {
           const chip = document.createElement("span");
@@ -2289,6 +2441,54 @@
           chip.textContent = mode;
           journeyDetailModes.append(chip);
         });
+        journeySceneCues.innerHTML = "";
+        (details.sceneCues ?? []).forEach((cue) => {
+          const item = document.createElement("li");
+          item.textContent = cue;
+          journeySceneCues.append(item);
+        });
+        updateJourneyHighlights(currentFocusId);
+        syncTourControls();
+      }
+
+      function stepJourney(direction) {
+        const currentIndex = Math.max(0, orderedJourneyStepIds.indexOf(activeJourneyStepId));
+        const nextIndex = (currentIndex + direction + orderedJourneyStepIds.length) % orderedJourneyStepIds.length;
+        const nextStepId = orderedJourneyStepIds[nextIndex];
+        focusJourneyStep(nextStepId);
+      }
+
+      function toggleJourneyTour() {
+        if (tourTimer) {
+          stopJourneyTour();
+          return;
+        }
+
+        const firstStep = orderedJourneyStepIds.includes(activeJourneyStepId) ? activeJourneyStepId : orderedJourneyStepIds[0];
+        focusJourneyStep(firstStep);
+        tourTimer = window.setInterval(() => {
+          stepJourney(1);
+        }, 4200);
+        syncTourControls();
+      }
+
+      function stopJourneyTour() {
+        if (!tourTimer) {
+          syncTourControls();
+          return;
+        }
+        window.clearInterval(tourTimer);
+        tourTimer = null;
+        syncTourControls();
+      }
+
+      function syncTourControls() {
+        const playButton = tourButtons.find((button) => button.dataset.tourAction === "play");
+        if (!playButton) {
+          return;
+        }
+        playButton.textContent = tourTimer ? "Stop tour" : "Play tour";
+        playButton.classList.toggle("is-active", Boolean(tourTimer));
       }
 
       function rotateView(direction) {
