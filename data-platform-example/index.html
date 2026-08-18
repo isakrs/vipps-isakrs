@@ -838,8 +838,8 @@
         <a href="/data-platform-example/instructions/#configuration-repository-offerings" data-service-offering="Custom Integrations">Custom Integrations <span>Special cases</span></a>
       </div>
       <div class="repository-links" id="destination-links" hidden aria-label="Trusted consumer destinations">
-        <a href="/data-platform-example/instructions/#trusted-consumer-destinations">Dataverse <span>Governed consumer space</span></a>
-        <a href="/data-platform-example/instructions/#trusted-consumer-destinations">Datafront <span>Trusted serving front door</span></a>
+        <a href="/data-platform-example/instructions/#trusted-consumer-destinations" data-trusted-destination="Dataverse">Dataverse <span>Governed consumer space</span></a>
+        <a href="/data-platform-example/instructions/#trusted-consumer-destinations" data-trusted-destination="Datafront">Datafront <span>Trusted serving front door</span></a>
       </div>
       <div class="flow-legend" aria-label="Flow mode legend">
         <h3>Pipe modes</h3>
@@ -939,6 +939,7 @@
       const assetLinks = document.querySelector("#asset-links");
       const offeringLinks = document.querySelector("#offering-links");
       const destinationLinks = document.querySelector("#destination-links");
+      const destinationLinkItems = [...document.querySelectorAll("[data-trusted-destination]")];
       const offeringLinkItems = [...document.querySelectorAll("[data-service-offering]")];
       const journeySteps = [...document.querySelectorAll("[data-journey-step]")];
       const journeyDetailTitle = document.querySelector("#journey-detail-title");
@@ -1336,15 +1337,28 @@
         {
           name: "Dataverse",
           color: 0x1f7a8c,
-          description: "A governed consumer space where trusted outputs can be explored, joined with context, and used safely by downstream teams."
+          description: "A governed consumer space where trusted outputs can be explored, joined with context, and used safely by downstream teams.",
+          roomId: "product",
+          flowMode: "Serving flow",
+          likelyUsers: "Product analysts, downstream teams, and domain partners exploring trusted platform outputs.",
+          output: "Governed consumer-ready datasets, context-rich exploration, and safe follow-up analysis.",
+          interactionPrompt: "Use it when trusted outputs should be explored and combined with context without exposing raw operational paths.",
+          instructionAnchor: "/data-platform-example/instructions/#trusted-consumer-destinations"
         },
         {
           name: "Datafront",
           color: 0x2c7be5,
-          description: "A trusted serving front door where approved outputs are presented clearly to product and analytics consumers."
+          description: "A trusted serving front door where approved outputs are presented clearly to product and analytics consumers.",
+          roomId: "product",
+          flowMode: "Serving flow",
+          likelyUsers: "Product teams and analytics consumers who need a clear front door for approved outputs.",
+          output: "Presented trusted outputs, serving endpoints, and clearly packaged product-facing access.",
+          interactionPrompt: "Use it when the house should return trusted outputs through a clear serving front door back to product teams.",
+          instructionAnchor: "/data-platform-example/instructions/#trusted-consumer-destinations"
         }
       ];
       const offeringByName = new Map(platformOfferings.map((offering) => [offering.name, offering]));
+      const destinationByName = new Map(trustedConsumerDestinations.map((destination) => [destination.name, destination]));
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
       const characterKnowledge = new Map();
@@ -1381,6 +1395,17 @@
             return;
           }
           focusServiceOffering(offering);
+        });
+      });
+
+      destinationLinkItems.forEach((link) => {
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          const destination = destinationByName.get(link.dataset.trustedDestination);
+          if (!destination) {
+            return;
+          }
+          focusTrustedDestination(destination);
         });
       });
 
@@ -1872,6 +1897,7 @@
           const z = index === 0 ? 4.18 : 1.06;
           pedestal.position.set(x, 0, z);
           pedestal.rotation.y = index === 0 ? -0.36 : -0.62;
+          pedestal.userData = { trustedDestination: destination };
 
           const base = new THREE.Mesh(
             new THREE.CylinderGeometry(0.62, 0.76, 0.2, 24),
@@ -1931,6 +1957,7 @@
 
           scene.add(pedestal);
           scene.add(makeLabel(destination.name, new THREE.Vector3(x, 1.98, z), destination.color, 0.52));
+          clickable.push(pedestal);
         });
 
         scene.add(makeLabel("trusted destinations", new THREE.Vector3(7.48, 2.58, 2.62), 0x1f7a8c, 0.56));
@@ -2486,6 +2513,13 @@
         showServiceDialogue(offering);
       }
 
+      function focusTrustedDestination(destination) {
+        focusRoom("product", "product");
+        currentRoom.textContent = destination.name;
+        currentCopy.textContent = destination.description;
+        showDestinationDialogue(destination);
+      }
+
       function updateJourneyHighlights(id) {
         const activeSteps = new Set(journeyHighlightsByFocus[id] ?? []);
         journeySteps.forEach((step) => {
@@ -2742,6 +2776,49 @@
         dialogue.hidden = false;
       }
 
+      function showDestinationDialogue(destination) {
+        const room = destination.roomId ? roomById.get(destination.roomId) : null;
+        speakerName.textContent = destination.name;
+        speakerCopy.textContent = destination.description;
+
+        const destinationGuidance = [
+          "Trusted consumer destination in the public-safe product-side loop.",
+          room
+            ? `House area: ${room.name}.`
+            : "House area: Product-side consumer destinations.",
+          `Flow mode: ${destination.flowMode}.`,
+          `Likely users: ${destination.likelyUsers}`,
+          `Output shape: ${destination.output}`,
+          destination.interactionPrompt,
+          "This destination receives governed outputs only, not raw payment events or private operational details.",
+          "It should read like a real place a visitor can inspect, not only a label at the edge of the scene."
+        ];
+
+        speakerPoints.innerHTML = "";
+        destinationGuidance.forEach((point) => {
+          const item = document.createElement("li");
+          item.textContent = point;
+          speakerPoints.append(item);
+        });
+        speakerPoints.hidden = false;
+
+        renderDialogueLinks([
+          {
+            label: "Trusted destination notes",
+            url: destination.instructionAnchor ?? "/data-platform-example/instructions/#trusted-consumer-destinations"
+          },
+          {
+            label: "Focus product loop",
+            url: "/data-platform-example/?focus=product"
+          },
+          {
+            label: "Open service catalog notes",
+            url: "/data-platform-example/instructions/#configuration-repository-offerings"
+          }
+        ]);
+        dialogue.hidden = false;
+      }
+
       function servicePrompt(offering) {
         if (offering.type === "Capture") {
           return "Use it when a producer needs a safe way to get source data into the house.";
@@ -2797,10 +2874,17 @@
           if (selected.userData.serviceOffering) {
             break;
           }
+          if (selected.userData.trustedDestination) {
+            break;
+          }
           selected = selected.parent;
         }
         if (selected.userData.serviceOffering) {
           focusServiceOffering(selected.userData.serviceOffering);
+          return;
+        }
+        if (selected.userData.trustedDestination) {
+          focusTrustedDestination(selected.userData.trustedDestination);
           return;
         }
         if (!selected.userData.dialogue) {

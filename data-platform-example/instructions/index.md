@@ -351,8 +351,12 @@ to product teams.
 
 In the Three.js world, these offerings should become visible doors, kiosks,
 pipe junctions, or room signs that a visitor can move toward, stand beside, or
-click to learn more. The current service directory is the first pass: it names
-every offering and connects the catalog back to the house with its own pipe.
+click to learn more. The current product-side world now lets visitors click the
+Dataverse and Datafront landmarks directly, or use the Product panel links, to
+open public-safe teaching notes about what each destination is for, who uses
+it, and why it sits on the serving side of the loop. The service directory
+remains the first pass for the configuration catalog: it names every offering
+and connects the catalog back to the house with its own pipe.
 
 The payment journey should also stay readable as a sequence, not only as a map.
 A first-time visitor should quickly understand this order:
@@ -444,10 +448,6 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
     <article class="data-platform-card">
-      <strong>Let product destinations explain themselves</strong>
-      <span>Turn Dataverse and Datafront from visible landmarks into clickable teaching moments with public-safe explanations.</span>
-    </article>
-    <article class="data-platform-card">
       <strong>Deepen pipe language</strong>
       <span>Build on the visible legend, checkpoints, and quality gate with batch, backfill, and manual correction scenes.</span>
     </article>
@@ -470,6 +470,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Deepen character review pages</strong>
       <span>Expand the new public-safe character pages with more room cues, public repository teaching, and future conversation prompts.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Let product destinations teach the return path visually</strong>
+      <span>Now that Dataverse and Datafront are clickable, add stronger in-scene props that distinguish exploration space from serving front door at a glance.</span>
     </article>
   </section>
 
@@ -558,6 +562,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>First knowledge files</strong>
       <span>Isak, Param, Kien, and Malo now have public-safe Markdown source files.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Clickable trusted destinations</strong>
+      <span>Dataverse and Datafront now open product-side public-safe teaching notes from both the world props and the Product panel.</span>
     </article>
     <article class="data-platform-card">
       <strong>First repository blueprints chosen</strong>
