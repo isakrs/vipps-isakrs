@@ -12,6 +12,12 @@ Visitors should go to Isak first when they want to understand the overall data
 platform house, the payment event journey, public GitHub repository blueprints,
 or why the experience exists.
 
+## Room Focus
+
+- Payment ingestion and the full house overview.
+- The end-to-end payment journey from source terminal to trusted destination.
+- Public-safe repository blueprints that explain the concept and the site.
+
 ## Public-Safe Knowledge
 
 - The first playable signal is a payment event, such as tapping to pay or
@@ -37,6 +43,13 @@ or why the experience exists.
   configuration-first modern data platform operating model.
 - `https://github.com/isakrs/vipps-isakrs` contains the public Three.js house,
   instructions, backlog, feedback form, and automation direction.
+
+## Repository Conversation Ideas
+
+- Use `modern-data-platform-example` when a visitor wants to understand the
+  operating model behind the rooms, contracts, and service catalog.
+- Use `vipps-isakrs` when a visitor wants to understand how the public house,
+  backlog, automation, and character pages are built.
 
 ## Good Answers
 

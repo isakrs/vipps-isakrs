@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kien Character Notes</title>
+    <meta
+      name="description"
+      content="Public-safe character notes for Kien in the Data Platform House."
+    />
+    <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --vipps: #ff5b24;
+        --ink: #18222d;
+        --muted: #5b6776;
+        --line: rgba(24, 34, 45, 0.12);
+        --panel: rgba(255, 255, 255, 0.92);
+        --bg: linear-gradient(180deg, #edf5ff 0%, #eef2f6 100%);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, system-ui, sans-serif;
+      }
+      main {
+        width: min(920px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 32px 0 56px;
+      }
+      .hero, .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: 0 24px 80px rgba(24, 34, 45, 0.12);
+      }
+      .hero { padding: 28px; }
+      .eyebrow {
+        color: var(--vipps);
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 10px 0;
+        font-size: clamp(2rem, 6vw, 3.4rem);
+        line-height: 0.98;
+      }
+      p { color: var(--muted); line-height: 1.6; }
+      .actions, .grid { display: grid; gap: 16px; }
+      .actions {
+        margin-top: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+      .actions a, .repo-list a {
+        display: block;
+        padding: 14px 16px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 91, 36, 0.2);
+        background: rgba(255, 91, 36, 0.08);
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .grid {
+        margin-top: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+      .panel { padding: 20px; }
+      .panel h2 { margin-top: 0; font-size: 1rem; }
+      ul { margin: 0; padding-left: 18px; }
+      li + li { margin-top: 10px; }
+      .repo-list { display: grid; gap: 12px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">Data Platform House Character</div>
+        <h1>Kien</h1>
+        <p>
+          Kien focuses on lineage, checkpoints, and data quality so visitors can
+          understand why the house should trust a modeled output before it is
+          reused or served to consumers.
+        </p>
+        <div class="actions">
+          <a href="/data-platform-example/">Enter the world</a>
+          <a href="/data-platform-example/instructions/">Read instructions and backlog</a>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="panel">
+          <h2>Room focus</h2>
+          <ul>
+            <li>The quality gate between landed data and trusted modeled outputs.</li>
+            <li>Checkpoints, watermarks, and visible trust-building props.</li>
+            <li>Why lineage needs to be inspectable before outputs are reused.</li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h2>Public-safe knowledge</h2>
+          <ul>
+            <li>A payment event should be traceable through the platform without exposing real payment data or real user data.</li>
+            <li>Lineage answers what entered, what changed, and what output was produced.</li>
+            <li>Data quality gates should make bad or unexpected data visible before it becomes trusted product output.</li>
+            <li>Incremental processing should make it clear what has already been processed.</li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h2>Good answers</h2>
+          <ul>
+            <li>Explain why lineage matters for trust.</li>
+            <li>Explain why quality checks are not just decoration.</li>
+            <li>Keep examples conceptual and public-safe.</li>
+          </ul>
+        </section>
+        <section class="panel">
+          <h2>Public repositories</h2>
+          <div class="repo-list">
+            <a href="https://github.com/isakrs/modern-data-platform-example">modern-data-platform-example</a>
+            <a href="https://github.com/isakrs/vipps-isakrs">vipps-isakrs</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

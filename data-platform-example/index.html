@@ -2761,7 +2761,7 @@
         speakerName.textContent = `${character.name} - ${role}`;
         speakerCopy.textContent = character.dialogue;
 
-        const points = [...(knowledge?.knowledgePoints ?? []).slice(0, 2), ...(knowledge?.guidance ?? []).slice(0, 1)];
+        const points = [...(knowledge?.knowledgePoints ?? []).slice(0, 3), ...(knowledge?.guidance ?? []).slice(0, 1)];
         speakerPoints.innerHTML = "";
         if (points.length) {
           points.forEach((point) => {
@@ -2774,7 +2774,13 @@
           speakerPoints.hidden = true;
         }
 
-        renderDialogueLinks(knowledge?.repositories ?? []);
+        renderDialogueLinks([
+          {
+            label: `${character.name} notes`,
+            url: `/data-platform-example/characters/${character.knowledgeSlug}/`
+          },
+          ...(knowledge?.repositories ?? [])
+        ]);
         dialogue.hidden = false;
       }
 

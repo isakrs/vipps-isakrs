@@ -120,6 +120,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The payment journey tracker now acts as a guided tour with step-specific
   camera moves, previous and next controls, autoplay, and scene-cue notes that
   explain what to inspect in the house.
+- Each teammate-inspired character now has a public-safe review page with
+  direct links from the world, while the Markdown files remain the source
+  material for future large language model conversations.
 - The decorative repository table, open asset workbench, and smoke effects have
   been removed so the house and core signal journey are easier to read.
 - The configuration repository offerings now appear as plain clickable service
@@ -143,6 +146,21 @@ should support it by making the story, flow, characters, and process clear
 before the scene becomes too complex.
 
 [Enter the Three.js world](/data-platform-example/)
+
+## Character Knowledge Pages
+
+The Markdown files under `/data-platform-example/characters/` remain the source
+material for future large language model conversations. Public-safe review pages
+now sit beside them so visitors can inspect what each character is meant to
+teach without reading repository source files directly.
+
+- [Isak notes](/data-platform-example/characters/isak/)
+- [Param notes](/data-platform-example/characters/param/)
+- [Kien notes](/data-platform-example/characters/kien/)
+- [Malo notes](/data-platform-example/characters/malo/)
+
+These pages should stay `noindex` until Isak explicitly wants the whole
+experience to become search-discoverable.
 
 ## Feedback Loop
 
@@ -449,6 +467,10 @@ event version more convincing.
       <strong>Broaden knowledge-backed dialogue</strong>
       <span>Let characters answer room-specific prompts, safe repository questions, and pipe-mode questions from their Markdown source files.</span>
     </article>
+    <article class="data-platform-card">
+      <strong>Deepen character review pages</strong>
+      <span>Expand the new public-safe character pages with more room cues, public repository teaching, and future conversation prompts.</span>
+    </article>
   </section>
 
   <section class="data-platform-lane" aria-labelledby="backlog-later">
@@ -544,6 +566,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Character knowledge connected</strong>
       <span>The world now loads Markdown character files at runtime and uses them to enrich public-safe dialogue and repository links.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Character notes published</strong>
+      <span>Each teammate-inspired character now has a direct-link review page with noindex protection and links from the world dialogue.</span>
     </article>
     <article class="data-platform-card">
       <strong>Agent-first feedback loop</strong>
