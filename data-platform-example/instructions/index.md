@@ -123,6 +123,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The payment journey tracker now acts as a guided tour with step-specific
   camera moves, previous and next controls, autoplay, and scene-cue notes that
   explain what to inspect in the house.
+- Side-mode props now make scheduled batch, backfill or replay, and manual
+  correction visible in the scene, so the pipe language goes beyond the main
+  payment path without crowding the house.
 - Each teammate-inspired character now has a public-safe review page with
   direct links from the world, while the Markdown files remain the source
   material for future large language model conversations.
@@ -382,6 +385,8 @@ apply there:
 - Incremental plus quality gate behavior through processing and modeling.
 - Declared export at governed outbound delivery.
 - Serving flow at trusted consumer and data product delivery.
+- Scheduled batch, replay, and manual correction as visible side modes beside
+  the primary payment path where they matter.
 
 The most important next focus is not "all services equally." The brief should
 guide future runs toward the services that matter most for the story:
@@ -451,8 +456,8 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
     <article class="data-platform-card">
-      <strong>Deepen pipe language</strong>
-      <span>Build on the visible legend, checkpoints, and quality gate with batch, backfill, and manual correction scenes.</span>
+      <strong>Separate full refresh from replay</strong>
+      <span>Now that batch, replay, and manual correction are visible, make full refresh distinct from replay when visitors inspect publish services.</span>
     </article>
     <article class="data-platform-card">
       <strong>Ground characters in service areas</strong>
@@ -621,6 +626,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Trusted product destinations added</strong>
       <span>Dataverse and Datafront now stand as visible serving destinations so the product side of the loop has concrete endpoints.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Side-mode props added</strong>
+      <span>The world now shows a night-batch clock, replay lane, and manual correction console so more pipe modes are visible in-scene.</span>
     </article>
   </section>
 </div>
