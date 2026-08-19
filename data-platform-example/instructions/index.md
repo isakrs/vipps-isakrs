@@ -117,6 +117,9 @@ The previous implementation has been deleted and replaced with a clearer split:
   declared export, or serving flow without relying only on the legend.
 - The world now supports zooming in and out, both from the camera buttons and
   from mouse-wheel input on the canvas.
+- The world now teaches its own movement controls in the panel, including drag,
+  orbit, depth movement, zoom shortcuts, journey hotkeys, and a quick reset
+  back to the full-house view.
 - The payment journey tracker now acts as a guided tour with step-specific
   camera moves, previous and next controls, autoplay, and scene-cue notes that
   explain what to inspect in the house.
@@ -416,8 +419,8 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-now">
     <h3 id="backlog-now">Now</h3>
     <article class="data-platform-card">
-      <strong>Enable real depth movement</strong>
-      <span>Let visitors move around the house in depth, not only pan across a flat-feeling scene.</span>
+      <strong>Make movement feel room-first</strong>
+      <span>Build on the now-visible controls so movement feels grounded in rooms, landmarks, and pipe destinations instead of only camera target shifts.</span>
     </article>
     <article class="data-platform-card">
       <strong>Declutter the world</strong>
@@ -518,6 +521,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Direction reset</strong>
       <span>The old implementation was removed and this brief became the source of truth.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Expose movement controls</strong>
+      <span>The world now tells visitors how to drag, orbit, move in depth, jump between journey steps, zoom, and reset the camera.</span>
     </article>
     <article class="data-platform-card">
       <strong>Twice-workday automation</strong>

@@ -286,6 +286,48 @@
         width: 26px;
       }
 
+      .controls-guide {
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .controls-guide h3 {
+        font-size: 0.76rem;
+        letter-spacing: 0.05em;
+        margin: 0;
+        text-transform: uppercase;
+      }
+
+      .controls-grid {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .control-chip {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 11px;
+      }
+
+      .control-chip strong {
+        display: block;
+        font-size: 0.74rem;
+        line-height: 1.2;
+        margin-bottom: 3px;
+      }
+
+      .control-chip span {
+        color: var(--muted);
+        display: block;
+        font-size: 0.7rem;
+        line-height: 1.35;
+      }
+
       .focus-grid {
         display: grid;
         gap: 8px;
@@ -733,6 +775,27 @@
         A tap or send payment event enters ingestion, lands safely, becomes
         modeled data, and leaves as products, exports, or decisions.
       </p>
+      <div class="controls-guide" aria-label="How to move around the house">
+        <h3>Move around</h3>
+        <div class="controls-grid">
+          <div class="control-chip">
+            <strong>Drag or Q and E</strong>
+            <span>Turn around the house from multiple sides.</span>
+          </div>
+          <div class="control-chip">
+            <strong>W A S D or arrows</strong>
+            <span>Move the camera target in depth around rooms and pipes.</span>
+          </div>
+          <div class="control-chip">
+            <strong>Wheel or plus and minus</strong>
+            <span>Zoom in toward rooms or back out for the full loop.</span>
+          </div>
+          <div class="control-chip">
+            <strong>1 to 5 or R</strong>
+            <span>Jump between payment journey steps or reset to the full house.</span>
+          </div>
+        </div>
+      </div>
       <div class="journey" aria-label="Payment journey">
         <h3>Signal journey</h3>
         <div class="journey-grid" id="journey-steps">
@@ -1446,7 +1509,29 @@
       });
 
       window.addEventListener("keydown", (event) => {
-        keys.add(event.key.toLowerCase());
+        const key = event.key.toLowerCase();
+        if (key >= "1" && key <= "5") {
+          const stepId = orderedJourneyStepIds[Number(key) - 1];
+          if (stepId) {
+            stopJourneyTour();
+            focusJourneyStep(stepId);
+          }
+          return;
+        }
+        if (key === "r") {
+          stopJourneyTour();
+          focusRoom("house");
+          return;
+        }
+        if (key === "+" || key === "=") {
+          adjustZoom(-1.5);
+          return;
+        }
+        if (key === "-") {
+          adjustZoom(1.5);
+          return;
+        }
+        keys.add(key);
       });
 
       window.addEventListener("keyup", (event) => {
@@ -2493,9 +2578,12 @@
         setJourneyDetail(stepOverride ?? primaryJourneyStepByFocus[currentFocusId] ?? "overview");
       }
 
-      function focusJourneyStep(stepId, fallbackRoomId) {
+      function focusJourneyStep(stepId, fallbackRoomId, options = {}) {
         const button = journeySteps.find((step) => step.dataset.journeyStep === stepId);
         const roomId = fallbackRoomId ?? button?.dataset.journeyRoom ?? "house";
+        if (!options.preserveTour) {
+          stopJourneyTour();
+        }
         focusRoom(roomId, stepId);
         const view = journeyStepViews[stepId];
         if (view) {
@@ -2565,9 +2653,11 @@
         }
 
         const firstStep = orderedJourneyStepIds.includes(activeJourneyStepId) ? activeJourneyStepId : orderedJourneyStepIds[0];
-        focusJourneyStep(firstStep);
+        focusJourneyStep(firstStep, undefined, { preserveTour: true });
         tourTimer = window.setInterval(() => {
-          stepJourney(1);
+          const currentIndex = Math.max(0, orderedJourneyStepIds.indexOf(activeJourneyStepId));
+          const nextIndex = (currentIndex + 1) % orderedJourneyStepIds.length;
+          focusJourneyStep(orderedJourneyStepIds[nextIndex], undefined, { preserveTour: true });
         }, 4200);
         syncTourControls();
       }
