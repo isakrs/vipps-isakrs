@@ -140,6 +140,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - Dataverse and Datafront now appear as visible trusted-consumer destinations
   in the product side of the world, so the serving flow lands somewhere
   concrete instead of ending as an abstract label.
+- Dataverse and Datafront now use distinct destination props in the scene, so
+  visitors can tell the difference between governed exploration space and the
+  serving front door before opening a dialogue panel.
 - Service clicks now teach house area, likely users, flow mode, output shape,
   and nearest destinations, so the configuration catalog explains when each
   offering fits without exposing private configuration details.
@@ -367,6 +370,14 @@ it, and why it sits on the serving side of the loop. The service directory
 remains the first pass for the configuration catalog: it names every offering
 and connects the catalog back to the house with its own pipe.
 
+The product-side scene should also make the difference legible before any
+click:
+
+- Dataverse should look like a governed exploration space, with cues such as
+  archive rings, context shelves, or an inspect-and-compare rotunda.
+- Datafront should look like a serving front door, with cues such as a display
+  wall, framed portal, or outgoing handoff lane back toward product teams.
+
 The payment journey should also stay readable as a sequence, not only as a map.
 A first-time visitor should quickly understand this order:
 
@@ -480,7 +491,7 @@ event version more convincing.
     </article>
     <article class="data-platform-card">
       <strong>Let product destinations teach the return path visually</strong>
-      <span>Now that Dataverse and Datafront are clickable, add stronger in-scene props that distinguish exploration space from serving front door at a glance.</span>
+      <span>Build stronger focus reactions, arrival cues, or path highlights now that Dataverse and Datafront already have distinct destination props.</span>
     </article>
   </section>
 
@@ -577,6 +588,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Clickable trusted destinations</strong>
       <span>Dataverse and Datafront now open product-side public-safe teaching notes from both the world props and the Product panel.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Trusted destinations visually separated</strong>
+      <span>Dataverse now reads as a governed exploration place and Datafront as a serving front door before visitors click either destination.</span>
     </article>
     <article class="data-platform-card">
       <strong>First repository blueprints chosen</strong>

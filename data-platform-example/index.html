@@ -1106,7 +1106,7 @@
         },
         product: {
           title: "Data Product Room",
-          copy: "The payment signal becomes a governed table, insight, dashboard, alert, or downstream data product through a serving flow that visibly lands in Dataverse and Datafront destinations."
+          copy: "The payment signal becomes a governed table, insight, dashboard, alert, or downstream data product through a serving flow that visibly lands in a Dataverse exploration rotunda and a Datafront serving front door."
         },
         github: {
           title: "GitHub Library",
@@ -1197,8 +1197,9 @@
           copy: "Serving flows deliver governed outputs back to product teams through visible Dataverse and Datafront destinations, without exposing raw operational data.",
           modes: ["Serving flow"],
           sceneCues: [
-            "Dataverse and Datafront stand as visible consumer destinations.",
-            "The teal serving path returns toward the product team consumer terminal.",
+            "Dataverse now reads as a governed exploration rotunda with stacked shelves and an inward reading ring.",
+            "Datafront now reads as a serving front door with a framed display wall and an arrow runway back to consumers.",
+            "The teal serving path returns toward both destinations and the product team consumer terminal.",
             "This closes the loop from product signal in to trusted outputs back out."
           ],
           summary: "Step 5: serving flows reach Dataverse, Datafront, and the product-side consumer terminal."
@@ -1414,6 +1415,7 @@
           likelyUsers: "Product analysts, downstream teams, and domain partners exploring trusted platform outputs.",
           output: "Governed consumer-ready datasets, context-rich exploration, and safe follow-up analysis.",
           interactionPrompt: "Use it when trusted outputs should be explored and combined with context without exposing raw operational paths.",
+          sceneCue: "Look for the teal exploration rotunda, stacked archive shelves, and the inward reading ring. Dataverse should feel like a governed place to inspect and compare trusted outputs.",
           instructionAnchor: "/data-platform-example/instructions/#trusted-consumer-destinations"
         },
         {
@@ -1425,6 +1427,7 @@
           likelyUsers: "Product teams and analytics consumers who need a clear front door for approved outputs.",
           output: "Presented trusted outputs, serving endpoints, and clearly packaged product-facing access.",
           interactionPrompt: "Use it when the house should return trusted outputs through a clear serving front door back to product teams.",
+          sceneCue: "Look for the blue front-door portal, outgoing display wall, and arrow runway. Datafront should feel like the obvious presentation and handoff point back to consumers.",
           instructionAnchor: "/data-platform-example/instructions/#trusted-consumer-destinations"
         }
       ];
@@ -2039,6 +2042,95 @@
           tower.position.y = 0.72;
           tower.castShadow = true;
           pedestal.add(tower);
+
+          if (destination.name === "Dataverse") {
+            const archiveHeights = [0.44, 0.68, 0.92];
+            archiveHeights.forEach((height, shelfIndex) => {
+              const shelf = new THREE.Mesh(
+                new THREE.TorusGeometry(0.22 + shelfIndex * 0.04, 0.018, 12, 32),
+                new THREE.MeshStandardMaterial({
+                  color: 0xffffff,
+                  emissive: destination.color,
+                  emissiveIntensity: 0.2,
+                  roughness: 0.24
+                })
+              );
+              shelf.rotation.x = Math.PI / 2;
+              shelf.position.y = height;
+              pedestal.add(shelf);
+            });
+
+            [-0.22, 0.22].forEach((offsetX) => {
+              const fin = new THREE.Mesh(
+                new THREE.BoxGeometry(0.08, 0.78, 0.26),
+                new THREE.MeshStandardMaterial({
+                  color: 0xffffff,
+                  emissive: destination.color,
+                  emissiveIntensity: 0.1,
+                  roughness: 0.28
+                })
+              );
+              fin.position.set(offsetX, 0.7, 0);
+              fin.castShadow = true;
+              pedestal.add(fin);
+            });
+
+            const readingRing = new THREE.Mesh(
+              new THREE.TorusGeometry(0.72, 0.04, 16, 40),
+              new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                emissive: destination.color,
+                emissiveIntensity: 0.26,
+                roughness: 0.22
+              })
+            );
+            readingRing.rotation.x = Math.PI / 2;
+            readingRing.position.set(0, 0.02, 0);
+            pedestal.add(readingRing);
+          }
+
+          if (destination.name === "Datafront") {
+            const screen = new THREE.Mesh(
+              new THREE.BoxGeometry(0.54, 0.42, 0.06),
+              new THREE.MeshStandardMaterial({
+                color: 0xdff1ff,
+                emissive: destination.color,
+                emissiveIntensity: 0.3,
+                roughness: 0.18
+              })
+            );
+            screen.position.set(0, 0.9, 0.23);
+            screen.castShadow = true;
+            pedestal.add(screen);
+
+            const frame = new THREE.Mesh(
+              new THREE.TorusGeometry(0.36, 0.03, 12, 4),
+              new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                emissive: destination.color,
+                emissiveIntensity: 0.24,
+                roughness: 0.22
+              })
+            );
+            frame.rotation.y = Math.PI / 4;
+            frame.position.set(0, 0.86, 0.02);
+            pedestal.add(frame);
+
+            [-0.16, 0, 0.16].forEach((offsetX, arrowIndex) => {
+              const arrow = new THREE.Mesh(
+                new THREE.ConeGeometry(0.055, 0.18, 12),
+                new THREE.MeshStandardMaterial({
+                  color: 0xffffff,
+                  emissive: destination.color,
+                  emissiveIntensity: 0.34,
+                  roughness: 0.18
+                })
+              );
+              arrow.position.set(offsetX, 0.12, 0.48 + arrowIndex * 0.16);
+              arrow.rotation.x = Math.PI / 2;
+              pedestal.add(arrow);
+            });
+          }
 
           const beacon = new THREE.Mesh(
             new THREE.SphereGeometry(index === 0 ? 0.16 : 0.14, 18, 18),
@@ -3141,10 +3233,11 @@
           `Flow mode: ${destination.flowMode}.`,
           `Likely users: ${destination.likelyUsers}`,
           `Output shape: ${destination.output}`,
+          destination.sceneCue ? `Scene cue: ${destination.sceneCue}` : null,
           destination.interactionPrompt,
           "This destination receives governed outputs only, not raw payment events or private operational details.",
           "It should read like a real place a visitor can inspect, not only a label at the edge of the scene."
-        ];
+        ].filter(Boolean);
 
         speakerPoints.innerHTML = "";
         destinationGuidance.forEach((point) => {
