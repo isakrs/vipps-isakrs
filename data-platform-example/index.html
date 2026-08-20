@@ -913,6 +913,7 @@
           <div class="legend-item"><span class="legend-dot" style="background:#7c5cff"></span>Declared export</div>
           <div class="legend-item"><span class="legend-dot" style="background:#1f7a8c"></span>Serving flow</div>
           <div class="legend-item"><span class="legend-dot" style="background:#ff9f1c"></span>Scheduled batch</div>
+          <div class="legend-item"><span class="legend-dot" style="background:#8b94a7"></span>Reviewed full refresh</div>
           <div class="legend-item"><span class="legend-dot" style="background:#ff8f66"></span>Backfill or replay</div>
           <div class="legend-item"><span class="legend-dot" style="background:#37b6c4"></span>Manual correction</div>
           <div class="legend-item"><span class="legend-dot" style="background:#f2bd2a"></span>Repository reference</div>
@@ -1117,7 +1118,7 @@
         },
         services: {
           title: "Configuration Repository Services",
-          copy: "The configuration repository is shown as plain service-name boxes. Click a box or service name to hear when it is used, and look for the nearby clock, replay lane, and manual console props when flow mode matters."
+          copy: "The configuration repository is shown as plain service-name boxes. Click a box or service name to hear when it is used, and look for the nearby clock, replay lane, reviewed full refresh pad, and manual console props when flow mode matters."
         }
       };
 
@@ -1141,7 +1142,7 @@
             "The orange intake starts on the product team source terminal outside the house.",
             "Green and blue handoffs cross the house through storage, checkpoints, and trust gates.",
             "Purple and teal paths leave toward declared exports, Dataverse, Datafront, and the product team consumer terminal.",
-            "A night-batch clock, replay lane, and manual correction console show side modes outside the main payment path."
+            "A night-batch clock, replay lane, reviewed full refresh pad, and manual correction console show side modes outside the main payment path."
           ],
           summary: "Explore the full payment path from source terminal to trusted consumer destinations."
         },
@@ -1175,7 +1176,7 @@
           sceneCues: [
             "Blue gate props mark the trust check before reuse.",
             "The analytics room sits behind the storage landing, not beside the final consumer view.",
-            "A night-batch clock and replay lane make scheduled refresh and reprocessing visible beside the trusted path.",
+            "A night-batch clock, replay lane, and reviewed full refresh pad make scheduled refresh, rebuild, and reprocessing visible beside the trusted path.",
             "Green and blue segments show that shaping and trust-building are separate handoffs."
           ],
           summary: "Step 3: quality gates and dbt-style modeling turn raw signal into trusted meaning."
@@ -1335,10 +1336,11 @@
           color: 0x2f9e73,
           description: "Create Databricks tables directly from files on storage, either incrementally or as a reviewed full refresh.",
           roomId: "analytics",
-          flowMode: "Incremental or full refresh",
+          flowMode: "Incremental or reviewed full refresh",
           likelyUsers: "Platform builders who want landed files to become trusted tables quickly.",
           output: "Published Databricks tables created from governed storage files, either incrementally or as a full rebuild.",
           interactionPrompt: "Use it when landed files are ready to become queryable tables without a more custom pipeline and the refresh shape is already understood.",
+          sceneCue: "Look for the reviewed full refresh pad near the publish side. It signals a deliberate rebuild path, not the replay lane used for historical reprocessing.",
           instructionAnchor: "/data-platform-example/instructions/#configuration-repository-offerings"
         },
         {
@@ -2102,6 +2104,73 @@
 
         scene.add(batchClock);
         scene.add(makeLabel("night batch", new THREE.Vector3(2.96, 1.36, -3.34), 0xff9f1c, 0.46));
+
+        const refreshPad = new THREE.Group();
+        refreshPad.position.set(4.42, 0, -2.28);
+        refreshPad.rotation.y = -0.3;
+
+        const refreshBase = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.52, 0.64, 0.12, 24),
+          new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.32, metalness: 0.08 })
+        );
+        refreshBase.position.y = 0.06;
+        refreshBase.castShadow = true;
+        refreshBase.receiveShadow = true;
+        refreshPad.add(refreshBase);
+
+        const refreshRing = new THREE.Mesh(
+          new THREE.TorusGeometry(0.38, 0.05, 16, 40),
+          new THREE.MeshStandardMaterial({
+            color: 0x8b94a7,
+            emissive: 0x8b94a7,
+            emissiveIntensity: 0.22,
+            roughness: 0.24
+          })
+        );
+        refreshRing.rotation.x = Math.PI / 2;
+        refreshRing.position.y = 0.18;
+        refreshPad.add(refreshRing);
+
+        const refreshPanel = new THREE.Mesh(
+          new THREE.BoxGeometry(0.68, 0.42, 0.08),
+          new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            emissive: 0x8b94a7,
+            emissiveIntensity: 0.08,
+            roughness: 0.24
+          })
+        );
+        refreshPanel.position.set(0, 0.54, 0);
+        refreshPad.add(refreshPanel);
+
+        const refreshArrow = new THREE.Mesh(
+          new THREE.TorusGeometry(0.14, 0.024, 10, 24, Math.PI * 1.45),
+          new THREE.MeshStandardMaterial({
+            color: 0x8b94a7,
+            emissive: 0x8b94a7,
+            emissiveIntensity: 0.28,
+            roughness: 0.22
+          })
+        );
+        refreshArrow.position.set(-0.02, 0.56, 0.05);
+        refreshArrow.rotation.z = 0.36;
+        refreshPad.add(refreshArrow);
+
+        const refreshTip = new THREE.Mesh(
+          new THREE.ConeGeometry(0.05, 0.14, 12),
+          new THREE.MeshStandardMaterial({
+            color: 0x8b94a7,
+            emissive: 0x8b94a7,
+            emissiveIntensity: 0.3,
+            roughness: 0.24
+          })
+        );
+        refreshTip.position.set(0.11, 0.63, 0.05);
+        refreshTip.rotation.z = -0.74;
+        refreshPad.add(refreshTip);
+
+        scene.add(refreshPad);
+        scene.add(makeLabel("reviewed full refresh", new THREE.Vector3(4.42, 1.42, -2.28), 0x8b94a7, 0.42));
 
         const manualConsole = new THREE.Group();
         manualConsole.position.set(7.22, 0, -1.14);
@@ -3025,6 +3094,10 @@
             : "Nearest destinations: depends on the reviewed custom path.",
           "This kiosk shows the safe name and purpose only, never private configuration payloads or internal endpoints."
         ];
+
+        if (offering.sceneCue) {
+          serviceGuidance.splice(5, 0, `Scene cue: ${offering.sceneCue}`);
+        }
 
         speakerPoints.innerHTML = "";
         serviceGuidance.forEach((point) => {

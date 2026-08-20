@@ -126,6 +126,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - Side-mode props now make scheduled batch, backfill or replay, and manual
   correction visible in the scene, so the pipe language goes beyond the main
   payment path without crowding the house.
+- Direct Publish now has a separate reviewed full refresh cue in the world, so
+  visitors can tell the difference between a deliberate rebuild and a replay
+  lane for historical reprocessing.
 - Each teammate-inspired character now has a public-safe review page with
   direct links from the world, while the Markdown files remain the source
   material for future large language model conversations.
@@ -316,7 +319,7 @@ sensitive implementation details.
   </article>
   <article class="data-platform-source">
     <strong>Direct Publish</strong>
-    <span>Publish Databricks tables directly from files that already live in storage.</span>
+    <span>Publish Databricks tables directly from files that already live in storage, either incrementally or as a reviewed full refresh.</span>
   </article>
   <article class="data-platform-source">
     <strong>Wraptor</strong>
@@ -455,10 +458,6 @@ event version more convincing.
 
   <section class="data-platform-lane" aria-labelledby="backlog-next">
     <h3 id="backlog-next">Next</h3>
-    <article class="data-platform-card">
-      <strong>Separate full refresh from replay</strong>
-      <span>Now that batch, replay, and manual correction are visible, make full refresh distinct from replay when visitors inspect publish services.</span>
-    </article>
     <article class="data-platform-card">
       <strong>Ground characters in service areas</strong>
       <span>Place Isak, Param, Kien, and Malo near the service families and decisions they should actually explain.</span>
@@ -606,6 +605,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Scene declutter pass</strong>
       <span>The decorative repository table, asset workbench, and smoke were removed so the house and pipes stay easier to scan.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Full refresh separated from replay</strong>
+      <span>Direct Publish now points to a reviewed full refresh cue in the scene, separate from the replay lane used for historical reprocessing.</span>
     </article>
     <article class="data-platform-card">
       <strong>Service boxes in the world</strong>
@@ -999,6 +1002,9 @@ Current visible flow modes in the world:
 - Streaming: the payment signal arrives live from the conceptual tap or send.
 - Incremental processing: checkpoint rings show that some movement happens in
   controlled chunks rather than as one full refresh.
+- Reviewed full refresh: a dedicated rebuild cue marks when a table is
+  intentionally rebuilt from storage rather than replayed through a maintenance
+  lane.
 - Quality gate: a distinct gate marks the point where validation and trust
   checks must pass before modeled outputs continue.
 - Declared export: a dedicated branch shows governed outbound delivery rather
@@ -1199,7 +1205,8 @@ Possible pipe types:
   watermarks or checkpoints showing what has already been processed.
 - Scheduled batch pipe: data moves in larger bursts, with a clock, calendar,
   or pulse that makes the schedule visible.
-- Full refresh pipe: a larger wave replaces or rebuilds the previous state.
+- Reviewed full refresh cue: a dedicated rebuild pad or chamber marks a
+  deliberate full-table rebuild, separate from replaying historical packets.
 - Backfill or replay pipe: a repair crew sends historical packets through a
   marked maintenance route.
 - Manual correction pipe: slower, guarded, clearly marked as human-reviewed.
