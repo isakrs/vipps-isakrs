@@ -123,6 +123,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The payment journey tracker now acts as a guided tour with step-specific
   camera moves, previous and next controls, autoplay, and scene-cue notes that
   explain what to inspect in the house.
+- Each payment journey handoff now names the concrete public-safe services and
+  trusted destinations that fit that step, so the tour explains not only where
+  the signal moves but also which platform offerings belong there.
 - Side-mode props now make scheduled batch, backfill or replay, and manual
   correction visible in the scene, so the pipe language goes beyond the main
   payment path without crowding the house.
@@ -402,6 +405,21 @@ apply there:
 - Scheduled batch, replay, and manual correction as visible side modes beside
   the primary payment path where they matter.
 
+The current world also needs to tie that sequence back to the service catalog.
+When a visitor focuses a payment handoff, the panel should show which service
+names or trusted destinations fit that moment in the story, so the flow reads
+as both a movement path and a configuration choice:
+
+- Source intake should point to Dino and Object Storage Connection.
+- Storage landing should keep Dino and Object Storage Connection visible and
+  introduce Wraptor as the first continued publish path.
+- Modeling should surface Cacheloader, Direct Publish, Skippy, and Query
+  Publish as distinct ways trusted tables can take shape.
+- Export should point to Data Export first, with Custom Integrations as the
+  reviewed exception path.
+- Product return should surface Analytics Projects, Data Products, Dataverse,
+  and Datafront as the trusted outputs side of the loop.
+
 The most important next focus is not "all services equally." The brief should
 guide future runs toward the services that matter most for the story:
 
@@ -480,6 +498,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Make journey steps drive the camera</strong>
       <span>Build on the new guided camera tour with stronger in-scene highlights, mode-specific props, and fewer places where visitors can lose the handoff.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Let service guidance shape the scene</strong>
+      <span>Now that each journey step names relevant services, add stronger room props and highlights so those service choices feel spatial instead of panel-only.</span>
     </article>
     <article class="data-platform-card">
       <strong>Broaden knowledge-backed dialogue</strong>
@@ -640,6 +662,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Journey steps now drive a guided camera tour</strong>
       <span>The payment tracker now offers previous and next controls, autoplay, step-specific camera moves, and scene cues that tell visitors what to inspect.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Journey steps now name relevant services</strong>
+      <span>Each payment handoff now points to the service offerings or trusted destinations that fit that step, so the tour connects movement to platform choices.</span>
     </article>
     <article class="data-platform-card">
       <strong>Trusted product destinations added</strong>

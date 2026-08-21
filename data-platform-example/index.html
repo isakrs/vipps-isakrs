@@ -424,6 +424,57 @@
         margin-top: 12px;
       }
 
+      .journey-service-links {
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+      }
+
+      .journey-service-links strong {
+        display: block;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .journey-service-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .journey-service-button {
+        align-items: center;
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        cursor: pointer;
+        display: inline-flex;
+        font: inherit;
+        font-size: 0.73rem;
+        font-weight: 800;
+        gap: 6px;
+        min-height: 34px;
+        padding: 8px 10px;
+      }
+
+      .journey-service-button:hover,
+      .journey-service-button:focus-visible {
+        outline: 2px solid rgba(255, 91, 36, 0.35);
+        outline-offset: 2px;
+      }
+
+      .journey-service-kind {
+        color: var(--muted);
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+
       .journey-scene-cues strong {
         display: block;
         font-size: 0.72rem;
@@ -857,6 +908,10 @@
             <strong>Visible scene cues</strong>
             <ul id="journey-scene-cues"></ul>
           </div>
+          <div class="journey-service-links" aria-label="Relevant services and destinations">
+            <strong>Relevant services</strong>
+            <div class="journey-service-grid" id="journey-service-grid"></div>
+          </div>
           <div class="journey-tour-controls" aria-label="Guided journey controls">
             <button class="journey-tour-button" type="button" data-tour-action="previous">Previous</button>
             <button class="journey-tour-button" type="button" data-tour-action="next">Next</button>
@@ -1013,6 +1068,7 @@
       const journeyDetailCopy = document.querySelector("#journey-detail-copy");
       const journeyDetailModes = document.querySelector("#journey-detail-modes");
       const journeySceneCues = document.querySelector("#journey-scene-cues");
+      const journeyServiceGrid = document.querySelector("#journey-service-grid");
       const tourButtons = [...document.querySelectorAll("[data-tour-action]")];
       const sceneSummary = document.querySelector("#scene-summary");
       const dialogue = document.querySelector("#dialogue");
@@ -1433,6 +1489,42 @@
       ];
       const offeringByName = new Map(platformOfferings.map((offering) => [offering.name, offering]));
       const destinationByName = new Map(trustedConsumerDestinations.map((destination) => [destination.name, destination]));
+      const journeyServiceLinks = {
+        overview: [
+          { type: "service", name: "Dino" },
+          { type: "service", name: "Object Storage Connection" },
+          { type: "service", name: "Wraptor" },
+          { type: "service", name: "Cacheloader" },
+          { type: "service", name: "Data Export" },
+          { type: "destination", name: "Dataverse" },
+          { type: "destination", name: "Datafront" }
+        ],
+        source: [
+          { type: "service", name: "Dino" },
+          { type: "service", name: "Object Storage Connection" }
+        ],
+        storage: [
+          { type: "service", name: "Dino" },
+          { type: "service", name: "Object Storage Connection" },
+          { type: "service", name: "Wraptor" }
+        ],
+        modeling: [
+          { type: "service", name: "Cacheloader" },
+          { type: "service", name: "Direct Publish" },
+          { type: "service", name: "Skippy" },
+          { type: "service", name: "Query Publish" }
+        ],
+        export: [
+          { type: "service", name: "Data Export" },
+          { type: "service", name: "Custom Integrations" }
+        ],
+        product: [
+          { type: "service", name: "Analytics Projects" },
+          { type: "service", name: "Data Products" },
+          { type: "destination", name: "Dataverse" },
+          { type: "destination", name: "Datafront" }
+        ]
+      };
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
       const characterKnowledge = new Map();
@@ -1506,6 +1598,26 @@
           }
           toggleJourneyTour();
         });
+      });
+
+      journeyServiceGrid.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-journey-service-name]");
+        if (!button) {
+          return;
+        }
+        const name = button.dataset.journeyServiceName;
+        const kind = button.dataset.journeyServiceKind;
+        if (kind === "destination") {
+          const destination = destinationByName.get(name);
+          if (destination) {
+            focusTrustedDestination(destination);
+          }
+          return;
+        }
+        const offering = offeringByName.get(name);
+        if (offering) {
+          focusServiceOffering(offering);
+        }
       });
 
       document.querySelectorAll("[data-orbit]").forEach((button) => {
@@ -2985,8 +3097,32 @@
           item.textContent = cue;
           journeySceneCues.append(item);
         });
+        renderJourneyServiceLinks(stepId);
         updateJourneyHighlights(currentFocusId);
         syncTourControls();
+      }
+
+      function renderJourneyServiceLinks(stepId) {
+        const items = journeyServiceLinks[stepId] ?? journeyServiceLinks.overview;
+        journeyServiceGrid.innerHTML = "";
+        items.forEach((item) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "journey-service-button";
+          button.dataset.journeyServiceName = item.name;
+          button.dataset.journeyServiceKind = item.type;
+
+          const label = document.createElement("span");
+          label.textContent = item.name;
+          button.append(label);
+
+          const kind = document.createElement("span");
+          kind.className = "journey-service-kind";
+          kind.textContent = item.type === "destination" ? "Destination" : "Service";
+          button.append(kind);
+
+          journeyServiceGrid.append(button);
+        });
       }
 
       function stepJourney(direction) {
