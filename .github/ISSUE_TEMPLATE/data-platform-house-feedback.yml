@@ -49,6 +49,79 @@ body:
     validations:
       required: true
 
+  - type: dropdown
+    id: route_area
+    attributes:
+      label: Which route or page is this about?
+      description: Pick the closest public page so agents can find the right context quickly.
+      options:
+        - The Three.js world at /data-platform-example/
+        - The instructions and backlog at /data-platform-example/instructions/
+        - A character knowledge page under /data-platform-example/characters/
+        - The feedback form or backlog process itself
+        - More than one route
+    validations:
+      required: true
+
+  - type: dropdown
+    id: house_area
+    attributes:
+      label: Which house area or topic is closest?
+      description: Pick the nearest scene area, service zone, or concept focus.
+      options:
+        - Product team source and intake
+        - Ingestion and storage landing
+        - Databricks and Spark-style processing
+        - dbt-style modeling and trust shaping
+        - Declared export path
+        - Product return, Dataverse, or Datafront
+        - Configuration service catalog
+        - Character dialogue or knowledge
+        - General world navigation or camera movement
+        - Backlog or instructions wording
+    validations:
+      required: true
+
+  - type: dropdown
+    id: payment_step
+    attributes:
+      label: Which payment journey step is closest?
+      description: Pick the nearest handoff even if your idea affects more than one step.
+      options:
+        - Step 1: Product team sends a payment signal
+        - Step 2: Ingestion lands in storage
+        - Step 3: Quality gates and modeling shape trust
+        - Step 4: Exports leave by declaration
+        - Step 5: Product teams receive trusted outputs
+        - More than one step
+        - Not about the payment journey
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: flow_modes
+    attributes:
+      label: Which flow modes are involved?
+      description: Select any modes that are relevant, even if you are asking for a new visual cue.
+      options:
+        - label: Streaming
+        - label: Incremental checkpointing
+        - label: Quality gate
+        - label: Declared export
+        - label: Serving flow
+        - label: Scheduled batch
+        - label: Reviewed full refresh
+        - label: Backfill or replay
+        - label: Manual correction
+        - label: No specific flow mode
+
+  - type: textarea
+    id: repository_context
+    attributes:
+      label: Repository or artifact context
+      description: Add public GitHub repositories, local personal repository paths, or safe artifact names if they help ground the idea.
+      placeholder: "Example: isakrs/modern-data-platform-example, isakrs/vipps-isakrs, or a public-safe note about a service or room."
+
   - type: textarea
     id: safe_references
     attributes:

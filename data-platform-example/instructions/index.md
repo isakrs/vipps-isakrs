@@ -206,6 +206,19 @@ conversation, shared with others, or tracked by the workday automation. A person
 can fill it in directly, and an agent can also use it as the durable public
 record when a conversation produces useful public-safe feedback.
 
+When feedback goes into GitHub, prefer structured context over long free-form
+notes. The durable record should make it easy for a later agent to see:
+
+- Which public route the feedback is about.
+- Which house area, service zone, or character area it belongs to.
+- Which payment journey step is closest.
+- Which flow mode is involved, if any.
+- Which safe repository, artifact, or source link grounds the suggestion.
+
+That structure matters because future runs should be able to turn saved feedback
+directly into backlog changes, clearer wording, repository conversation ideas,
+or scene work without needing to rediscover where the confusion came from.
+
 ## Visual Direction And Reuse
 
 The world should not become a generic three-dimensional asset showroom. It
@@ -551,6 +564,10 @@ event version more convincing.
       <strong>Repository suggestions</strong>
       <span>Which public GitHub repositories should become rooms, workbenches, or dialogue topics?</span>
     </article>
+    <article class="data-platform-card">
+      <strong>Saved feedback quality</strong>
+      <span>Does the GitHub issue clearly name route, room, payment step, flow mode, and safe repository context?</span>
+    </article>
   </section>
 
   <section class="data-platform-lane" aria-labelledby="backlog-done">
@@ -630,6 +647,10 @@ event version more convincing.
     <article class="data-platform-card">
       <strong>Agent-first feedback loop</strong>
       <span>Feedback normally starts in agent conversations and is saved in GitHub only when it needs a durable public record.</span>
+    </article>
+    <article class="data-platform-card">
+      <strong>Structured GitHub feedback form</strong>
+      <span>The durable public form now asks for route, house area, payment step, flow mode, and repository context so future runs can triage input faster.</span>
     </article>
     <article class="data-platform-card">
       <strong>Configuration repository service directory</strong>
