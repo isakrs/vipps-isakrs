@@ -140,12 +140,12 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The configuration repository offerings now appear as plain clickable service
   boxes in the world as well as in the Services panel, so visitors can inspect
   safe purpose and category without extra scene clutter.
-- Dataverse and Datafront now appear as visible trusted-consumer destinations
-  in the product side of the world, so the serving flow lands somewhere
-  concrete instead of ending as an abstract label.
-- Dataverse and Datafront now use distinct destination props in the scene, so
-  visitors can tell the difference between governed exploration space and the
-  serving front door before opening a dialogue panel.
+- Dataverse and Datafront now appear as visible product-side service-name
+  boxes, so the serving flow lands on concrete named destinations instead of
+  ending as an abstract label.
+- Trusted product destinations now use the same plain box language as the rest
+  of the service catalog, keeping the scene focused on names rather than custom
+  destination props.
 - Service clicks now teach house area, likely users, flow mode, output shape,
   and nearest destinations, so the configuration catalog explains when each
   offering fits without exposing private configuration details.
@@ -364,9 +364,10 @@ sensitive implementation details.
 
 <h3 id="trusted-consumer-destinations">Trusted Consumer Destinations</h3>
 
-Dataverse and Datafront should read as real places in the house, not only as
-names in a paragraph. They are destination landmarks on the product side of the
-journey where trusted outputs become explorable, consumable, or presentable.
+Dataverse and Datafront should stay visible on the product side of the journey,
+but they do not need their own prop language. Plain service-name boxes are the
+preferred treatment because the important thing is the destination name and role
+in the loop, not a custom landmark sculpture.
 
 - Dataverse is the governed consumer space where people explore trusted outputs,
   combine them with context, and work with them safely.
@@ -374,25 +375,24 @@ journey where trusted outputs become explorable, consumable, or presentable.
   presented clearly to product teams and analytics consumers.
 
 When the serving flow is in focus, a visitor should be able to see that the
-product-side path can land in both of these destinations before continuing back
+product-side path can land in both of these named boxes before continuing back
 to product teams.
 
-In the Three.js world, these offerings should become visible doors, kiosks,
-pipe junctions, or room signs that a visitor can move toward, stand beside, or
-click to learn more. The current product-side world now lets visitors click the
-Dataverse and Datafront landmarks directly, or use the Product panel links, to
-open public-safe teaching notes about what each destination is for, who uses
-it, and why it sits on the serving side of the loop. The service directory
-remains the first pass for the configuration catalog: it names every offering
-and connects the catalog back to the house with its own pipe.
+In the Three.js world, these offerings should use the same plain clickable box
+treatment as the rest of the catalog. The current product-side world should let
+visitors click the Dataverse and Datafront boxes directly, or use the Product
+panel links, to open public-safe teaching notes about what each destination is
+for, who uses it, and why it sits on the serving side of the loop. The service
+directory remains the first pass for the configuration catalog: it names every
+offering and connects the catalog back to the house with its own pipe.
 
-The product-side scene should also make the difference legible before any
-click:
+The product-side scene should make the return path legible with placement and
+pipe connections, not with custom props:
 
-- Dataverse should look like a governed exploration space, with cues such as
-  archive rings, context shelves, or an inspect-and-compare rotunda.
-- Datafront should look like a serving front door, with cues such as a display
-  wall, framed portal, or outgoing handoff lane back toward product teams.
+- Dataverse should be a clearly named governed destination box.
+- Datafront should be a clearly named serving destination box.
+- The serving path should visually land beside both names before continuing
+  toward product teams.
 
 The payment journey should also stay readable as a sequence, not only as a map.
 A first-time visitor should quickly understand this order:
@@ -437,8 +437,8 @@ The most important next focus is not "all services equally." The brief should
 guide future runs toward the services that matter most for the story:
 
 - Configuration services are the main focus area.
-- Dataverse should stay a clear destination that people can move to or inspect.
-- Datafront should stay a clear destination that people can move to or inspect.
+- Dataverse should stay a clear named box that people can move to or inspect.
+- Datafront should stay a clear named box that people can move to or inspect.
 - It should be obvious that product teams both send data into the platform and
   receive governed outputs back from the platform.
 - The visitor should understand when to approach or click a service to learn
@@ -526,7 +526,7 @@ event version more convincing.
     </article>
     <article class="data-platform-card">
       <strong>Let product destinations teach the return path visually</strong>
-      <span>Build stronger focus reactions, arrival cues, or path highlights now that Dataverse and Datafront already have distinct destination props.</span>
+      <span>Build stronger focus reactions, arrival cues, or path highlights while keeping Dataverse and Datafront as plain service-name boxes.</span>
     </article>
   </section>
 
@@ -629,8 +629,8 @@ event version more convincing.
       <span>Dataverse and Datafront now open product-side public-safe teaching notes from both the world props and the Product panel.</span>
     </article>
     <article class="data-platform-card">
-      <strong>Trusted destinations visually separated</strong>
-      <span>Dataverse now reads as a governed exploration place and Datafront as a serving front door before visitors click either destination.</span>
+      <strong>Trusted destinations simplified to boxes</strong>
+      <span>Dataverse and Datafront now use the same plain service-box treatment as the rest of the catalog, with differentiation handled by name, copy, and pipe placement.</span>
     </article>
     <article class="data-platform-card">
       <strong>First repository blueprints chosen</strong>
