@@ -1129,6 +1129,11 @@
       const smoke = [];
       const mixers = [];
       const animatedRooms = [];
+      const roomVisuals = new Map();
+      const serviceVisuals = new Map();
+      const destinationVisuals = new Map();
+      const pipeVisuals = [];
+      const teamTerminalVisuals = new Map();
       const orderedJourneyStepIds = ["source", "storage", "modeling", "export", "product"];
 
       const cameraTarget = new THREE.Vector3(0, 0.3, 0);
@@ -1524,6 +1529,44 @@
           { type: "destination", name: "Dataverse" },
           { type: "destination", name: "Datafront" }
         ]
+      };
+      const journeySceneFocus = {
+        overview: {
+          rooms: ["ingestion", "analytics", "export", "product", "services"],
+          services: ["Dino", "Object Storage Connection", "Wraptor", "Cacheloader", "Data Export"],
+          destinations: ["Dataverse", "Datafront"],
+          terminals: ["source", "consumer"],
+          pipeTypes: ["stream", "incremental", "quality", "export", "serving"]
+        },
+        source: {
+          rooms: ["ingestion"],
+          services: ["Dino", "Object Storage Connection"],
+          terminals: ["source"],
+          pipeTypes: ["stream"]
+        },
+        storage: {
+          rooms: ["ingestion"],
+          services: ["Dino", "Object Storage Connection", "Wraptor"],
+          terminals: ["source"],
+          pipeTypes: ["stream", "incremental", "replay"]
+        },
+        modeling: {
+          rooms: ["analytics"],
+          services: ["Cacheloader", "Direct Publish", "Skippy", "Query Publish"],
+          pipeTypes: ["incremental", "quality", "batch"]
+        },
+        export: {
+          rooms: ["export"],
+          services: ["Data Export", "Custom Integrations"],
+          pipeTypes: ["export", "manual"]
+        },
+        product: {
+          rooms: ["product", "services"],
+          services: ["Analytics Projects", "Data Products"],
+          destinations: ["Dataverse", "Datafront"],
+          terminals: ["consumer"],
+          pipeTypes: ["serving"]
+        }
       };
 
       const roomById = new Map(rooms.map((room) => [room.id, room]));
@@ -1938,7 +1981,24 @@
           light.position.set(room.x, 2.2, room.z);
           scene.add(light);
 
+          const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(1.42, 0.045, 14, 72),
+            new THREE.MeshStandardMaterial({
+              color: room.color,
+              emissive: room.color,
+              emissiveIntensity: 0.18,
+              transparent: true,
+              opacity: 0.34,
+              roughness: 0.22,
+              metalness: 0.18
+            })
+          );
+          ring.rotation.x = Math.PI / 2;
+          ring.position.set(room.x, 0.06, room.z);
+          scene.add(ring);
+
           scene.add(makeLabel(room.name, new THREE.Vector3(room.x, 2.3, room.z - 1.15), room.color));
+          roomVisuals.set(room.id, { base, machine, light, ring });
         });
       }
 
@@ -2027,6 +2087,7 @@
 
       function addProductTeamLoop() {
         addTeamTerminal({
+          id: "source",
           title: "product team source",
           subtitle: "sends payment signal",
           position: [-10.45, 0, -2.62],
@@ -2035,6 +2096,7 @@
         });
 
         addTeamTerminal({
+          id: "consumer",
           title: "product team consumer",
           subtitle: "receives governed outputs",
           position: [9.35, 0, 2.74],
@@ -2043,7 +2105,7 @@
         });
       }
 
-      function addTeamTerminal({ title, subtitle, position, color, rotationY }) {
+      function addTeamTerminal({ id, title, subtitle, position, color, rotationY }) {
         const group = new THREE.Group();
         group.position.set(...position);
         group.rotation.y = rotationY;
@@ -2100,6 +2162,7 @@
         scene.add(group);
         scene.add(makeLabel(title, new THREE.Vector3(position[0], 1.9, position[2]), color, 0.56));
         scene.add(makeLabel(subtitle, new THREE.Vector3(position[0], 1.34, position[2]), color, 0.42));
+        teamTerminalVisuals.set(id, { group, ring, glow });
       }
 
       function addTrustedConsumerDestinations() {
@@ -2111,6 +2174,7 @@
           box.rotation.y = index === 0 ? -0.36 : -0.62;
           scene.add(box);
           clickable.push(box);
+          destinationVisuals.set(destination.name, box.userData.visuals);
         });
       }
 
@@ -2286,6 +2350,7 @@
         pipe.castShadow = true;
         pipe.userData = { name, type };
         scene.add(pipe);
+        pipeVisuals.push({ mesh: pipe, type, color });
 
         scene.add(makeLabel(name, middle.clone().add(new THREE.Vector3(0, 0.56, 0)), color));
         addPipeDecorations(curve, middle, color, type);
@@ -2774,6 +2839,7 @@
             box.position.set(x, 0, z);
             directory.add(box);
             clickable.push(box);
+            serviceVisuals.set(offering.name, box.userData.visuals);
           });
         });
 
@@ -2812,6 +2878,7 @@
         box.add(accent);
 
         box.add(makeLabel(offering.name, new THREE.Vector3(0, 0.88, 0), offering.color, 0.3));
+        box.userData.visuals = { group: box, body, accent, color: offering.color };
         return box;
       }
 
@@ -2846,6 +2913,7 @@
         box.add(accent);
 
         box.add(makeLabel(destination.name, new THREE.Vector3(0, 0.88, 0), destination.color, 0.3));
+        box.userData.visuals = { group: box, body, accent, color: destination.color };
         return box;
       }
 
@@ -2922,6 +2990,7 @@
         panel.classList.toggle("is-service-focus", currentFocusId === "services");
         updateJourneyHighlights(currentFocusId);
         setJourneyDetail(stepOverride ?? primaryJourneyStepByFocus[currentFocusId] ?? "overview");
+        applySceneFocus();
       }
 
       function focusJourneyStep(stepId, fallbackRoomId, options = {}) {
@@ -2945,6 +3014,7 @@
         currentRoom.textContent = offering.name;
         currentCopy.textContent = copy;
         showServiceDialogue(offering);
+        applySceneFocus({ services: [offering.name], rooms: [offering.roomId, "services"].filter(Boolean) });
       }
 
       function focusTrustedDestination(destination) {
@@ -2952,6 +3022,7 @@
         currentRoom.textContent = destination.name;
         currentCopy.textContent = destination.description;
         showDestinationDialogue(destination);
+        applySceneFocus({ destinations: [destination.name], rooms: [destination.roomId].filter(Boolean), terminals: ["consumer"] });
       }
 
       function updateJourneyHighlights(id) {
@@ -3049,6 +3120,56 @@
         }
         playButton.textContent = tourTimer ? "Stop tour" : "Play tour";
         playButton.classList.toggle("is-active", Boolean(tourTimer));
+      }
+
+      function applySceneFocus(overrides = {}) {
+        const sceneFocus = journeySceneFocus[activeJourneyStepId] ?? journeySceneFocus.overview;
+        const highlightedRooms = new Set([...(sceneFocus.rooms ?? []), ...(overrides.rooms ?? [])]);
+        const highlightedServices = new Set([...(sceneFocus.services ?? []), ...(overrides.services ?? [])]);
+        const highlightedDestinations = new Set([...(sceneFocus.destinations ?? []), ...(overrides.destinations ?? [])]);
+        const highlightedTerminals = new Set([...(sceneFocus.terminals ?? []), ...(overrides.terminals ?? [])]);
+        const highlightedPipeTypes = new Set([...(sceneFocus.pipeTypes ?? []), ...(overrides.pipeTypes ?? [])]);
+
+        roomVisuals.forEach((visuals, roomId) => {
+          const active = highlightedRooms.has(roomId);
+          visuals.base.material.opacity = active ? 0.42 : 0.16;
+          visuals.ring.material.opacity = active ? 0.68 : 0.2;
+          visuals.ring.material.emissiveIntensity = active ? 0.44 : 0.12;
+          visuals.light.intensity = active ? 1.2 : 0.52;
+          visuals.machine.scale.setScalar(active ? 1.05 : 1);
+        });
+
+        pipeVisuals.forEach(({ mesh, type, color }) => {
+          const active = highlightedPipeTypes.has(type);
+          mesh.material.transparent = !active;
+          mesh.material.opacity = active ? 1 : 0.38;
+          mesh.material.color.setHex(color);
+          mesh.material.emissive.setHex(color);
+          mesh.material.emissiveIntensity = active ? 0.42 : 0.08;
+        });
+
+        serviceVisuals.forEach((visuals, name) => {
+          const active = highlightedServices.has(name);
+          visuals.group.scale.setScalar(active ? 1.14 : 1);
+          visuals.accent.material.emissiveIntensity = active ? 0.5 : 0.16;
+          visuals.body.material.emissive.setHex(active ? 0xf7fbff : 0x000000);
+          visuals.body.material.emissiveIntensity = active ? 0.12 : 0;
+        });
+
+        destinationVisuals.forEach((visuals, name) => {
+          const active = highlightedDestinations.has(name);
+          visuals.group.scale.setScalar(active ? 1.14 : 1);
+          visuals.accent.material.emissiveIntensity = active ? 0.5 : 0.16;
+          visuals.body.material.emissive.setHex(active ? 0xf7fbff : 0x000000);
+          visuals.body.material.emissiveIntensity = active ? 0.12 : 0;
+        });
+
+        teamTerminalVisuals.forEach((visuals, id) => {
+          const active = highlightedTerminals.has(id);
+          visuals.group.scale.setScalar(active ? 1.08 : 1);
+          visuals.ring.material.emissiveIntensity = active ? 0.48 : 0.24;
+          visuals.glow.material.opacity = active ? 1 : 0.56;
+        });
       }
 
       function rotateView(direction) {
@@ -3436,6 +3557,12 @@
         clickable.forEach((person, index) => {
           person.rotation.y = Math.sin(elapsed * 0.7 + index) * 0.16;
           person.position.y = Math.sin(elapsed * 1.4 + index) * 0.025;
+        });
+
+        roomVisuals.forEach((visuals, index) => {
+          visuals.ring.rotation.z += delta * (0.18 + index * 0.015);
+          const pulse = 1 + Math.sin(elapsed * 1.5 + index) * 0.018;
+          visuals.ring.scale.setScalar(pulse);
         });
 
         composer.render();

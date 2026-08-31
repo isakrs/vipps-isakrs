@@ -123,6 +123,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The payment journey tracker now acts as a guided tour with step-specific
   camera moves, previous and next controls, autoplay, and scene-cue notes that
   explain what to inspect in the house.
+- The active guided step now brightens its room, matching pipes, service boxes,
+  and source or consumer terminal, so the story is easier to follow from inside
+  the world.
 - Each payment journey handoff now names the concrete public-safe services and
   trusted destinations that fit that step, so the tour explains not only where
   the signal moves but also which platform offerings belong there.
@@ -513,6 +516,10 @@ event version more convincing.
       <span>Build on the new guided camera tour with stronger in-scene highlights, mode-specific props, and fewer places where visitors can lose the handoff.</span>
     </article>
     <article class="data-platform-card">
+      <strong>Turn room highlights into movement anchors</strong>
+      <span>Build on the new active room and pipe highlights so visitors feel invited to move from landmark to landmark instead of hovering outside the story.</span>
+    </article>
+    <article class="data-platform-card">
       <strong>Let service guidance shape the scene</strong>
       <span>Now that each journey step names relevant services, add stronger room props and highlights so those service choices feel spatial instead of panel-only.</span>
     </article>
@@ -572,6 +579,10 @@ event version more convincing.
 
   <section class="data-platform-lane" aria-labelledby="backlog-done">
     <h3 id="backlog-done">Done</h3>
+    <article class="data-platform-card">
+      <strong>Make guided focus visible in the scene</strong>
+      <span>Journey steps now brighten the matching room, pipe family, service boxes, and product source or consumer terminal, so the world teaches the handoff more directly.</span>
+    </article>
     <article class="data-platform-card">
       <strong>Direction reset</strong>
       <span>The old implementation was removed and this brief became the source of truth.</span>
