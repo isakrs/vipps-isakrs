@@ -126,6 +126,9 @@ The previous implementation has been deleted and replaced with a clearer split:
 - The active guided step now brightens its room, matching pipes, service boxes,
   and source or consumer terminal, so the story is easier to follow from inside
   the world.
+- Room floors, landmark rings, and machines are now direct movement anchors:
+  visitors can click them to enter a closer room view, then keep exploring with
+  the movement keys or orbit controls.
 - Each payment journey handoff now names the concrete public-safe services and
   trusted destinations that fit that step, so the tour explains not only where
   the signal moves but also which platform offerings belong there.
@@ -472,10 +475,6 @@ event version more convincing.
   <section class="data-platform-lane" aria-labelledby="backlog-now">
     <h3 id="backlog-now">Now</h3>
     <article class="data-platform-card">
-      <strong>Make movement feel room-first</strong>
-      <span>Build on the now-visible controls so movement feels grounded in rooms, landmarks, and pipe destinations instead of only camera target shifts.</span>
-    </article>
-    <article class="data-platform-card">
       <strong>Declutter the world</strong>
       <span>Keep trimming labels, props, and decorative effects until the house, pipes, and service boxes read clearly on first view.</span>
     </article>
@@ -579,6 +578,10 @@ event version more convincing.
 
   <section class="data-platform-lane" aria-labelledby="backlog-done">
     <h3 id="backlog-done">Done</h3>
+    <article class="data-platform-card">
+      <strong>Make movement feel room-first</strong>
+      <span>Visitors can now click a room floor, landmark ring, or machine to enter a closer room view before exploring with movement and orbit controls.</span>
+    </article>
     <article class="data-platform-card">
       <strong>Make guided focus visible in the scene</strong>
       <span>Journey steps now brighten the matching room, pipe family, service boxes, and product source or consumer terminal, so the world teaches the handoff more directly.</span>

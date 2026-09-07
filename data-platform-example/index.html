@@ -834,8 +834,8 @@
             <span>Turn around the house from multiple sides.</span>
           </div>
           <div class="control-chip">
-            <strong>W A S D or arrows</strong>
-            <span>Move the camera target in depth around rooms and pipes.</span>
+            <strong>Click a room</strong>
+            <span>Enter its landmark view, then use W A S D or arrows to explore.</span>
           </div>
           <div class="control-chip">
             <strong>Wheel or plus and minus</strong>
@@ -920,10 +920,10 @@
         </div>
       </div>
       <div class="focus-grid" aria-label="Focus rooms">
-        <button class="focus-button" type="button" data-focus="ingestion">Ingestion</button>
-        <button class="focus-button" type="button" data-focus="analytics">Analytics</button>
-        <button class="focus-button" type="button" data-focus="export">Export</button>
-        <button class="focus-button" type="button" data-focus="product">Product</button>
+        <button class="focus-button" type="button" data-focus="ingestion">Enter ingestion</button>
+        <button class="focus-button" type="button" data-focus="analytics">Enter analytics</button>
+        <button class="focus-button" type="button" data-focus="export">Enter export</button>
+        <button class="focus-button" type="button" data-focus="product">Enter product</button>
         <button class="focus-button" type="button" data-focus="services">Services</button>
         <button class="focus-button" type="button" data-focus="house">House</button>
       </div>
@@ -1296,10 +1296,10 @@
 
       const roomTargets = {
         house: { target: [0, 0.45, -0.2], offset: [1.8, 6.2, 9.6] },
-        ingestion: { target: [-5.5, 0.35, -2.45], offset: [1.4, 7.1, 8.8] },
-        analytics: { target: [-0.7, 0.35, -2.4], offset: [1.5, 6.9, 8.3] },
-        export: { target: [3.45, 0.35, -1.65], offset: [1.6, 7.1, 8.4] },
-        product: { target: [6.4, 0.45, 2.15], offset: [1.25, 7.4, 8.9] },
+        ingestion: { target: [-6.05, 0.55, -2.35], offset: [0.9, 4.35, 4.95] },
+        analytics: { target: [-0.65, 0.55, -2.35], offset: [0.85, 4.3, 5.0] },
+        export: { target: [3.45, 0.55, -1.65], offset: [0.9, 4.35, 4.95] },
+        product: { target: [5.75, 0.6, 2.55], offset: [0.8, 4.4, 5.05] },
         github: { target: [-5.6, 0.3, 3.4], offset: [1.4, 7.2, 8.4] },
         assets: { target: [-2.45, 0.3, 3.35], offset: [1.1, 7.2, 8.2] },
         services: { target: [5.95, 0.75, 0.25], offset: [-1.6, 6.5, 7.6] }
@@ -1972,6 +1972,7 @@
           );
           base.position.set(room.x, 0.02, room.z);
           base.receiveShadow = true;
+          base.userData = { roomId: room.id };
           scene.add(base);
 
           const machine = makeRoomMachine(room);
@@ -1995,9 +1996,11 @@
           );
           ring.rotation.x = Math.PI / 2;
           ring.position.set(room.x, 0.06, room.z);
+          ring.userData = { roomId: room.id };
           scene.add(ring);
 
           scene.add(makeLabel(room.name, new THREE.Vector3(room.x, 2.3, room.z - 1.15), room.color));
+          clickable.push(base, machine, ring);
           roomVisuals.set(room.id, { base, machine, light, ring });
         });
       }
@@ -3463,6 +3466,9 @@
           if (selected.userData.trustedDestination) {
             break;
           }
+          if (selected.userData.roomId) {
+            break;
+          }
           selected = selected.parent;
         }
         if (selected.userData.serviceOffering) {
@@ -3471,6 +3477,11 @@
         }
         if (selected.userData.trustedDestination) {
           focusTrustedDestination(selected.userData.trustedDestination);
+          return;
+        }
+        if (selected.userData.roomId) {
+          stopJourneyTour();
+          focusRoom(selected.userData.roomId);
           return;
         }
         if (!selected.userData.dialogue) {
